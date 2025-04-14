@@ -1,0 +1,25 @@
+Package: luna
+Type: Package
+Title: Light-weight Universal NLME Admininstrator
+Version: 0.1.0
+Author: Ron Keizer
+Maintainer: Ron Keizer <ron@insight-rx.com>
+Description: Organizes model development workflows in NONMEM and nlmixr2. The 
+  organization of projects is implemented through YAML files.
+Depends: R (>= 4.3.0)
+Imports: S7, dplyr, lubridate, pharmr, yaml, stats, cli
+Suggests: 
+    httr,
+    nlmixr2,
+    testthat (>= 3.0.0),
+    mockery,
+    knitr,
+    rmarkdown
+License: MIT + file LICENSE
+URL: https://github.com/InsightRX/uno, https://insightrx.github.io/uno/
+LazyData: TRUE
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Config/testthat/edition: 3
+Encoding: UTF-8
+VignetteBuilder: knitr
