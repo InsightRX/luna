@@ -5,6 +5,7 @@
 luna_list_runs <- function(
   folder = ".",
   project = NULL,
+  arrange = c("type", "status", "id"),
   verbose = FALSE,
   format = "pipe"
 ) {
@@ -17,7 +18,7 @@ luna_list_runs <- function(
   if(length(yaml_files) == 1) {
     project <- yaml_files
   }
-  
+
   ## No project specified and multiple YAML files:
   if(is.null(project)) {
     cli::cli_abort(
@@ -48,7 +49,7 @@ luna_list_runs <- function(
       "description" = sapply(models, function(x) {
         desc <- x$description
         if (nchar(desc) > 50) {
-          paste0(substr(desc, 1, 47), "...")  
+          paste0(substr(desc, 1, 47), "...")
         } else {
           desc
         }
@@ -58,13 +59,14 @@ luna_list_runs <- function(
     # Use knitr to create a nice table
     cli::cli_alert_info("Loading models in project {project}:")
     knitr::kable(
-      model_table,
+      model_table %>%
+        dplyr::arrange_at(arrange),
       format = format
     )
   } else {
     cli::cli_alert_info("No models found in project.")
   }
-} 
+}
 
 #' Get the status of a run
 get_status <- function(id, folder = ".") {
