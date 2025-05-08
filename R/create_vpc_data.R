@@ -1,17 +1,17 @@
 #' Run a simulation based on supplied parameters estimates,
 #' and combine into proper format for VPC
-#' 
+#'
 #' @param fit fit object from `pharmr::run_modelfit()`. Optional, can supply a
 #' `model` and `parameters` argument
-#' @param model pharmpy model object. Optional, can only supply just a `fit` 
+#' @param model pharmpy model object. Optional, can only supply just a `fit`
 #' object
 #' @param parameters list of parameter estimates, e.g. `list(CL = 5, V = 50)`.
 #' Optional, can also supply a `fit` object.
 #' @param n number of simulation iterations to generate
 #' @param verbose verbose output?
-#' 
+#'
 #' @export
-#' 
+#'
 create_vpc_data <- function(
   fit = NULL,
   model = NULL,
@@ -20,7 +20,7 @@ create_vpc_data <- function(
   n = 100,
   verbose = FALSE
 ) {
-  
+
   ## Make a copy of the model for simulations, and update initial estimates
   tool <- get_tool_from_model(model)
   if(tool != "nonmem") {
@@ -28,7 +28,7 @@ create_vpc_data <- function(
     ## dataset sometimes gets altered by pharmpy (CMT), make sure this doesn't happen
     data <- model$dataset
     model <- pharmr::convert_model(
-      model, 
+      model,
       to_format = "nonmem"
     )
     if(!is.null(data)) {
@@ -36,21 +36,21 @@ create_vpc_data <- function(
     }
   }
   if(!is.null(parameters)) {
-    if(verbose) message("Using supplied `parameters` object")    
+    if(verbose) message("Using supplied `parameters` object")
   } else { # try to grab from fit object
     if(!is.null(fit) && !is.null(fit$parameter_estimates)) {
-      if(verbose) message("Using parameters from `fit` object")    
+      if(verbose) message("Using parameters from `fit` object")
       parameters <-  as.list(fit$parameter_estimates)
     } else {
       warning("No parameter estimates available, will use initial estimates for VPC!")
     }
   }
-  
+
   if(is.null(model)) {
     if(verbose) message("Using model from fit object")
     model <- attr(fit, "model")
     if(is.null(model) || !inherits(model, "pharmpy.model.model.Model")) {
-      stop("Model is not a pharmpy Model object.")
+      cli::cli_abort("Model is not a pharmpy Model object.")
     }
   }
   if(verbose) message("Updating estimates for simulation model")
@@ -70,7 +70,7 @@ create_vpc_data <- function(
 
   ## Make sure data is clean for modelfit
   sim_model <- clean_modelfit_data(sim_model)
-  
+
   ## Run the simulation
   if(verbose) message("Running simulations for VPC")
   tmp_path <- file.path(tempdir(), paste0("simulation_", random_string(5)))
@@ -88,9 +88,9 @@ create_vpc_data <- function(
     path = tmp_path
   )
   if(!inherits(sim_data, "pharmpy.workflows.results.SimulationResults")) {
-    stop("Simulation for VPC failed. Please check model and settings.")
+    cli::cli_abort("Simulation for VPC failed. Please check model and settings.")
   }
-  
+
   ## Parse the output and make ready for vpc::vpc()
   if(verbose) message("Preparing simulated output data for plotting")
   sim <- sim_data$table

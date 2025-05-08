@@ -1,0 +1,36 @@
+#' Load a project from yaml and gather results
+#'
+#' @inheritParams luna_new_project
+#'
+luna_load_project <- function(
+    name = NULL,
+    folder = ".",
+    verbose = TRUE
+) {
+
+  if(is.null(name)) {
+    yaml_files <- dir(folder, pattern = ".yaml$")
+    if(length(yaml_files) == 0) {
+      cli::cli_abort("No YAML files found in folder.")
+    } else if (length(yaml_files) == 1) {
+      name <- stringr::str_replace(yaml_files[1], ".yaml$", "")
+    } else {
+      cli::cli_abort("Multiple YAML files found in folder, please specify project name.")
+    }
+  }
+
+  if(verbose) cli::cli_alert_info("Reading project file")
+  filename <- file.path(folder, paste0(name, ".yaml"))
+  yaml_data <- yaml::read_yaml(file = filename)
+
+  luna_project <- list(
+    yaml = yaml_data,
+    metadata = list(
+      name = name,
+      folder = folder
+    )
+  )
+  class(luna_project) <- c("luna.project", class(luna_project))
+
+  luna_project
+}

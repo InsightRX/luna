@@ -1,10 +1,10 @@
 #' Parse NONMEM model file into a list containing blocks of code
 #'
 #' @param modelfile NONMEM model filename
-#' @param as_block import code blocks as block of text (`TRUE`, default) or as 
+#' @param as_block import code blocks as block of text (`TRUE`, default) or as
 #' separate lines (`FALSE`)
 #' @param code NONMEM code (alternative to specifying file name)
-#' 
+#'
 #' @export
 nm_read_model <- function(
     modelfile = NULL,
@@ -12,7 +12,7 @@ nm_read_model <- function(
     code = NULL) {
   if(is.null(modelfile)) {
     if(is.null(code)) {
-      stop("Please specify a NONMEM modelfile or NONMEM code.")
+      cli::cli_abort("Please specify a NONMEM modelfile or NONMEM code.")
     }
   }
   if(!is.null(code)) {
@@ -21,7 +21,7 @@ nm_read_model <- function(
     if(file.exists(modelfile)) {
       nm_txt <- readChar(modelfile, file.info(modelfile)$size)
     } else {
-      stop(paste0("NONMEM modelfile (", modelfile,") not found."))
+      cli::cli_abort(paste0("NONMEM modelfile (", modelfile,") not found."))
     }
   }
   nm_lines <- stringr::str_split(nm_txt, "\\n")[[1]]
@@ -33,7 +33,7 @@ nm_read_model <- function(
   block_idx <- c(1:length(nm_lines))[stringr::str_detect(nm_lines, "^\\$")]
   if(length(block_idx) == 0) {
     print(nm_lines)
-    stop("Sorry, no code blocks detected in NONMEM file.")
+    cli::cli_abort("Sorry, no code blocks detected in NONMEM file.")
   }
   block_idx <- c(block_idx, length(nm_lines)+1)
   obj <- list()

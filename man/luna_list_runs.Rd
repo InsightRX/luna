@@ -9,7 +9,7 @@ luna_list_runs(
   project = NULL,
   arrange = c("type", "status", "id"),
   verbose = FALSE,
-  format = "pipe"
+  format = "simple"
 )
 }
 \description{

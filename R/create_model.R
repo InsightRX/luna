@@ -1,8 +1,8 @@
 #' Create model
-#' 
+#'
 #' This is essentially a wrapper around the model-creation and -modification
 #' functionality in pharmr/Pharmpy.
-#' 
+#'
 #' @param data data.frame as input to NONMEM / nlmixr.
 #' @param route route of administration, either `oral` or `iv`
 #' @param lag_time add a lag time, default is `FALSE`
@@ -11,13 +11,13 @@
 #' @param bioavailability Add a bioavailability parameter? Default is `FALSE`.
 #' Will add using a logit function.
 #' @param n_cmt number of elimination and distribution compartments. Default is
-#' 1, i.e. no peripheral distributions. 
+#' 1, i.e. no peripheral distributions.
 #' @param elimination elimination type, either `linear` or `michaelis-menten`.
 #' @param iiv either `character` or a `list` object. If `character`, should be
-#' either "basic" (only CL and V parameters) or "all" (IIV on all parameters). 
-#' If specified as a list object, it should contain the IIV magnitude (on SD 
+#' either "basic" (only CL and V parameters) or "all" (IIV on all parameters).
+#' If specified as a list object, it should contain the IIV magnitude (on SD
 #' scale) for parameters, e.g. `list(CL = 0.2, V = 0.3)`.
-#' @param iiv_effect either `character` or `list`. If character, one of 
+#' @param iiv_effect either `character` or `list`. If character, one of
 #' `c("exp", "add", "prop", "log", "re_log")`. If `list`, should specify for
 #' each parameter the effect type, e.g. `list(CL = "add", V = "exp")`. Default
 #' is `"exp"` for all.
@@ -29,25 +29,25 @@
 #' One of `sandwich` (default), `smat`, `fmat`, `efim`.
 #' @param auto_init automatically update initial estimates to reasonable values
 #' based on a crude assessment of the PK data. Default is `TRUE`.
-#' @param auto_stack_encounters detects if TIME within an individual is 
-#' decreasing from one record to another, which NONMEM cannot handle. 
-#' If this happens, it will add a reset event (EVID=3) at that time, and 
-#' increase the TIME for subsequent events so that NONMEM does not throw an 
-#' error. It will increase the time for the next encounter to the maximum 
+#' @param auto_stack_encounters detects if TIME within an individual is
+#' decreasing from one record to another, which NONMEM cannot handle.
+#' If this happens, it will add a reset event (EVID=3) at that time, and
+#' increase the TIME for subsequent events so that NONMEM does not throw an
+#' error. It will increase the time for the next encounter to the maximum
 #' encounter length across all subjects in the dataset (rounded up to 100).
 #' If no decreasing TIME is detected, nothing will be done (most common case).
-#' This feature is useful e.g. for crossover trials when data on the same 
-#' individual ispresent but is included in the dataset as time-after-dose and 
+#' This feature is useful e.g. for crossover trials when data on the same
+#' individual ispresent but is included in the dataset as time-after-dose and
 #' not actual time since first overall dose.
-#' @param auto_stack_encounters detects if TIME within an individual is 
-#' decreasing from one record to another, which NONMEM cannot handle. 
-#' If this happens, it will add a reset event (EVID=3) at that time, and 
-#' increase the TIME for subsequent events so that NONMEM does not throw an 
-#' error. It will increase the time for the next encounter to the maximum 
+#' @param auto_stack_encounters detects if TIME within an individual is
+#' decreasing from one record to another, which NONMEM cannot handle.
+#' If this happens, it will add a reset event (EVID=3) at that time, and
+#' increase the TIME for subsequent events so that NONMEM does not throw an
+#' error. It will increase the time for the next encounter to the maximum
 #' encounter length across all subjects in the dataset (rounded up to 100).
 #' If no decreasing TIME is detected, nothing will be done (most common case).
-#' This feature is useful e.g. for crossover trials when data on the same 
-#' individual ispresent but is included in the dataset as time-after-dose and 
+#' This feature is useful e.g. for crossover trials when data on the same
+#' individual ispresent but is included in the dataset as time-after-dose and
 #' not actual time since first overall dose.
 #' @param mu_reference MU-reference the model, useful for SAEM estimation
 #' method.
@@ -56,9 +56,9 @@
 #' @param name name of model
 #' @param tool output model type, either `nonmem` or `nlmixr`
 #' @param verbose verbose output?
-#' 
+#'
 #' @export
-#' 
+#'
 create_model <- function(
     route = c("auto", "oral", "iv"),
     lag_time = FALSE,
@@ -96,17 +96,17 @@ create_model <- function(
     tool <- "nlmixr"
   }
   if(verbose) cli::cli_alert_info(paste0("Writing model in ", tool, " format"))
-  
+
   ## Pick route
   if(route == "auto") {
     route <- get_route_from_data(data)
   }
-  
+
   ## Read base model
   if(verbose) cli::cli_alert_info("Reading base model")
   mod <- pharmr::read_model(
     path = system.file(
-      paste0("models/nonmem/base_", route, ".mod"), 
+      paste0("models/nonmem/base_", route, ".mod"),
       package = "pharmaair"
     )
   )
@@ -123,7 +123,7 @@ create_model <- function(
   if(isTRUE(bioavailability)) {
     mod <- mod %>%
       pharmr::add_bioavailability(
-        add_parameter = TRUE, 
+        add_parameter = TRUE,
         logit_transform = TRUE
       ) %>%
       pharmr::set_initial_estimates(list(POP_BIO = 0.5))
@@ -131,7 +131,7 @@ create_model <- function(
   if(n_transit_compartments > 0) {
     mod <- pharmr::set_transit_compartments(mod, n = n_transit_compartments)
   }
-  
+
   ## Distribution: add peripheral compartments
   if(n_cmt > 1) {
     if(verbose) cli::cli_alert_info("Adding peripheral compartments")
@@ -143,7 +143,7 @@ create_model <- function(
   ## Elimination
   if(elimination == "michaelis-menten") {
     if(verbose) cli::cli_alert_info("Adding Michaelis-Menten elimination")
-    mod <- mod %>% 
+    mod <- mod %>%
       pharmr::set_michaelis_menten_elimination()
   }
 
@@ -153,7 +153,7 @@ create_model <- function(
     inits <- get_initial_estimates_from_data(data, n_cmt = n_cmt)
     inits <- setNames(inits, paste0("POP_", names(inits)))
     mod <- pharmr::set_initial_estimates(
-      model = mod, 
+      model = mod,
       inits = inits
     )
   }
@@ -165,13 +165,13 @@ create_model <- function(
   ## Residual error
   if(verbose) cli::cli_alert_info(paste0("Setting error model to: ", ruv))
   mod <- set_residual_error(mod, ruv)
-  
+
   ## Covariates
   if(!is.null(covariates)) {
     if(verbose) cli::cli_alert_info("Adding covariates to model")
     mod <- add_covariates_to_model(
-      model = mod, 
-      covariates = covariates, 
+      model = mod,
+      covariates = covariates,
       data = data
     )
   } else {
@@ -195,8 +195,8 @@ create_model <- function(
     if(tool == "nonmem") {
       if(verbose) cli::cli_alert_info("Setting estimation options")
       tool_options <- get_estimation_options(
-        tool, 
-        estimation_method, 
+        tool,
+        estimation_method,
         estimation_options
       )
     } else {
@@ -212,17 +212,17 @@ create_model <- function(
       tool_options = tool_options
     )
   }
-  
+
   ## MU referencing?
   if(mu_reference) {
     mod <- pharmr::mu_reference_model(mod)
   }
-  
+
   ## Parameter uncertainty?
   if(!is.null(uncertainty_method)) {
     if(verbose) cli::cli_alert_info(paste0("Adding parameter uncertainty step: ", uncertainty_method))
     mod <- pharmr::add_parameter_uncertainty_step(
-      mod, 
+      mod,
       parameter_uncertainty_method = toupper(uncertainty_method)
     )
   }
@@ -232,9 +232,9 @@ create_model <- function(
     if(verbose) cli::cli_alert_info("Adding output table for individual parameters")
     ind_parameters <- pharmr::get_individual_parameters(mod)
     mod <- add_table_to_model(
-      model = mod, 
-      variables = c("ID", ind_parameters), 
-      firstonly = TRUE, 
+      model = mod,
+      variables = c("ID", ind_parameters),
+      firstonly = TRUE,
       file = "patab"
     )
   }
@@ -251,24 +251,24 @@ create_model <- function(
     mod <- mod %>%
       pharmr::unload_dataset() %>%
       pharmr::set_dataset(
-        path_or_df = data, 
+        path_or_df = data,
         datatype = "nonmem"
       )
   }
-  
+
   ## Set name?
   if(!is.null(name)) {
     mod <- pharmr::set_name(mod, new_name = name)
   }
-  
+
   if(verbose) cli::cli_alert_success("Done")
-  
+
   return(mod)
 }
 
 #' Helper function to combine default estimation options with user-specified,
 #' and ensure correct format.
-#' 
+#'
 get_estimation_options <- function(tool, estimation_method, estimation_options) {
   tool_options <- estimation_options_defaults[[tool]][[estimation_method]]
   if(!is.null(estimation_options)) {
@@ -282,7 +282,7 @@ get_estimation_options <- function(tool, estimation_method, estimation_options) 
 
 
 #' List of default options for estimation method.
-#' 
+#'
 estimation_options_defaults <- list(
   "nonmem" = list(
     "foce" = list(
@@ -294,7 +294,7 @@ estimation_options_defaults <- list(
     "saem" = list(
       NBURN = 500,
       NITER = 1000,
-      ISAMPLE = 2 
+      ISAMPLE = 2
     )
   ),
   "nlmixr" = list( ## leave empty for now, pharmpy does not support nlmixr options yet.
@@ -306,7 +306,7 @@ estimation_options_defaults <- list(
 )
 
 #' Logic to set the residual error model structure for the model
-#' 
+#'
 set_residual_error <- function(mod, ruv) {
   if(ruv == "proportional") {
     mod <- pharmr::set_proportional_error_model(mod)
@@ -317,15 +317,15 @@ set_residual_error <- function(mod, ruv) {
   } else if (ruv == "ltbs") {
     mod <- pharmr::set_proportional_error_model(mod, data_trans="log(Y)")
   } else {
-    stop("Requested error model structure not recognized.")
+    cli::cli_abort("Requested error model structure not recognized.")
   }
   mod
 }
 
-#' Get route from data. 
-#' If dose and observation events all happen in the same compartment, 
+#' Get route from data.
+#' If dose and observation events all happen in the same compartment,
 #' then assume IV administration, else oral absorption (or sc, im, etc).
-#' 
+#'
 get_route_from_data <- function(data, default = "iv") {
   if(is.null(data)) {
     return(default)
@@ -344,64 +344,4 @@ get_route_from_data <- function(data, default = "iv") {
     route <- "iv"
   }
   route
-}
-
-#' Create a model (old version)
-#' 
-#' @inheritParams run_modelfit
-#' @param n_cmt number of compartments for the population PK model
-#' @param route administration route, either `"oral"` or `"iv"` or NULL. If NULL 
-#' (default) will read from data (`ROUTE` column) and used route specified for 
-#' first dose in dataset.
-#' @param absorption one of `"linear"`, `"linear_lag"` (linear with lagtime), or
-#'  `"transit"` (transit compartments using the Stirling approximation as 
-#'  described in Savic et al. JPKPD 2007). Argument is only required when 
-#'  `route` is `"oral"`.
-#' @param software Currently only `nlmixr2` supported. 
-#' 
-#' @returns an R function object for nlmixr2, or a NONMEM model as a 
-#' character vector (TODO)
-#'  
-#' @export
-create_model.old <- function(
-  n_cmt = 1,
-  route = NULL,
-  absorption = c("linear", "linear_lag", "transit"),
-  software = c("nlmixr2", "nlmixr"),
-  data
-) {
-
-  ## parse arguments
-  absorption <- match.arg(absorption)
-  software <- match.arg(software)
-  if(is.null(route)) {
-    route <- get_route_from_data_column(data$ROUTE)
-  }
-  if(!isTRUE(route %in% c("iv", "oral"))) {
-    stop("Only `iv` and `oral` supported currently as `route`.")
-  }
-
-  if(tolower(software) %in% c("nlmixr", "nlmixr2")) {
-    extra <- NULL
-    if(route == "oral") {
-      extra <- dplyr::case_when(
-        absorption == "linear_lag" ~ "lag",
-        absorption == "transit" ~ "transit",
-        .default = NA
-      )
-      if(is.na(extra)) { extra <- NULL }
-    }
-    model <- get(
-      paste0(c(
-        "nlmixr2_pk", 
-        paste0(n_cmt, "cmt"), 
-        route,
-        "linear", 
-        extra
-        ), collapse = "_"
-      )
-    )
-  }
-
-  model
 }

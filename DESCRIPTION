@@ -14,7 +14,9 @@ Suggests:
     testthat (>= 3.0.0),
     mockery,
     knitr,
-    rmarkdown
+    rmarkdown,
+    stringr,
+    Rapp
 License: MIT + file LICENSE
 URL: https://github.com/InsightRX/uno, https://insightrx.github.io/uno/
 LazyData: TRUE

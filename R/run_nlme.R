@@ -64,7 +64,7 @@ run_nlme <- function(
   if(inherits(model, "pharmpy.model.model.Model")) {
     tool <- get_tool_from_model(model)
     if(tool != "nonmem") {
-      stop("Currently only NONMEM is supported.")
+      cli::cli_abort("Currently only NONMEM is supported.")
     }
   } else if(inherits(model, "character")) {
     tool <- "nonmem"
@@ -76,7 +76,7 @@ run_nlme <- function(
       )
     }
   } else {
-    stop("`model` should either be model code or a pharmpy model object")
+    cli::cli_abort("`model` should either be model code or a pharmpy model object")
   }
 
   ## Set up folder
@@ -94,7 +94,8 @@ run_nlme <- function(
         }
       }
     } else {
-      stop("Run folder (", fit_folder, ") exists. Use `force` to overwrite.")
+      cli::cli_alert_danger(paste0("Run folder (", fit_folder, ") exists. Use `force` to overwrite."))
+      return()
     }
   } else {
     dir.create(fit_folder)
@@ -170,7 +171,7 @@ run_nlme <- function(
         print_nmfe_output(fit_folder)
       }
     }
-    stop("No results from modelfit, please check run output.")
+    cli::cli_abort("No results from modelfit, please check run output.")
   }
   if(verbose) cli::cli_process_done()
 
@@ -274,7 +275,7 @@ change_nonmem_dataset <- function(
   data_line_idx <- grep("^\\$DATA", lines)
 
   if (length(data_line_idx) == 0) {
-    stop("No $DATA line found in the model file")
+    cli::cli_abort("No $DATA line found in the model file")
   }
 
   # Replace the dataset path while preserving any options after it

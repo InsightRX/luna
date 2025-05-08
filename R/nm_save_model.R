@@ -9,13 +9,13 @@ nm_save_model <- function(
     model = NULL,
     modelfile = NULL,
     overwrite = FALSE) {
-  if(is.null(modelfile)) stop("Please specify an output NONMEM modelfile.")
-  if(is.null(model)) stop("Please specify an imported NONMEM model (imported with `read_nm`).")
+  if(is.null(modelfile)) cli::cli_abort("Please specify an output NONMEM modelfile.")
+  if(is.null(model)) cli::cli_abort("Please specify an imported NONMEM model (imported with `read_nm`).")
   if(file.exists(modelfile) && !overwrite) {
-    stop("Sorry, the output NONMEM file already exists and `overwrite` is set to FALSE.")
+    cli::cli_abort("Sorry, the output NONMEM file already exists and `overwrite` is set to FALSE.")
   }
   if(! "NONMEM" %in% class(model)) {
-    stop("Sorry, this object does not seem to be a valid NONMEM model object. Please import NONMEM files using `nm_read()`")
+    cli::cli_abort("Sorry, this object does not seem to be a valid NONMEM model object. Please import NONMEM files using `nm_read()`")
   }
   # rearrange to make sure record order is correct
   header <- c("PROBLEM", "INPUT", "DATA", "ABBR")
