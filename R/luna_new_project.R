@@ -7,9 +7,9 @@
 #'   it will be created.
 #' @param import_models when creating a new project file in a folder, should
 #' any existing models be added to the project?
-#' @param template Create yaml file from a template. Use 
+#' @param template Create yaml file from a template. Use
 #' \link{luna_project_templates} to show a list of available templates
-#' @param force if a project file already exists, overwrite it. `FALSE` by 
+#' @param force if a project file already exists, overwrite it. `FALSE` by
 #' default
 #' @param return_object return the project object?
 #' @param verbose verbosity
@@ -76,7 +76,7 @@ luna_new_project <- function(
       dir(folder, pattern = "\\.mod$"),
       "\\.mod$",
       ""
-    )
+    ) %>% stringr::str_sort(numeric = TRUE)
     project$yaml$runs <- list(
       modelfit = list()
     )
@@ -112,32 +112,32 @@ luna_new_project <- function(
 get_description_from_model <- function(model_file) {
   # Read the model file
   model_content <- readLines(model_file)
-  
+
   # Find the $PROBLEM record
   problem_line_index <- which(grepl("^\\$PROBLEM", model_content))
-  
+
   if (length(problem_line_index) == 0) {
     return("No description available")
   }
-  
+
   # Extract the description from the $PROBLEM record
   # The description is typically the text after $PROBLEM
   problem_line <- model_content[problem_line_index]
   description <- sub("^\\$PROBLEM\\s*", "", problem_line)
-  
+
   # If the description is empty, try to get the next line
   if (nchar(trimws(description)) == 0 && problem_line_index < length(model_content)) {
     description <- model_content[problem_line_index + 1]
   }
-  
+
   # Clean up the description
   description <- trimws(description)
-  
+
   # If still empty, return a default message
   if (nchar(description) == 0) {
     return("N/A")
   }
-  
+
   return(description)
 }
 

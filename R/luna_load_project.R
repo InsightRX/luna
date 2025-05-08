@@ -9,7 +9,10 @@ luna_load_project <- function(
 ) {
 
   if(is.null(name)) {
-    yaml_files <- dir(folder, pattern = ".yaml$")
+    yaml_files <- stringr::str_sort(
+      dir(folder, pattern = ".yaml$"),
+      numeric = TRUE
+    )
     if(length(yaml_files) == 0) {
       cli::cli_abort("No YAML files found in folder.")
     } else if (length(yaml_files) == 1) {
