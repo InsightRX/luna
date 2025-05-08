@@ -18,14 +18,14 @@ print.luna.project <- function(
   if(length(models) > 0) {
     model_table <- data.frame(
       "type" = "modelfit",
-      "id" = sapply(models, function(y) y$id),
+      "id" = sapply(models, function(y) {
+        stringr::str_trunc(y$id, 12)
+      }),
       "description" = sapply(models, function(y) {
-        desc <- y$description
-        if (nchar(desc) > 50) {
-          paste0(substr(desc, 1, 47), "...")
-        } else {
-          desc
-        }
+        ifelse0(stringr::str_trunc(y$description, 35), "")
+      }),
+      "notes" = sapply(models, function(y) {
+        ifelse0(stringr::str_trunc(y$notes, 25), "")
       }),
       "status" = sapply(models, function(y) get_status(y$id, folder))
     )

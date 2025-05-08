@@ -5,6 +5,35 @@ It is an acronym for Light-weight Universal NLME Admininstrator.
 The organization of projects is implemented through YAML files, which
 makes it easy to work with from either RStudio or from the command line.
 
+## Goals and rationale
+
+The goal of Luna is to implement a structured model development:
+
+- if model development and results are structured, it’s easier for anyone to 
+interpret. (human and AI)
+- future: AI agent could use (or write) specs like this, but it’s not an immediate goal.
+
+## Justification
+
+__But don't we already have workflow managers, like Pirana, Finch Studio, ShinyMixR, etc?__
+
+Yes, and those tools are great and work for a lot of folks. However, we believe
+that, especially for advanced modelers or modelers who come in from a 
+(software-) engineering background, often prefer an interface that is accessible
+either programmatically (from R) or from the command line (CLI). This is the
+primary target audience of Luna. However, we do think that many novice modelers will
+also like the flexibility of Luna, especially modelers with experience in R.
+
+__But why not just keep a modeling workflow in RMarkdown or Quarto notebooks__
+
+That is certainly an option, and may work for some projects. However,
+we feel that for most model development projects, having an R notebook as the
+primary source of your model workflow quickly becomes unwieldy: after a few 
+model runs the notebook file quickly becomes too long to navigate easily. Luna
+will have features to export to R notebooks in the future, so the ability to
+use R notebooks for creating automated reports and slides will still be
+available.
+
 ## Example usage
 
 ```
@@ -44,11 +73,14 @@ dat <- luna_dataset("run2")
 ```
 
 ## Todo:
+- create cache system
 - add OFV and basic run results to project, and store in cache
-- luna_vpc
-- luna_simulation
-- luna_bootstrap
-- luna_psn(tool = 'sse', args = list())
-- luna_plot("run1", "dv_vs_pred")
-- luna_report()
+- arrange models by run number, not alphabeticallyh
+- functionality:
+  - luna_vpc()
+  - luna_simulation()
+  - luna_bootstrap()
+  - luna_psn(tool = 'sse', args = list())
+  - luna_plot("run1", "dv_vs_pred")
+  - luna_report()
 
