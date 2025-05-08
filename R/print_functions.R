@@ -20,6 +20,9 @@ print.luna.project <- function(
       "id" = sapply(models, function(y) {
         stringr::str_trunc(y$id, 12)
       }),
+      "reference" = sapply(models, function(y) {
+        ifelse0(stringr::str_trunc(y$reference, 12), "")
+      }),
       "description" = sapply(models, function(y) {
         ifelse0(stringr::str_trunc(y$description, 35), "")
       }),

@@ -46,8 +46,11 @@ luna_new_project <- function(
   project_yaml_file <- file.path(folder, paste0(name, ".yaml"))
   if(file.exists(project_yaml_file) && !force) {
     cli::cli_abort(
-      "Project file exists in this folder. Please specify different project name ",
-      "or folder, or use `force=TRUE` argument."
+      paste0(
+        "Project file exists in this folder. Please specify different project name ",
+        "or folder, or use `force=TRUE` argument. If you just want to reload an ",
+        "existing luna project, use `luna_load_project()`"
+      )
     )
   }
 
