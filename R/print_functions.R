@@ -5,7 +5,6 @@
 #' @export
 print.luna.project <- function(
   x,
-  arrange = c("type", "status", "id"),
   format = "simple",
   ...
 ) {
@@ -33,7 +32,10 @@ print.luna.project <- function(
     cli::cli_alert_info("Loading models in project {name}:")
     knitr::kable(
       model_table |>
-        dplyr::arrange_at(arrange),
+        dplyr::arrange(
+          type,
+          stringr::str_rank(id, numeric = TRUE)
+        ),
       format = format
     ) |>
       writeLines()

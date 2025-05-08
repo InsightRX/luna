@@ -5,7 +5,6 @@
 luna_list_runs <- function(
   folder = ".",
   project = NULL,
-  arrange = c("type", "status", "id"),
   verbose = FALSE,
   format = "simple"
 ) {
@@ -41,7 +40,6 @@ luna_list_runs <- function(
   ## Print info
   print.luna.project(
     luna_project,
-    arrange = arrange,
     format = format
   )
 

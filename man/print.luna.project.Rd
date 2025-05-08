@@ -4,7 +4,7 @@
 \alias{print.luna.project}
 \title{Prints a list of models / runs in project}
 \usage{
-\method{print}{luna.project}(x, arrange = c("type", "status", "id"), format = "simple", ...)
+\method{print}{luna.project}(x, format = "simple", ...)
 }
 \arguments{
 \item{project}{luna project object}

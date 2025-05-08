@@ -7,7 +7,6 @@
 luna_list_runs(
   folder = ".",
   project = NULL,
-  arrange = c("type", "status", "id"),
   verbose = FALSE,
   format = "simple"
 )
