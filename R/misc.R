@@ -19,3 +19,47 @@ ifelse0 <- function (value = NULL, alternative = NULL, allow_null = FALSE) {
     return(alternative)
   }
 }
+
+#' Get time to now since a given date, in character
+#'
+get_time_ago <- function(datetime) {
+  t_diff <- lubridate::now() - lubridate::as_datetime(datetime)
+  if(is.na(t_diff)) {
+    return("")
+  } else{
+    return(paste(round(t_diff), units(t_diff)))
+  }
+}
+
+#' Get date/time stamp for last update to file
+#'
+#' @returns datetime stamp in ISO8601 format. Returns empty string if file
+#' does not exist
+#'
+get_time_last_updated_file <- function(file) {
+  dt <- file.mtime(file) |>
+    lubridate::as_datetime() |>
+    lubridate::format_ISO8601()
+  if(is.na(dt)) dt <- ""
+  dt
+}
+
+#' Get a timestamp for when the last update was made to any file in a folder
+#' Will look only 1 level deep.
+#'
+#' @returns datetime stamp in ISO8601 format. Returns empty string if no
+#' files in folder
+#'
+get_time_last_updated_folder <- function(folder) {
+  files <- list.files(folder, full.names = TRUE, recursive = FALSE)
+  dt <- lapply(
+    files,
+    FUN = function(v) file.mtime(v)
+  ) |>
+    unlist() |>
+    max() |>
+    lubridate::as_datetime() |>
+    lubridate::format_ISO8601()
+  if(is.na(dt)) dt <- ""
+  dt
+}
