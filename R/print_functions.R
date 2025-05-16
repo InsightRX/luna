@@ -13,17 +13,12 @@ print.luna.project <- function(
   folder <- x$metadata$folder
   name <- x$metadata$name
 
-  ## Get cache info:
-  cache_file <- file.path(folder, paste0(".luna.", name, ".cache"))
-  if(file.exists(cache_file)) {
-    cache <- yaml::read_yaml(cache_file)
-  } else {
-    cli::cli_alert_warning("Luna cache for project not found.")
-    cache <- list()
-  }
+  ## check if cache is present
+  is_cache_available <- is_luna_cache_available(abort = TRUE)
 
   ## Print a table of models and their descriptions
   if(length(models) > 0) {
+    timestamps <- .luna_cache$get("timestamps")
     model_table <- data.frame(
       # "type" = "modelfit",
       "id" = sapply(models, function(y) {
@@ -40,7 +35,7 @@ print.luna.project <- function(
       }),
       "status" = sapply(models, function(y) get_status(y$id, folder)),
       "finished" = sapply(models, function(y) {
-        get_time_ago(cache$timestamps$results[[y$id]])
+        get_time_ago(timestamps$results[[y$id]])
       })
     )
     # Use knitr to create a nice table

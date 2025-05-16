@@ -63,3 +63,13 @@ get_time_last_updated_folder <- function(folder) {
   if(is.na(dt)) dt <- ""
   dt
 }
+
+#' Check if luna cache is available / loaded
+#'
+is_luna_cache_available <- function(abort = FALSE) {
+  is_cache_present <- ".luna_cache" %in% objects(all.names = TRUE, envir = rlang::global_env())
+  if(!is_cache_present && abort) {
+    cli::cli_abort("Luna cache not found, please first load or create a luna project.")
+  }
+  is_cache_present
+}
