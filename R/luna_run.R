@@ -1,16 +1,22 @@
 #' Run a NONMEM model
-#' 
+#'
 #' @param id run id, e.g. `run1`. This will be the folder in which the NONMEM
 #' model is run.
 #' @param folder path to folder containing the model file. Default is current directory.
-#' 
+#'
 #' @export
 luna_run <- function(
-  id, 
-  folder = ".",
-  type = "modelfit", 
+  id,
+  folder,
+  type = "modelfit",
+  nmfe = NULL,
   ...
 ) {
+
+  if(is.null(.luna_cache)) {
+    cli::cli_abort("No luna cache detected. Please run either `luna_create_project()` to create a new project or `luna_load_project()` to reload an existing project before running.")
+  }
+  folder <- .luna_cache$get("folder")
 
   # Transform folder path to absolute path
   folder <- normalizePath(folder, mustWork = TRUE)
@@ -29,15 +35,59 @@ luna_run <- function(
     cli::cli_alert_success("Model loaded successfully.")
   }
 
+  # Determine nmfe location to use.
+  nmfe <- get_nmfe_location_for_run(nmfe)
+
   # Run the model
   fit <- run_nlme(
     model = model,
     id = id,
     path = folder,
     verbose = TRUE,
+    nmfe = nmfe,
     ...
   )
 
   # return the fit
   fit
+}
+
+#' Helper function to determine nmfe location from various sources
+#' The order is as follows:
+#'
+#' 1. argument specified by user
+#' 2. check project settings (not implemented for now, will add later)
+#' 3. check pharmpy config
+#' 4. throw error, force user to specify
+#'
+get_nmfe_location_for_run <- function(nmfe = NULL, verbose = FALSE) {
+  if(!is.null(nmfe)) {
+    if(verbose) cli::cli_alert_info("Using user-specified NONMEM version at {nmfe}")
+  } else {
+    pharmpy_conf <- .luna_cache$get("pharmpy_conf")
+    nm_path <- pharmpy_conf$pharmpy.plugins.nonmem$default_nonmem_path
+    if(is.null(nm_path)) {
+      cli::cli_abort("Pharmpy is not configured to run NONMEM.")
+    }
+    if(!file.exists(nm_path)) {
+      cli::cli_abort("NONMEM path configured in Pharmpy is not a valid folder. Please reconfigure Pharmpy")
+    }
+    nmfe_file <- detect_nmfe_version(nm_path)
+    nmfe <- file.path(nm_path, "run", nmfe_file)
+    if(verbose) cli::cli_alert_info("Using Pharmpy-configured NONMEM version at {nmfe}")
+  }
+  if(is.null(nmfe) || !file.exists(nmfe)) {
+    cli::cli_abort("Could not determine path to NONMEM nmfe file, please specify manually with `nmfe` argument or reconfigure Pharmpy.")
+  }
+  nmfe
+}
+
+#' get nmfe file name from a NONMEM installation folder
+#'
+detect_nmfe_version <- function(nm_path) {
+  files <- dir(
+    file.path(nm_path, "run"),
+    pattern = "nmfe\\d\\d"
+  )
+  files[1]
 }

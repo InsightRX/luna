@@ -103,6 +103,14 @@ luna_new_project <- function(
     force = force
   )
 
+  ## Create cache
+  if(verbose) cli::cli_alert_info("Creating / updating luna cache")
+  create_luna_cache(
+    folder = folder,
+    name = name,
+    verbose = verbose
+  )
+
   cli::cli_alert_success("Done")
 
   # return
