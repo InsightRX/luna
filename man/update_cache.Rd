@@ -4,7 +4,7 @@
 \alias{update_cache}
 \title{Update luna disk cache}
 \usage{
-update_cache(folder, name)
+update_cache(folder, name, verbose = FALSE)
 }
 \arguments{
 \item{folder}{folder to create the project in. If the folder doesn't exist,
@@ -12,6 +12,8 @@ it will be created.}
 
 \item{name}{name of the project, will be used as as the filename for the
 YAML file. Cannot contain spaces.}
+
+\item{verbose}{verbosity}
 }
 \description{
 Update luna disk cache
