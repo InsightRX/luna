@@ -1,8 +1,8 @@
 #' Parses a NONMEM output file and extracts shrinkage
-#' 
+#'
 #' @param fit pharmpy model object
 #' @param path path to nonmem output file (.lst)
-#' 
+#'
 get_shrinkage_summary <- function(path = NULL, fit = NULL) {
   if(is.null(path) || !file.exists(path)) {
     return(list())
@@ -28,12 +28,12 @@ get_shrinkage_summary <- function(path = NULL, fit = NULL) {
 #' Get shrinkage values from a single line in NONMEM output
 #'
 get_shrinkage_values <- function(
-    txt, 
+    txt,
     type = "ETASHRINKSD"
 ) {
-  spl <- txt[stringr::str_detect(txt, type)] %>%
-    stringr::str_replace_all(type, "") %>%
-    stringr::str_replace_all("\\(%\\)", "") %>%
+  spl <- txt[stringr::str_detect(txt, type)] |>
+    stringr::str_replace_all(type, "") |>
+    stringr::str_replace_all("\\(%\\)", "") |>
     stringr::str_split("\\s")
   if(length(spl) == 0) {
     return(NA)

@@ -1,9 +1,9 @@
 #' Get fit info from NONMEM run
-#' 
+#'
 #' @param fit pharmpy fit object
 #' @param path path to run folder
 #' @param output_file NONMEM output file, default is `run.lst`
-#' 
+#'
 #' @export
 get_fit_info <- function(fit, path = NULL, output_file = "run.lst") {
   lst_file <- file.path(path, output_file)
@@ -34,9 +34,9 @@ get_fit_info <- function(fit, path = NULL, output_file = "run.lst") {
 }
 
 #' Print function that provides basic run information for a pharmpy modelfit
-#' 
+#'
 #' @param x pharmpy fit object
-#' 
+#'
 #' @export
 print.pharmpy.workflows.results.ModelfitResults <- function(x, ...) {
 
@@ -47,13 +47,13 @@ print.pharmpy.workflows.results.ModelfitResults <- function(x, ...) {
   ## Parameter estimates + uncertainty
   par_tab <- create_modelfit_parameter_table(x)
   print(knitr::kable(par_tab, row.names = FALSE, format = "simple"))
-  
+
 }
 
 #' Create a data.frame with basic model fit info
 #'
 #' @param fit pharmpy fit object
-#' 
+#'
 create_modelfit_info_table <- function(fit) {
   x <- attr(fit, "info")
   eta_shrinkage <- data.frame()
@@ -78,7 +78,7 @@ create_modelfit_info_table <- function(fit) {
     c("- Warnings:", paste(x$run_info$warnings, collapse = " / ")),
     c("- Sign. digits:", x$run_info$significant_digits),
     c("- Run time:", paste0(x$runtime$estimation, " sec (estimation), ", x$runtime$total, " sec (total)"))
-  ) %>% 
+  ) |>
     t()
   colnames(info_tab) <- c(paste0("Run: ", attr(fit, "model")$name), "Result")
   rownames(info_tab) <- NULL
@@ -90,15 +90,15 @@ create_modelfit_info_table <- function(fit) {
 create_modelfit_parameter_table <- function(fit) {
   x <- attr(fit, "info")
   data.frame(
-    Parameter = names(x$parameter_estimates), 
+    Parameter = names(x$parameter_estimates),
     Estimate = as.numeric(x$parameter_estimates),
     SD = as.numeric(x$standard_errors)
-  ) %>%
+  ) |>
     dplyr::mutate(`RSE %` = dplyr::if_else(
-      Estimate != 0, 
-      round(100 * SD / Estimate, 1), 
+      Estimate != 0,
+      round(100 * SD / Estimate, 1),
       NA
     )
-  ) %>%
+  ) |>
     dplyr::select(-SD)
 }
