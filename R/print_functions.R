@@ -1,62 +1,21 @@
 #' Prints a list of models / runs in project
 #'
-#' @param project luna project object
+#' @param x luna project object
 #'
 #' @export
-print.luna.project <- function(
+print.luna.run_table <- function(
   x,
   format = "simple",
+  verbose = FALSE,
   ...
 ) {
 
-  models <- x$yaml$runs$modelfit
-  folder <- x$metadata$folder
-  name <- x$metadata$name
-
-  ## check if cache is present
-  is_cache_available <- is_luna_cache_available(abort = TRUE)
-
-  ## Print a table of models and their descriptions
-  if(length(models) > 0) {
-    timestamps <- .luna_cache$get("timestamps")
-    model_table <- data.frame(
-      # "type" = "modelfit",
-      "id" = sapply(models, function(y) {
-        y$id
-      }),
-      "reference" = sapply(models, function(y) {
-        ifelse0(y$reference, "")
-      }),
-      "description" = sapply(models, function(y) {
-        ifelse0(y$description, "")
-      }),
-      "notes" = sapply(models, function(y) {
-        ifelse0(y$notes, "")
-      }),
-      "status" = sapply(models, function(y) {
-        ifelse0(get_status(y$id, folder), "")
-      }),
-      "finished" = sapply(models, function(y) {
-        ifelse0(get_time_ago(timestamps$results[[y$id]]), "")
-      })
-    )
-    column_widths <- list(
-      id = NA,
-      reference = 1,
-      description = 2,
-      notes = 2,
-      status = NA,
-      finished = NA
-    )
-    model_table <- truncate_columns(
-      df = model_table,
-      width_specs = column_widths
-    )
-
+  if(nrow(x) > 0) {
     # Use knitr to create a nice table
-    cli::cli_alert_info("Loading models in project {name}:")
+    if(verbose)
+      cli::cli_alert_info("Loading models in project:")
     knitr::kable(
-      model_table |>
+      x |>
         dplyr::arrange(
           stringr::str_rank(id, numeric = TRUE)
         ),
@@ -64,7 +23,8 @@ print.luna.project <- function(
     ) |>
       writeLines()
   } else {
-    cli::cli_alert_info("No models found in project.")
+    if(verbose)
+      cli::cli_alert_info("No models found in project.")
   }
 
 }

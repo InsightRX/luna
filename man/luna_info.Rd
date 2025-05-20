@@ -4,7 +4,7 @@
 \alias{luna_info}
 \title{Show info for a model run}
 \usage{
-luna_info(id, folder = ".", return_object = FALSE, ...)
+luna_info(id, folder = ".", ...)
 }
 \arguments{
 \item{id}{run id, e.g. \code{run1}. This will be the folder in which the NONMEM

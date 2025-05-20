@@ -9,7 +9,6 @@
 luna_info <- function(
   id,
   folder = ".",
-  return_object = FALSE,
   ...
 ) {
   model_file <- file.path(folder, paste0(id, ".mod"))
@@ -50,9 +49,5 @@ luna_info <- function(
   )
   attr(fit, "model") <- model
 
-  if(return_object) {
-    return(fit)
-  } else {
-    print(fit)
-  }
+  fit
 }
