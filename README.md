@@ -71,16 +71,3 @@ luna_compare("run1", "run2", "run3")
 ## Load the dataset from a model into R
 dat <- luna_dataset("run2")
 ```
-
-## Todo:
-- create cache system
-- add OFV and basic run results to project, and store in cache
-- arrange models by run number, not alphabeticallyh
-- functionality:
-  - luna_vpc()
-  - luna_simulation()
-  - luna_bootstrap()
-  - luna_psn(tool = 'sse', args = list())
-  - luna_plot("run1", "dv_vs_pred")
-  - luna_report()
-
