@@ -4,14 +4,18 @@
 \alias{create_cache}
 \title{Create a cache environment to store settings for project and system}
 \usage{
-create_cache(name, folder, verbose = FALSE)
+create_cache(name, folder, project = NULL, verbose = FALSE)
 
-create_cache(name, folder, verbose = FALSE)
+create_cache(name, folder, project = NULL, verbose = FALSE)
 }
 \arguments{
 \item{name}{optional, name of project (matching to yaml file)}
 
 \item{folder}{path to project}
+
+\item{project}{luna project object}
+
+\item{verbose}{verbose output?}
 }
 \description{
 Create a cache environment to store settings for project and system

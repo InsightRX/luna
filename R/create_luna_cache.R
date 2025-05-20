@@ -6,6 +6,7 @@
 create_cache <- function(
   name,
   folder,
+  project = NULL,
   verbose = FALSE
 ) {
 

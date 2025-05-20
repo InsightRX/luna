@@ -65,9 +65,18 @@ create_modelfit_info_table <- function(fit) {
     )
   }
   ofv <- ifelse(!is.null(x$ofv), round(x$ofv, 3), NA)
+  if(!is.na(ofv) && !is.null(x$dofv)) {
+    sign <- ifelse(x$dofv < 0, "-", ifelse(x$dofv > 0, "+",))
+    dofv <- abs(round(x$dofv, 3))
+    ref_run <- paste0(" vs ", x$reference_run)
+  } else {
+    dofv <- ""
+    sign <- ""
+    ref_run <- ""
+  }
   condition_number <- ifelse(!is.null(x$condition_number), signif(x$condition_number, 3), NA)
   info_tab <- data.frame(
-    c("OFV:", ofv),
+    c("OFV:", paste0(ofv, " (", sign, dofv, ref_run, ")")),
     c("Condition number:", condition_number),
     c("ETA Shrinkage: ", paste0(paste0(eta_shrinkage$ETA, ": ", eta_shrinkage$value, " %"), collapse=", ")),
     c("Run info:", ""),

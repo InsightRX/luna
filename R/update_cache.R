@@ -5,13 +5,18 @@
 #' @export
 #'
 update_cache <- function(
-  folder,
-  name,
+  project,
   verbose = FALSE
 ) {
 
+  name <- project$metadata$name
+  folder <- project$metadata$folder
+
   ## Check cache
   is_cache_available <- is_luna_cache_available(abort = TRUE)
+
+  ## Save project info
+  .luna_cache$set("project", project)
 
   # Create timestamps object
   timestamps <- list(
@@ -43,6 +48,7 @@ update_cache <- function(
 
   if(verbose)
     cli::cli_alert_info("Updating timestamps of models and results")
+
   .luna_cache$set("timestamps", timestamps)
 
 }

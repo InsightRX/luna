@@ -20,6 +20,14 @@ ifelse0 <- function (value = NULL, alternative = NULL, allow_null = FALSE) {
   }
 }
 
+#' Pluck an inner list element from an outer list, where an element matches
+#' (default name is "id") a specific value. Analogue to _.pluck() in
+#' JS/underscore
+#'
+pluck <- function(x, id, el = "id") {
+  x[sapply(x, function(x) x[[el]] == id)][[1]]
+}
+
 #' Get time to now since a given date, in character
 #'
 get_time_ago <- function(datetime) {

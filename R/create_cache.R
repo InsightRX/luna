@@ -1,13 +1,15 @@
 #' Create a cache environment to store settings for project and system
 #'
-#' @param folder path to project
-#' @param name optional, name of project (matching to yaml file)
+#' @param project luna project object
+#' @param verbose verbose output?
 #'
 create_cache <- function(
-  name,
-  folder,
+  project,
   verbose = FALSE
 ) {
+
+  name <- project$metadata$name
+  folder <- project$metadata$folder
 
   ## Create cache (in global environment)
   cache_folder <- file.path(folder, paste0(".luna.cache.", name))
@@ -19,8 +21,15 @@ create_cache <- function(
   if(verbose)
     cli::cli_alert_info("Reading project settings into cache")
   .luna_cache$set(
-    "project", list()
+    "settings", list()
     ## TODO
+  )
+
+  ## store project data
+  if(verbose)
+    cli::cli_alert_info("Reading runs and results into cache")
+  .luna_cache$set(
+    "project", project
   )
 
   ## read pharmpy configuration

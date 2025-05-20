@@ -41,15 +41,13 @@ luna_load_project <- function(
   if(dir.exists(paste0(".luna.cache.", name))) {
     if(verbose) cli::cli_alert_info("Updating luna cache")
     update_cache(
-      folder = folder,
-      name = name,
+      project = project,
       verbose = verbose
     )
   } else {
     if(verbose) cli::cli_alert_info("Creating luna cache")
     create_cache(
-      folder = folder,
-      name = name,
+      project = project,
       verbose = verbose
     )
   }
