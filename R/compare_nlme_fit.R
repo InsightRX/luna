@@ -60,10 +60,12 @@ combine_info_columns <- function(
     purrr::map(fit_info, function(x) {
       cols <- data.frame(x[[table]][,-1])
       rownames(cols) <- x[[table]][,1]
-      t(cols) %>% data.frame() # leverage bind_rows to match parameter names and insert NAs. bind_cols cannot do that.
+      t(cols) |>
+        data.frame() # leverage bind_rows to match parameter names and insert NAs. bind_cols cannot do that.
     })
-  ) %>%
-    t() %>% data.frame() # pivot back again
+  ) |>
+    t() |>
+    data.frame() # pivot back again
   run_names <- unlist(purrr::map(fit_info, function(x) x$name ))
   table_colnames <- colnames(fit_info[[1]][[table]][,-1])
   cols <- paste0(

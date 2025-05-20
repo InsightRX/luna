@@ -11,7 +11,6 @@
 #' \link{luna_project_templates} to show a list of available templates
 #' @param force if a project file already exists, overwrite it. `FALSE` by
 #' default
-#' @param return_object return the project object?
 #' @param verbose verbosity
 #'
 #' @export
@@ -23,7 +22,6 @@ luna_new_project <- function(
   import_models = TRUE,
   force = FALSE,
   template = NULL,
-  return_object = FALSE,
   verbose = TRUE
 ) {
 
@@ -115,11 +113,6 @@ luna_new_project <- function(
   )
 
   cli::cli_alert_success("Done")
-
-  # return
-  if(return_object) {
-    return(project)
-  }
 
 }
 

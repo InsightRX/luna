@@ -2,7 +2,8 @@
 % Please edit documentation in R/luna_load_project.R
 \name{luna_load_project}
 \alias{luna_load_project}
-\title{Load a project from yaml and gather results}
+\title{Load a project from yaml and gather results. Project is then stored/updated
+in .luna_cache}
 \usage{
 luna_load_project(name = NULL, folder = ".", verbose = TRUE)
 }
@@ -16,5 +17,6 @@ it will be created.}
 \item{verbose}{verbosity}
 }
 \description{
-Load a project from yaml and gather results
+Load a project from yaml and gather results. Project is then stored/updated
+in .luna_cache
 }

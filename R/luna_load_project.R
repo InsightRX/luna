@@ -1,4 +1,5 @@
-#' Load a project from yaml and gather results
+#' Load a project from yaml and gather results. Project is then stored/updated
+#' in .luna_cache
 #'
 #' @inheritParams luna_new_project
 #'
@@ -52,5 +53,4 @@ luna_load_project <- function(
     )
   }
 
-  luna_project
 }

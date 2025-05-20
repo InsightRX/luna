@@ -11,7 +11,6 @@ luna_new_project(
   import_models = TRUE,
   force = FALSE,
   template = NULL,
-  return_object = FALSE,
   verbose = TRUE
 )
 }
@@ -32,8 +31,6 @@ default}
 
 \item{template}{Create yaml file from a template. Use
 \link{luna_project_templates} to show a list of available templates}
-
-\item{return_object}{return the project object?}
 
 \item{verbose}{verbosity}
 }

@@ -129,8 +129,8 @@ run_nlme <- function(
       )
     }
     if(verbose) cli::cli_alert_info("Updating model dataset with provided dataset")
-    model <- model %>%
-      pharmr::unload_dataset() %>%
+    model <- model |>
+      pharmr::unload_dataset() |>
       pharmr::set_dataset(
         path_or_df = data,
         datatype = "nonmem"

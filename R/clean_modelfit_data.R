@@ -14,7 +14,7 @@ clean_modelfit_data <- function(model, data = NULL) {
     data <- data[,lapply(data, class) != "character"]
 
     if(tool != "nonmem") { ## nlmixr2 requires lower-case `cmt`
-      data <- data %>%
+      data <- data |>
         rename(cmt = CMT)
     }
 
