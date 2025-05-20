@@ -40,6 +40,6 @@ create_cache <- function(
   )
 
   ## read / update models and results
-  update_cache(name = name, folder = folder)
+  update_cache(project)
 
 }

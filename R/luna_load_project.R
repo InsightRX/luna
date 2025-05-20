@@ -30,14 +30,14 @@ luna_load_project <- function(
   filename <- file.path(folder, paste0(name, ".yaml"))
   yaml_data <- yaml::read_yaml(file = filename)
 
-  luna_project <- list(
+  project <- list(
     yaml = yaml_data,
     metadata = list(
       name = name,
       folder = folder
     )
   )
-  class(luna_project) <- c("luna.project", class(luna_project))
+  class(project) <- c("luna.project", class(project))
 
   if(dir.exists(paste0(".luna.cache.", name))) {
     if(verbose) cli::cli_alert_info("Updating luna cache")
