@@ -2,6 +2,8 @@
 #'
 #' @inheritParams luna_new_project
 #'
+#' @export
+#'
 luna_load_project <- function(
     name = NULL,
     folder = ".",
@@ -35,6 +37,22 @@ luna_load_project <- function(
     )
   )
   class(luna_project) <- c("luna.project", class(luna_project))
+
+  if(dir.exists(paste0(".luna.cache.", name))) {
+    if(verbose) cli::cli_alert_info("Updating luna cache")
+    update_cache(
+      folder = folder,
+      name = name,
+      verbose = verbose
+    )
+  } else {
+    if(verbose) cli::cli_alert_info("Creating luna cache")
+    create_cache(
+      folder = folder,
+      name = name,
+      verbose = verbose
+    )
+  }
 
   luna_project
 }

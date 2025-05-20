@@ -68,6 +68,8 @@ luna_new_project <- function(
         )
       ),
       metadata = list(
+        name = name,
+        folder = folder
       )
     )
   }
@@ -79,7 +81,8 @@ luna_new_project <- function(
       dir(folder, pattern = "\\.mod$"),
       "\\.mod$",
       ""
-    ) %>% stringr::str_sort(numeric = TRUE)
+    ) |>
+      stringr::str_sort(numeric = TRUE)
     project$yaml$runs <- list(
       modelfit = list()
     )
@@ -94,6 +97,7 @@ luna_new_project <- function(
       )
     }
   }
+  class(project) <- c("luna.project", class(project))
 
   ## Save to file
   save_project(
@@ -101,6 +105,14 @@ luna_new_project <- function(
     path = project_yaml_file,
     verbose = verbose,
     force = force
+  )
+
+  ## Create cache
+  if(verbose) cli::cli_alert_info("Creating / updating luna cache")
+  create_cache(
+    folder = folder,
+    name = name,
+    verbose = verbose
   )
 
   cli::cli_alert_success("Done")
@@ -163,7 +175,8 @@ save_project <- function(
       "project name or folder, or use `force=TRUE` argument."
     )
   }
-  if(verbose) cli::cli_alert_info("Saving project file")
+  if(verbose)
+    cli::cli_alert_info("Saving project file")
   yaml::write_yaml(project$yaml, path)
 }
 

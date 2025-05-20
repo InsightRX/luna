@@ -4,7 +4,7 @@
 \alias{luna_run}
 \title{Run a NONMEM model}
 \usage{
-luna_run(id, folder = ".", type = "modelfit", ...)
+luna_run(id, folder, type = "modelfit", nmfe = NULL, ...)
 }
 \arguments{
 \item{id}{run id, e.g. \code{run1}. This will be the folder in which the NONMEM

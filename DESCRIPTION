@@ -7,7 +7,16 @@ Maintainer: Ron Keizer <ron@insight-rx.com>
 Description: Organizes model development workflows in NONMEM and nlmixr2. The 
   organization of projects is implemented through YAML files.
 Depends: R (>= 4.3.0)
-Imports: S7, dplyr, lubridate, pharmr, yaml, stringr, stats, cli
+Imports: 
+    dplyr, 
+    lubridate, 
+    pharmr, 
+    yaml, 
+    stringr, 
+    stats, 
+    cli, 
+    cachem, 
+    rlang
 Suggests: 
     httr,
     nlmixr2,
