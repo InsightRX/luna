@@ -2,6 +2,7 @@
 #'
 #' @param id run id
 #' @param residual either "CWRES" or "NPDE"
+#' @param smooth_method ggplot2-supported smooth method, e.g. "loess"
 #'
 #' @export
 #'
@@ -9,19 +10,20 @@ luna_gof <- function(
   id,
   residual = c("CWRES", "NPDE"),
   theme = ggplot2::theme_classic,
-  folder = NULL
+  smooth_method = "loess",
+  folder = NULL,
+  verbose = TRUE
 ) {
   residual <- match.arg(residual)
-  if(is.null(folder)) {
-    is_luna_cache_available(abort = TRUE)
-    folder <- .luna_cache$get("project")$metadata$folder
-  }
-  model_file <- paste0(id, ".mod")
-  model <- pharmr::read_model(model_file)
-  tables <- get_tables_from_fit(
-    model,
-    path = folder
+
+  ## Get tables from run
+  tables <- luna_tables(
+    id,
+    folder = folder,
+    verbose = verbose
   )
+
+  ## Check that required data is available
   reqd <- c("DV", "PRED", "IPRED", residual, "TIME", "EVID")
   tab_sel <- NULL
   for(tab in tables) {
@@ -38,6 +40,7 @@ luna_gof <- function(
       )
     )
   }
+
   ## PRED/IPRED vs DV
   p1 <- tab_sel |>
     dplyr::filter(MDV == 0) |>
@@ -46,7 +49,7 @@ luna_gof <- function(
       ggplot2::aes(x = value, y = DV)
     ) +
       ggplot2::geom_point() +
-      ggplot2::geom_smooth() +
+      ggplot2::geom_smooth(method = smooth_method, formula = y ~ x) +
       ggplot2::geom_abline(slope = 1, intercept = 0, linetype = "dotted") +
       ggplot2::facet_wrap(~name) +
       xlab("Prediction") +
@@ -60,7 +63,7 @@ luna_gof <- function(
       ggplot2::aes(x = value, y = CWRES)
     ) +
     ggplot2::geom_point() +
-    ggplot2::geom_smooth() +
+    ggplot2::geom_smooth(method = smooth_method, formula = y ~ x) +
     ggplot2::geom_hline(yintercept = 0, linetype = "dotted") +
     ggplot2::facet_wrap(~name, scales = "free") +
     xlab("") +

@@ -8,13 +8,17 @@ luna_gof(
   id,
   residual = c("CWRES", "NPDE"),
   theme = ggplot2::theme_classic,
-  folder = NULL
+  smooth_method = "loess",
+  folder = NULL,
+  verbose = TRUE
 )
 }
 \arguments{
 \item{id}{run id}
 
 \item{residual}{either "CWRES" or "NPDE"}
+
+\item{smooth_method}{ggplot2-supported smooth method, e.g. "loess"}
 }
 \description{
 Creates a ggplot2 panel object with basic goodness of fit plots

@@ -83,7 +83,8 @@ luna_info()
 luna_compare()
 luna_help()
 luna_log()
-luna_dataset
+luna_dataset()
+luna_tables()
 luna_gof()
 luna_xpose()
 luna_sync() # TODO
