@@ -4,12 +4,10 @@
 \alias{print_nmfe_output}
 \title{Print nmfe output (stdout and stderr) from a run folder}
 \usage{
-print_nmfe_output(path, results_file = "run.lst")
+print_nmfe_output(nmfe_output)
 }
 \arguments{
-\item{path}{path to folder with NMFE run}
-
-\item{results_file}{name of output file}
+\item{nmfe_output}{output from nmfe command, as list}
 }
 \description{
 Print nmfe output (stdout and stderr) from a run folder

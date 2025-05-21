@@ -20,13 +20,13 @@ luna_load_project <- function(
       cli::cli_abort("No YAML files found in folder.")
     } else if (length(yaml_files) == 1) {
       name <- stringr::str_replace(yaml_files[1], ".yaml$", "")
-      cli::cli_alert_info("Found Luna project file for project: {name}")
+      cli::cli_alert_info("Found luna project YAML file for project: {name}")
     } else {
       cli::cli_abort("Multiple YAML files found in folder, please specify project name.")
     }
   }
 
-  if(verbose) cli::cli_alert_info("Reading project file")
+  if(verbose) cli::cli_alert_info("Reading project YAML file")
   filename <- file.path(folder, paste0(name, ".yaml"))
   yaml_data <- yaml::read_yaml(file = filename)
 
@@ -40,17 +40,19 @@ luna_load_project <- function(
   class(project) <- c("luna.project", class(project))
 
   if(dir.exists(paste0(".luna.cache.", name))) {
-    if(verbose) cli::cli_alert_info("Updating luna cache")
+    if(verbose) cli::cli_alert_info("Updating luna project cache")
     update_cache(
       project = project,
       verbose = verbose
     )
   } else {
-    if(verbose) cli::cli_alert_info("Creating luna cache")
+    if(verbose) cli::cli_alert_info("Creating luna project cache")
     create_cache(
       project = project,
       verbose = verbose
     )
   }
+
+  if(verbose) cli::cli_alert_success("Active project: {name}")
 
 }

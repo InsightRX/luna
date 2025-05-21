@@ -16,7 +16,9 @@ Imports:
     stats, 
     cli, 
     cachem, 
-    rlang
+    rlang,
+    ggplot2,
+    ellmer
 Suggests: 
     httr,
     nlmixr2,

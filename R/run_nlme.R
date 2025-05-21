@@ -168,7 +168,14 @@ run_nlme <- function(
     if(verbose) {
       if(!console) {
         cli::cli_alert_danger("Something went wrong with fit. Output shown below.")
-        print_nmfe_output(fit_folder)
+        nmfe_output <- get_nmfe_output(path = fit_folder, output_file)
+        log_add(
+          event = "error",
+          action = "modelfit",
+          id = id,
+          context = nmfe_output
+        )
+        print_nmfe_output(nmfe_output)
       }
     }
     cli::cli_abort("No results from modelfit, please check run output.")
@@ -371,10 +378,11 @@ get_nmfe_output <- function(path, results_file = "run.lst") {
 
 #' Print nmfe output (stdout and stderr) from a run folder
 #'
-#' @inheritParams get_nmfe_output
+#' @param nmfe_output output from nmfe command, as list
 #'
-print_nmfe_output <- function(path, results_file = "run.lst") {
-  nmfe_output <- get_nmfe_output(path, results_file)
+print_nmfe_output <- function(
+  nmfe_output
+) {
   if(length(nmfe_output$stderr) > 0) {
     cli::cli_alert_warning("stderr: ")
     cat(paste0(nmfe_output$stderr, collapse = "\n"), "\n\n")

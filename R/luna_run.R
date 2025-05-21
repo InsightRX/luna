@@ -39,6 +39,11 @@ luna_run <- function(
   nmfe <- get_nmfe_location_for_run(nmfe)
 
   # Run the model
+  log_add(
+    event = "action",
+    action = "modelfit",
+    id = id
+  )
   fit <- run_nlme(
     model = model,
     id = id,
