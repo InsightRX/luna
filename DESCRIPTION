@@ -17,8 +17,10 @@ Imports:
     cli, 
     cachem, 
     rlang,
+    ellmer,
     ggplot2,
-    ellmer
+    xpose,
+    patchwork
 Suggests: 
     httr,
     nlmixr2,

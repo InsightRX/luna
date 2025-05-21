@@ -84,6 +84,7 @@ luna_compare()
 luna_help()
 luna_log()
 luna_dataset
-luna_gof()  # Stub
+luna_gof()
+luna_xpose()
 luna_sync() # TODO
 ```

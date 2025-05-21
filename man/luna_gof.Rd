@@ -4,10 +4,17 @@
 \alias{luna_gof}
 \title{Creates a ggplot2 panel object with basic goodness of fit plots}
 \usage{
-luna_gof(id, theme = ggplot2::theme_classic, folder = NULL)
+luna_gof(
+  id,
+  residual = c("CWRES", "NPDE"),
+  theme = ggplot2::theme_classic,
+  folder = NULL
+)
 }
 \arguments{
 \item{id}{run id}
+
+\item{residual}{either "CWRES" or "NPDE"}
 }
 \description{
 Creates a ggplot2 panel object with basic goodness of fit plots
