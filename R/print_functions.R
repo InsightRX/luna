@@ -49,6 +49,9 @@ truncate_columns <- function(
   for(col in names(width_specs)) {
     if(!is.na(width_specs[[col]])) {
       abs_width <- floor(scale * remaining_width * width_specs[[col]])
+      if(abs_width < 1) {
+        cli::cli_abort("Information does not fit on the console, please increase console width.")
+      }
       result[[col]] <- stringr::str_trunc(df[[col]], abs_width)
     }
   }

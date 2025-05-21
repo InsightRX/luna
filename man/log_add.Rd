@@ -4,7 +4,12 @@
 \alias{log_add}
 \title{Add event to log}
 \usage{
-log_add(event = c("action", "error"), action = "modelfit", id, context = NA)
+log_add(
+  event = c("action", "error", "plot"),
+  action = "modelfit",
+  id,
+  context = NA
+)
 }
 \arguments{
 \item{event}{type of event (\code{action} or \code{error})}
