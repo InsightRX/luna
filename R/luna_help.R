@@ -43,6 +43,9 @@ luna_help <- function(
   content <- NULL
   if(!is.null(prompt)) {
     user_prompt <- prompt
+    response <- chat$chat(
+      user_prompt, echo = FALSE, ...
+    )
   } else {
     if(event$event == "error") {
       user_prompt <- paste0(
@@ -51,21 +54,24 @@ luna_help <- function(
         event$context$stdout, "\n",
         "```\n"
       )
+      response <- chat$chat(
+        user_prompt, echo = FALSE, ...
+      )
     } else if(event$event == "plot") {
       user_prompt <- paste0(
         "Describe this plot in one paragraph.",
         "Briefly describe the plot type, the axes, and 2-5 major visual patterns."
       )
       content <- ellmer::content_image_plot()
+      response <- chat$chat(
+        user_prompt,
+        echo = FALSE,
+        content,
+        ...
+      )
     } else {
-      cli::cli_abort("Sorry, I can currently only help with NONMEM errors.")
+      cli::cli_abort("Sorry, I'm don't see anything I can help with now.")
     }
   }
-  response <- chat$chat(
-    user_prompt,
-    echo = FALSE,
-    content,
-    ...
-  )
   cli::cli_text(response)
 }
