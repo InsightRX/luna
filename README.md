@@ -71,3 +71,19 @@ luna_compare("run1", "run2", "run3")
 ## Load the dataset from a model into R
 dat <- luna_dataset("run2")
 ```
+
+## Available functions
+
+```
+luna_new_project()
+luna_load_project()
+luna_list()
+luna_run()
+luna_info()
+luna_compare()
+luna_help()
+luna_log()
+luna_dataset
+luna_gof()  # Stub
+luna_sync() # TODO
+```
