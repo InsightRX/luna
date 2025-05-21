@@ -20,12 +20,27 @@ ifelse0 <- function (value = NULL, alternative = NULL, allow_null = FALSE) {
   }
 }
 
-#' Pluck an inner list element from an outer list, where an element matches
+#' Pluck an inner list element from an unnamed outer list, where an element matches
 #' (default name is "id") a specific value. Analogue to _.pluck() in
 #' JS/underscore
 #'
-pluck <- function(x, id, el = "id") {
+pluck_entry <- function(x, id, el = "id") {
   x[sapply(x, function(x) x[[el]] == id)][[1]]
+}
+
+#' The reverse of pluck_entry, insert_entry() inserts
+#' an entry into an unnamded outer list, based on an element
+#' in the inner list.
+#'
+insert_entry <- function(x, id, entry, el = "id") {
+  for(i in seq(x)) {
+    obj <- x[[i]]
+    if(obj[[el]] == id) {
+      obj <- entry
+      x[[i]] <- obj
+    }
+  }
+  x
 }
 
 #' Get time to now since a given date, in character

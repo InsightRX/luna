@@ -85,6 +85,7 @@ luna_run()
 luna_info()
 luna_compare()
 luna_help()
+luna_note()
 
 ## Diagnostic plots
 luna_gof()

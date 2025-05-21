@@ -29,7 +29,7 @@ luna_info <- function(
     output_file = output_file
   )
   runs <- .luna_cache$get("project")$yaml$runs
-  run_info <- pluck(runs$modelfit, id)
+  run_info <- pluck_entry(runs$modelfit, id)
   if(!is.null(run_info$reference)) {
     fit_ref <- pharmr::read_modelfit_results(
       esttool = "nonmem",
