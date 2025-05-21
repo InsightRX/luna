@@ -27,7 +27,7 @@ luna_log <- function(n = 20) {
 #' @param context other information, e.g. error message
 #'
 log_add <- function(
-  event = c("action", "error"),
+  event = c("action", "error", "plot"),
   action = "modelfit",
   id,
   context = NA

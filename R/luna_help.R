@@ -23,14 +23,13 @@ luna_help <- function(
   ...
 ) {
   if(is.null(prompt)) {
-    if(verbose)
-      cli::cli_alert_info("Looking up last event")
     event <- log_get_last_event()
+    if(verbose)
+      cli::cli_alert_info("Getting help on {event$event} using {model}")
     if(is.null(event)) {
       cli::cli_abort("No recent event found, please call `luna_help()` with a question.")
     }
   }
-  cli::cli_alert_info("Asking for help using {model}")
   chat <- ellmer::chat_openai(
     system_prompt = paste0(
       "You are an expert user of NONMEM and nlmixr2.",
@@ -41,6 +40,7 @@ luna_help <- function(
     ),
     model = model
   )
+  content <- NULL
   if(!is.null(prompt)) {
     user_prompt <- prompt
   } else {
@@ -51,6 +51,12 @@ luna_help <- function(
         event$context$stdout, "\n",
         "```\n"
       )
+    } else if(event$event == "plot") {
+      user_prompt <- paste0(
+        "Describe this plot in one paragraph.",
+        "Briefly describe the plot type, the axes, and 2-5 major visual patterns."
+      )
+      content <- ellmer::content_image_plot()
     } else {
       cli::cli_abort("Sorry, I can currently only help with NONMEM errors.")
     }
@@ -58,6 +64,7 @@ luna_help <- function(
   response <- chat$chat(
     user_prompt,
     echo = FALSE,
+    content,
     ...
   )
   cli::cli_text(response)

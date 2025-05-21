@@ -75,17 +75,23 @@ dat <- luna_dataset("run2")
 ## Available functions
 
 ```
+## Projects
 luna_new_project()
 luna_load_project()
 luna_list()
+
+## Model run workflow
 luna_run()
 luna_info()
 luna_compare()
 luna_help()
-luna_log()
-luna_dataset()
-luna_tables()
+
+## Diagnostic plots
 luna_gof()
 luna_xpose()
+
+## Misc
+luna_dataset()
+luna_tables()
 luna_sync() # TODO
 ```

@@ -52,8 +52,8 @@ luna_gof <- function(
       ggplot2::geom_smooth(method = smooth_method, formula = y ~ x) +
       ggplot2::geom_abline(slope = 1, intercept = 0, linetype = "dotted") +
       ggplot2::facet_wrap(~name) +
-      xlab("Prediction") +
-      ylab("Obervation (DV)") +
+      ggplot2::xlab("Prediction") +
+      ggplot2::ylab("Obervation (DV)") +
       theme()
   ## CWRES vs TIME / PRED
   p2 <- tab_sel |>
@@ -66,9 +66,20 @@ luna_gof <- function(
     ggplot2::geom_smooth(method = smooth_method, formula = y ~ x) +
     ggplot2::geom_hline(yintercept = 0, linetype = "dotted") +
     ggplot2::facet_wrap(~name, scales = "free") +
-    xlab("") +
-    ylab("Obervation (DV)") +
+    ggplot2::xlab("") +
+    ggplot2::ylab("Obervation (DV)") +
     theme()
+
+  ## Add log event
+  log_add(
+    event = "plot",
+    action = "modelfit",
+    id = id,
+    context = list(
+      plot = "gof"
+    )
+  )
+
   patchwork::wrap_plots(
     p1, p2,
     ncol = 1
