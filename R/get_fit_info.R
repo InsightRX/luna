@@ -83,7 +83,7 @@ create_modelfit_info_table <- function(fit) {
     c("- Minimization success:", x$run_info$minimization_successful),
     c("- Covariance step success:", x$run_info$covstep_successful),
     c("- Evaluations: ", x$function_evaluations),
-    c("- Termination cause:", x$run_info$termination_cause),
+    c("- Termination cause:", ifelse0(x$run_info$termination_cause, "")),
     c("- Warnings:", paste(x$run_info$warnings, collapse = " / ")),
     c("- Sign. digits:", x$run_info$significant_digits),
     c("- Run time:", paste0(x$runtime$estimation, " sec (estimation), ", x$runtime$total, " sec (total)"))
