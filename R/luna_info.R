@@ -11,6 +11,7 @@ luna_info <- function(
   folder = ".",
   ...
 ) {
+  id <- validate_id(id)
   model_file <- file.path(folder, paste0(id, ".mod"))
   output_file <- file.path(folder, paste0(id, ".lst"))
   if(! file.exists(model_file)) {

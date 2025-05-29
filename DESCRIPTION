@@ -16,14 +16,14 @@ Imports:
     stats, 
     cli, 
     cachem, 
-    rlang,
-    ellmer,
-    ggplot2,
-    xpose,
-    patchwork
+    rlang
 Suggests: 
     httr,
+    ellmer,
     nlmixr2,
+    ggplot2,
+    xpose,
+    patchwork,
     testthat (>= 3.0.0),
     mockery,
     knitr,

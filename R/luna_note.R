@@ -36,14 +36,14 @@ luna_note <- function(
   ## update yaml and cache
   if(verbose)
     cli::cli_alert_info("Reading {name} project file and finding data for {id}")
-  yaml <- .luna_cache$get("project")$yaml
-  run <- pluck_entry(yaml$runs$modelfit, id)
+  project <- .luna_cache$get("project")
+  run <- pluck_entry(project$yaml$runs$modelfit, id)
   run$notes <- c(
     run$notes,
     note
   )
 
-  if(!clear && !is.null(note)) {
+  if(!clear && is.null(note)) {
     cli::cli_abort("Either use `note` or `clear=TRUE` to set or clear notes.")
   }
 
@@ -54,16 +54,19 @@ luna_note <- function(
 
   ## Add note
   if(!is.null(note)) {
-    yaml$runs$modelfit <- insert_entry(
-      x = yaml$runs$modelfit,
+    project$yaml$runs$modelfit <- insert_entry(
+      x = project$yaml$runs$modelfit,
       id = id,
       entry = run
     )
   }
 
-  ## Write yaml back
+  ## Update cache
+  .luna_cache$set("project", project)
+
+  ## Write yaml back to disk
   yaml_file <- file.path(folder, paste0(name, ".yaml"))
-  yaml::write_yaml(yaml, file = yaml_file)
+  yaml::write_yaml(project$yaml, file = yaml_file)
   if(verbose)
     cli::cli_alert_success("Notes updated for {id}")
 

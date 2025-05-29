@@ -13,9 +13,8 @@ luna_run <- function(
   ...
 ) {
 
-  if(is.null(.luna_cache)) {
-    cli::cli_abort("No luna cache detected. Please run either `luna_create_project()` to create a new project or `luna_load_project()` to reload an existing project before running.")
-  }
+  is_luna_cache_available(abort = TRUE)
+
   folder <- .luna_cache$get("folder")
 
   # Transform folder path to absolute path
@@ -25,7 +24,8 @@ luna_run <- function(
   model <- pharmr::read_model(file.path(folder, paste0(id, ".mod")))
 
   # Some integrity checks
-  if(type == "modelfit") {
+  supported_runs <- c("modelfit", "bootstrap")
+  if(type %in% supported_runs) {
     if(! inherits(model, "pharmpy.model.model.Model")) {
       cli::cli_abort("Model is not a pharmpy model. Please check the model file.")
     }
@@ -33,28 +33,41 @@ luna_run <- function(
       cli::cli_abort("Model has no dataset. Please check the model and dataset files.")
     }
     cli::cli_alert_success("Model loaded successfully.")
+  } else {
+    cli::cli_abort("`runtype` {type} not supported.")
   }
 
-  # Determine nmfe location to use.
-  nmfe <- get_nmfe_location_for_run(nmfe)
-
-  # Run the model
+  ## log event
   log_add(
     event = "action",
-    action = "modelfit",
+    action = type,
     id = id
   )
-  fit <- run_nlme(
-    model = model,
-    id = id,
-    path = folder,
-    verbose = TRUE,
-    nmfe = nmfe,
-    ...
-  )
 
-  # return the fit
-  fit
+  if(type == "modelfit") {
+    # Determine nmfe location to use.
+    nmfe <- get_nmfe_location_for_run(nmfe)
+    fit <- run_nlme(
+      model = model,
+      id = id,
+      path = folder,
+      verbose = TRUE,
+      nmfe = nmfe,
+      ...
+    )
+    return(fit)
+  }
+
+  if(type == "bootstrap") {
+    bs <- run_bootstrap(
+      model = model,
+      id = id,
+      path = folder,
+      verbose = TRUE
+    )
+    return(bs)
+  }
+
 }
 
 #' Helper function to determine nmfe location from various sources

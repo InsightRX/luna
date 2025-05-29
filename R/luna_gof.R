@@ -14,6 +14,8 @@ luna_gof <- function(
   folder = NULL,
   verbose = TRUE
 ) {
+
+  id <- validate_id(id)
   residual <- match.arg(residual)
 
   ## Get tables from run
