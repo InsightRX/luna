@@ -1,12 +1,26 @@
 .onLoad <- function(libname, pkgname) {
-  api_key <- Sys.getenv("OPENAI_API_KEY")
-  if(api_key == "") {
-    cli::cli_alert_info(
-      paste0(
-        "The environment variable OPENAI_API_KEY is not set.",
-        "Please set this to take full advantage of agentic support."
-      )
+
+  ## Make sure we have a setting file at ~/.config/luna/config.yaml
+  ## Create if not
+  check_default_config_file()
+
+  ## Throw info warning if no OpenAI key present
+  check_llm_key()
+
+  invisible()
+}
+
+check_default_config_file <- function() {
+  config_folder <- "~/.config/luna"
+  if (!dir.exists(config_folder)) {
+    dir.create(config_folder, recursive = TRUE)
+  }
+
+  config_file <- file.path(config_folder, "config.yaml")
+  if(!file.exists(config_file)) {
+    file.copy(
+      system.file(package = "luna", "config/default.yaml"),
+      config_file
     )
   }
-  invisible()
 }
