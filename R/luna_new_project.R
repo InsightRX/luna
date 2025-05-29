@@ -81,16 +81,13 @@ luna_new_project <- function(
       ""
     ) |>
       stringr::str_sort(numeric = TRUE)
-    project$yaml$runs <- list(
-      modelfit = list()
-    )
+    project$yaml$runs <- list()
   }
   for(i in 1:length(models)) {
     model_file <- file.path(folder, paste0(models[i], ".mod"))
     if(file.exists(model_file)) {
-      project$yaml$runs$modelfit[[i]] <- list(
+      project$yaml$runs[[i]] <- list(
         id = models[i],
-        path = model_file,
         description = get_description_from_model(model_file)
       )
     }
@@ -121,7 +118,7 @@ get_description_from_model <- function(model_file) {
   model_content <- readLines(model_file)
 
   # Find the $PROBLEM record
-  problem_line_index <- which(grepl("^\\$PROBLEM", model_content))
+  problem_line_index <- which(grepl("^\\$PROB", model_content))
 
   if (length(problem_line_index) == 0) {
     return("No description available")
@@ -130,7 +127,7 @@ get_description_from_model <- function(model_file) {
   # Extract the description from the $PROBLEM record
   # The description is typically the text after $PROBLEM
   problem_line <- model_content[problem_line_index]
-  description <- sub("^\\$PROBLEM\\s*", "", problem_line)
+  description <- sub("^\\$PROB(LEM)?\\s*", "", problem_line)
 
   # If the description is empty, try to get the next line
   if (nchar(trimws(description)) == 0 && problem_line_index < length(model_content)) {

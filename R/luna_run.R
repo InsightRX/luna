@@ -3,13 +3,15 @@
 #' @param id run id, e.g. `run1`. This will be the folder in which the NONMEM
 #' model is run.
 #' @param folder path to folder containing the model file. Default is current directory.
+#' @param diagnostic run a diagnostic for the run, like a bootstrap or vpc. The
+#' id `diagnostic` needs to be defined in the project yaml file.
 #'
 #' @export
 luna_run <- function(
   id,
   folder,
-  type = "modelfit",
   nmfe = NULL,
+  diagnostic = NULL,
   ...
 ) {
 
@@ -24,50 +26,33 @@ luna_run <- function(
   model <- pharmr::read_model(file.path(folder, paste0(id, ".mod")))
 
   # Some integrity checks
-  supported_runs <- c("modelfit", "bootstrap")
-  if(type %in% supported_runs) {
-    if(! inherits(model, "pharmpy.model.model.Model")) {
-      cli::cli_abort("Model is not a pharmpy model. Please check the model file.")
-    }
-    if(is.null(model$dataset)) {
-      cli::cli_abort("Model has no dataset. Please check the model and dataset files.")
-    }
-    cli::cli_alert_success("Model loaded successfully.")
-  } else {
-    cli::cli_abort("`runtype` {type} not supported.")
+  if(! inherits(model, "pharmpy.model.model.Model")) {
+    cli::cli_abort("Model is not a pharmpy model. Please check the model file.")
   }
+  if(is.null(model$dataset)) {
+    cli::cli_abort("Model has no dataset. Please check the model and dataset files.")
+  }
+  cli::cli_alert_success("Model loaded successfully.")
 
   ## log event
   log_add(
     event = "action",
-    action = type,
+    action = "modelfit",
     id = id
   )
 
-  if(type == "modelfit") {
-    # Determine nmfe location to use.
-    nmfe <- get_nmfe_location_for_run(nmfe)
-    fit <- run_nlme(
-      model = model,
-      id = id,
-      path = folder,
-      verbose = TRUE,
-      nmfe = nmfe,
-      ...
-    )
-    return(fit)
-  }
+  # Determine nmfe location to use.
+  nmfe <- get_nmfe_location_for_run(nmfe)
+  fit <- run_nlme(
+    model = model,
+    id = id,
+    path = folder,
+    verbose = TRUE,
+    nmfe = nmfe,
+    ...
+  )
 
-  if(type == "bootstrap") {
-    bs <- run_bootstrap(
-      model = model,
-      id = id,
-      path = folder,
-      verbose = TRUE
-    )
-    return(bs)
-  }
-
+  fit
 }
 
 #' Helper function to determine nmfe location from various sources

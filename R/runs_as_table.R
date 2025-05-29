@@ -6,12 +6,11 @@ runs_as_table <- function(x) {
   is_cache_available <- is_luna_cache_available(abort = TRUE)
 
   ## Print a table of models and their descriptions
-  models <- x$yaml$runs$modelfit
+  models <- x$yaml$runs
   model_table <- data.frame()
   if(length(models) > 0) {
     timestamps <- .luna_cache$get("timestamps")
     model_table <- data.frame(
-      # "type" = "modelfit",
       "id" = sapply(models, function(y) {
         y$id
       }),
@@ -29,6 +28,9 @@ runs_as_table <- function(x) {
       }),
       "finished" = sapply(models, function(y) {
         ifelse0(get_time_ago(timestamps$results[[y$id]]), "")
+      }),
+      "diagnostics" = sapply(models, function(y) {
+        ifelse0(get_diagnostics(y), "")
       })
     )
     column_widths <- list(
@@ -37,7 +39,8 @@ runs_as_table <- function(x) {
       description = 2,
       notes = 2,
       status = NA,
-      finished = NA
+      finished = NA,
+      diagnostics = 1.5
     )
     model_table <- truncate_columns(
       df = model_table,
@@ -49,4 +52,13 @@ runs_as_table <- function(x) {
   model_table <- dplyr::as_tibble(model_table)
   class(model_table) <- c("luna.run_table", class(model_table))
   model_table
+}
+
+get_diagnostics <- function(run) {
+  paste0(
+    unique(
+      unlist(lapply(run$diagnostics, function(x) x$tool))
+    ),
+    collapse = ","
+  )
 }

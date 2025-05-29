@@ -37,7 +37,7 @@ luna_note <- function(
   if(verbose)
     cli::cli_alert_info("Reading {name} project file and finding data for {id}")
   project <- .luna_cache$get("project")
-  run <- pluck_entry(project$yaml$runs$modelfit, id)
+  run <- pluck_entry(project$yaml$runs, id)
   run$notes <- c(
     run$notes,
     note
@@ -54,8 +54,8 @@ luna_note <- function(
 
   ## Add note
   if(!is.null(note)) {
-    project$yaml$runs$modelfit <- insert_entry(
-      x = project$yaml$runs$modelfit,
+    project$yaml$runs <- insert_entry(
+      x = project$yaml$runs,
       id = id,
       entry = run
     )
