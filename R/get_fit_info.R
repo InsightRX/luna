@@ -98,10 +98,15 @@ create_modelfit_info_table <- function(fit) {
 #'
 create_modelfit_parameter_table <- function(fit) {
   x <- attr(fit, "info")
+  if(is.null(x$standard_errors)) {
+    stdevs <- rep(NA, length(x$parameter_estimates))
+  } else {
+    stdevs <- as.numeric(x$standard_errors)
+  }
   data.frame(
     Parameter = names(x$parameter_estimates),
     Estimate = as.numeric(x$parameter_estimates),
-    SD = as.numeric(x$standard_errors)
+    SD = stdevs
   ) |>
     dplyr::mutate(`RSE %` = dplyr::if_else(
       Estimate != 0,

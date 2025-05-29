@@ -89,3 +89,25 @@ get_time_last_updated_folder <- function(folder) {
   if(is.na(dt)) dt <- ""
   dt
 }
+
+#' Find a file(s) from a model run with a potential fallback
+#'
+#' @param folder main model folder
+#' @param filename by default will look for NONMEM nmfe results file, but can also
+#' look e.g. for a table. In that case specify `filename`.
+#' @param fallback fallback filename
+#'
+find_file_with_fallback <- function(folder, filename, fallback, verbose = TRUE) {
+  f <- file.path(folder, filename)
+  if(! file.exists(f)) {
+    f <- file.path(folder, fallback)
+    if(! file.exists(f)) {
+      if(verbose)
+        cli::cli_abort("An expected file was not found.")
+    } else {
+      if(verbose)
+        cli::cli_alert_warning("File found in fallback location.")
+    }
+  }
+  f
+}
