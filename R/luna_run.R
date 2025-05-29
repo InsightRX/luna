@@ -25,7 +25,7 @@ luna_run <- function(
   # read the model file with nm_read_model()
   model <- pharmr::read_model(file.path(folder, paste0(id, ".mod")))
 
-  # Some integrity checks
+  # Some integrity checksa
   if(! inherits(model, "pharmpy.model.model.Model")) {
     cli::cli_abort("Model is not a pharmpy model. Please check the model file.")
   }

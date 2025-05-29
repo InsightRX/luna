@@ -25,7 +25,10 @@ ifelse0 <- function (value = NULL, alternative = NULL, allow_null = FALSE) {
 #' JS/underscore
 #'
 pluck_entry <- function(x, id, el = "id") {
-  x[sapply(x, function(x) x[[el]] == id)][[1]]
+  x_filtered <- x[sapply(x, function(x) x[[el]] == id)]
+  if(length(x_filtered) != 0) {
+    x_filtered[[1]]
+  }
 }
 
 #' The reverse of pluck_entry, insert_entry() inserts
