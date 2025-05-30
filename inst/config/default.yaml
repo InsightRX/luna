@@ -1,6 +1,6 @@
-dtools:
-  nmfe_wrapper:
-    method: luna
+tools:
+  modelfit:
+    method: nmfe
   bootstrap:
     method: pharmpy
     samples: 500

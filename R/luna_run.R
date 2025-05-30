@@ -15,8 +15,9 @@ luna_run <- function(
   ...
 ) {
 
+  ## Get cache and config
   is_luna_cache_available(abort = TRUE)
-
+  config <- get_luna_config()
   folder <- .luna_cache$get("folder")
 
   # Transform folder path to absolute path
@@ -42,13 +43,16 @@ luna_run <- function(
   )
 
   # Determine nmfe location to use.
-  nmfe <- get_nmfe_location_for_run(nmfe)
+  method <- config$tools$modelfit$method
+  if(is.null(method)) {
+    cli::cli_abort("Run method not specified")
+  }
   fit <- run_nlme(
     model = model,
     id = id,
     path = folder,
     verbose = TRUE,
-    nmfe = nmfe,
+    method = config$tools$modelfit$method,
     ...
   )
 

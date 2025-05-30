@@ -1,4 +1,4 @@
-#' Update luna disk cache
+#' Update luna project cache
 #'
 #' @inheritParams luna_load_project
 #'

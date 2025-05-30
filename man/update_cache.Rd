@@ -2,7 +2,7 @@
 % Please edit documentation in R/update_cache.R
 \name{update_cache}
 \alias{update_cache}
-\title{Update luna disk cache}
+\title{Update luna project cache}
 \usage{
 update_cache(project, verbose = FALSE)
 }
@@ -10,5 +10,5 @@ update_cache(project, verbose = FALSE)
 \item{verbose}{verbosity}
 }
 \description{
-Update luna disk cache
+Update luna project cache
 }

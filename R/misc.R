@@ -97,13 +97,17 @@ get_time_last_updated_folder <- function(folder) {
 #' look e.g. for a table. In that case specify `filename`.
 #' @param fallback fallback filename
 #'
-find_file_with_fallback <- function(folder, filename, fallback, verbose = TRUE) {
+find_file_with_fallback <- function(folder, filename, fallback, verbose = TRUE, abort = TRUE) {
   f <- file.path(folder, filename)
   if(! file.exists(f)) {
     f <- file.path(folder, fallback)
     if(! file.exists(f)) {
-      if(verbose)
-        cli::cli_abort("An expected file was not found.")
+      if(abort) {
+        if(verbose)
+          cli::cli_abort("An expected file was not found.")
+      } else {
+        return(NULL)
+      }
     } else {
       if(verbose)
         cli::cli_alert_warning("File found in fallback location.")

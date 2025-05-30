@@ -23,16 +23,25 @@ runs_as_table <- function(x) {
       "notes" = sapply(models, function(y) {
         ifelse0(y$notes, "")
       }),
-      "status" = sapply(models, function(y) {
-        ifelse0(get_status(y$id, x$metadata$folder), "")
+      "output_file" = sapply(models, function(y) {
+        ifelse0(find_file_with_fallback(
+          folder = x$metadata$folder,
+          filename = file.path(y$id, paste0("run", ".lst")),
+          fallback = paste0(y$id, ".lst"),
+          verbose = FALSE,
+          abort = FALSE
+        ), "")
       }),
-      "finished" = sapply(models, function(y) {
-        ifelse0(get_time_ago(timestamps$results[[y$id]]), "")
-      }),
-      "diagnostics" = sapply(models, function(y) {
-        ifelse0(get_diagnostics(y), "")
+      "tools" = sapply(models, function(y) {
+        ifelse0(get_tools(y), "")
       })
     )
+    model_table$status <- sapply(model_table$id, function(y) {
+      ifelse0(get_status(y, x$metadata$folder), "")
+    })
+    model_table$finished <- sapply(models, function(y) {
+      ifelse0(get_time_ago(timestamps$results[[y$id]]), "")
+    })
     column_widths <- list(
       id = NA,
       reference = 1,
@@ -40,10 +49,11 @@ runs_as_table <- function(x) {
       notes = 2,
       status = NA,
       finished = NA,
-      diagnostics = 1.5
+      tools = 1.5
     )
     model_table <- truncate_columns(
-      df = model_table,
+      df = model_table |>
+        dplyr::select(-output_file),
       width_specs = column_widths
     )
   }
@@ -54,10 +64,10 @@ runs_as_table <- function(x) {
   model_table
 }
 
-get_diagnostics <- function(run) {
+get_tools <- function(run) {
   paste0(
     unique(
-      unlist(lapply(run$diagnostics, function(x) x$tool))
+      unlist(lapply(run$tools, function(x) x$tool))
     ),
     collapse = ","
   )

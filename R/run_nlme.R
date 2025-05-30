@@ -19,7 +19,8 @@
 #' subsequent run.
 #' @param path path to nonmem model. If not specified, will assume current
 #' working directory.
-#' @param nmfe full path to nmfe file to run NONMEM with
+#' @param method run method, either `nmfe` or `psn` (execute).
+#' @param nmfe full path to nmfe file to run NONMEM with, if `method=="nmfe"`.
 #' @param console show stderr and stdout in R console? If FALSE, will stream
 #' to files `stdout` and `stderr` in fit folder.
 #' @param force if run folder (`id`) exists, should existing results be
@@ -51,7 +52,8 @@ run_nlme <- function(
   data = NULL,
   id = NULL,
   path = getwd(),
-  nmfe = "/opt/NONMEM/nm_current/run/nmfe75",
+  method = c("psn", "nmfe"),
+  nmfe = get_nmfe_location_for_run(nmfe),
   force = FALSE,
   console = FALSE,
   save_fit = TRUE,
@@ -63,45 +65,19 @@ run_nlme <- function(
 
   time_start <- Sys.time()
   model <- validate_model(model)
-  tool <- "nonmem"
+  method <- match.arg(method)
 
-  ## Set up folder
-  if(is.null(id)) {
-    id <- paste0("run", get_new_run_number(path))
-  }
-  fit_folder <- file.path(path, id)
-  if(dir.exists(fit_folder)) {
-    if(force) {
-      if(verbose) cli::cli_alert_warning("Existing results found, removing")
-      files <- dir(fit_folder, all.files = TRUE)
-      for(f in files) {
-        if(!stringr::str_detect(f, "^\\.")) {
-          unlink(file.path(fit_folder, f))
-        }
-      }
-    } else {
-      cli::cli_alert_danger(paste0("Run folder (", fit_folder, ") exists. Use `force` to overwrite."))
-      return()
-    }
-  } else {
-    dir.create(fit_folder)
-  }
+  ## Set up run folder
+  fit_folder <- create_run_folder(id, path, force, verbose)
 
   ## Set model name
-  model <- pharmr::set_name(
-    model = model,
-    new_name = id
-  )
+  model <- pharmr::set_name(model = model, new_name = id)
 
-  ## Set up folders
-  if(verbose) cli::cli_process_start(
-    paste0("Creating run folder (", fit_folder,")"),
-  )
+  ## Set up other files
   dataset_path <- file.path(fit_folder, "data.csv")
   model_file <- "run.mod"
   output_file <- "run.lst"
   model_path <- file.path(fit_folder, model_file)
-  if(verbose) cli::cli_process_done()
 
   ## Make sure data is clean for modelfit
   if(verbose) cli::cli_process_start("Checking dataset and copying")
@@ -133,14 +109,27 @@ run_nlme <- function(
   if(verbose) cli::cli_process_done()
 
   ## Run NONMEM and direct stdout/stderr
-  call_nmfe(
-    model_file = model_file,
-    output_file = output_file,
-    path = fit_folder,
-    nmfe = nmfe,
-    console = console,
-    verbose = verbose
-  )
+  if(method ==  "nmfe") {
+    call_nmfe(
+      model_file = model_file,
+      output_file = output_file,
+      path = fit_folder,
+      nmfe = nmfe,
+      console = console,
+      verbose = verbose
+    )
+  } else if(method == "psn") {
+    call_psn(
+      model_file = model_file,
+      output_file = output_file,
+      path = fit_folder,
+      tool = "execute",
+      console = console,
+      verbose = verbose
+    )
+  } else{
+    cli::cli_abort("Model run method {method} not recognized.")
+  }
 
   if(clean) {
     if(verbose) cli::cli_alert_info("Cleaning up run folder")

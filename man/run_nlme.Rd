@@ -9,7 +9,8 @@ run_nlme(
   data = NULL,
   id = NULL,
   path = getwd(),
-  nmfe = "/opt/NONMEM/nm_current/run/nmfe75",
+  method = c("psn", "nmfe"),
+  nmfe = get_nmfe_location_for_run(nmfe),
   force = FALSE,
   console = FALSE,
   save_fit = TRUE,
@@ -34,7 +35,9 @@ subsequent run.}
 \item{path}{path to nonmem model. If not specified, will assume current
 working directory.}
 
-\item{nmfe}{full path to nmfe file to run NONMEM with}
+\item{method}{run method, either \code{nmfe} or \code{psn} (execute).}
+
+\item{nmfe}{full path to nmfe file to run NONMEM with, if \code{method=="nmfe"}.}
 
 \item{force}{if run folder (\code{id}) exists, should existing results be
 removed before rerunning NONMEM? Default \code{FALSE}.}
