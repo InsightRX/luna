@@ -115,3 +115,23 @@ find_file_with_fallback <- function(folder, filename, fallback, verbose = TRUE, 
   }
   f
 }
+
+#' Handle errors from running console commands
+#'
+#' @param response response from system2
+#' @param command command used
+#'
+handle_system_errors <- function(
+    response,
+    command
+) {
+  if(length(response) == 1 && is.numeric(response)) {
+    if(reponse != 0) {
+      if(response == 127) {
+        cli::cli_abort("Command {command} was not found. Make sure this tool is installed in your environment and on the path.")
+      } else {
+        cli::cli_abort("A unknown error occurred running {tool}. Error code: {res}.")
+      }
+    }
+  }
+}

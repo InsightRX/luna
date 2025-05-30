@@ -48,11 +48,5 @@ call_psn <- function(
     )
   )
   cli::cli_process_done()
-  if(length(res) == 1 && is.numeric(res)) {
-    if(res == 127) {
-      cli::cli_abort("PsN {tool} was not found. Make sure PsN is installed in your environment and on the path.")
-    } else {
-      cli::cli_abort("A unknown error occurred running PsN {tool}. Error code: {res}.")
-    }
-  }
+  handle_run_errors(res, tool)
 }

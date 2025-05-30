@@ -53,7 +53,6 @@ run_nlme <- function(
   id = NULL,
   path = getwd(),
   method = c("psn", "nmfe"),
-  nmfe = get_nmfe_location_for_run(nmfe),
   force = FALSE,
   console = FALSE,
   save_fit = TRUE,
@@ -104,7 +103,7 @@ run_nlme <- function(
   ## Copy modelfile + dataset
   write.csv(data, file = dataset_path, quote=F, row.names=F)
   model_code <- model$code
-  model_code <- change_nonmem_dataset(model_code, dataset_path)
+  model_code <- change_nonmem_dataset(model_code, "data.csv")
   writeLines(model_code, model_path)
   if(verbose) cli::cli_process_done()
 
@@ -114,7 +113,6 @@ run_nlme <- function(
       model_file = model_file,
       output_file = output_file,
       path = fit_folder,
-      nmfe = nmfe,
       console = console,
       verbose = verbose
     )
@@ -285,7 +283,7 @@ call_nmfe <- function(
   model_file,
   output_file,
   path,
-  nmfe = "/opt/NONMEM/nm_current/run/nmfe75",
+  nmfe = get_nmfe_location_for_run(),
   console = FALSE,
   verbose = TRUE
 ) {
@@ -301,7 +299,7 @@ call_nmfe <- function(
 
   if(verbose) {
     cli::cli_process_start(
-      paste0("Starting NONMEM run in ", path),
+      paste0("Starting nmfe run in ", path),
       on_exit = "failed"
     )
   }
@@ -319,14 +317,17 @@ call_nmfe <- function(
     setwd(curr_dir)
   })
   setwd(path)
-  system2(
-    command = nmfe,
-    args = c(model_file, output_file),
-    wait = TRUE,
-    stdout = stdout,
-    stderr = stderr,
+  suppressWarnings(
+    res <- system2(
+      command = nmfe,
+      args = c(model_file, output_file),
+      wait = TRUE,
+      stdout = stdout,
+      stderr = stderr,
+    )
   )
   cli::cli_process_done()
+  handle_system_errors(res, nmfe)
 }
 
 #' Get output from NMFE

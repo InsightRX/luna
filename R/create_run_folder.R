@@ -1,6 +1,6 @@
 #' Create a folder for a run
 #'
-#' @inheritParams run_nmfe
+#' @inheritParams run_nlme
 #'
 create_run_folder <- function(
   id,

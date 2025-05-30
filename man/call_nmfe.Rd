@@ -8,7 +8,7 @@ call_nmfe(
   model_file,
   output_file,
   path,
-  nmfe = "/opt/NONMEM/nm_current/run/nmfe75",
+  nmfe = get_nmfe_location_for_run(),
   console = FALSE,
   verbose = TRUE
 )

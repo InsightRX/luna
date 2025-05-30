@@ -10,7 +10,6 @@ run_nlme(
   id = NULL,
   path = getwd(),
   method = c("psn", "nmfe"),
-  nmfe = get_nmfe_location_for_run(nmfe),
   force = FALSE,
   console = FALSE,
   save_fit = TRUE,
@@ -36,8 +35,6 @@ subsequent run.}
 working directory.}
 
 \item{method}{run method, either \code{nmfe} or \code{psn} (execute).}
-
-\item{nmfe}{full path to nmfe file to run NONMEM with, if \code{method=="nmfe"}.}
 
 \item{force}{if run folder (\code{id}) exists, should existing results be
 removed before rerunning NONMEM? Default \code{FALSE}.}
@@ -68,6 +65,8 @@ not actual time since first overall dose.}
 \item{clean}{clean up run folder after NONMEM execution?}
 
 \item{verbose}{verbose output?}
+
+\item{nmfe}{full path to nmfe file to run NONMEM with, if \code{method=="nmfe"}.}
 }
 \description{
 Run the model directly using nmfe (not through pharmpy).
