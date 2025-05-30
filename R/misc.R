@@ -122,16 +122,35 @@ find_file_with_fallback <- function(folder, filename, fallback, verbose = TRUE, 
 #' @param command command used
 #'
 handle_system_errors <- function(
-    response,
-    command
+  response,
+  command
 ) {
   if(length(response) == 1 && is.numeric(response)) {
-    if(reponse != 0) {
+    if(! response %in% c(0, 1, 2)) {
       if(response == 127) {
         cli::cli_abort("Command {command} was not found. Make sure this tool is installed in your environment and on the path.")
       } else {
-        cli::cli_abort("A unknown error occurred running {tool}. Error code: {res}.")
+        cli::cli_alert_warning("A unknown error occurred running {command}. Error code: {response}.")
       }
     }
   }
 }
+
+#' Parse PsN arguments specified as a list into a vector of command
+#' line arguments
+#'
+#' @param x list of arguments and values, e.g. `list(samples=100, threads=2)`
+#'
+parse_psn_options <- function(x) {
+  x$id <- NULL
+  x$tool <- NULL
+  options <- NULL
+  if(length(x) > 0) {
+    options <- stringr::str_split(
+      paste0("--", names(x), "=", x, collapse = " "),
+      " "
+    )[[1]]
+  }
+  options
+}
+

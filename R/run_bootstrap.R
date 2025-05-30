@@ -31,7 +31,6 @@ run_bootstrap <- function(
   model <- validate_model(model)
   tool <- "nonmem"
 
-  browser()
   bs <- pharmr::run_bootstrap(
     model = model
   )

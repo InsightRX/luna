@@ -6,7 +6,14 @@
 This can be used e.g. for bootstraps and VPCs. The function is implemented
 in a modular way so that it can be easily extended.}
 \usage{
-luna_tool(id, tool)
+luna_tool(
+  id,
+  tool,
+  method = c("psn", "pharmpy"),
+  force = FALSE,
+  console = FALSE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{id}{run id}

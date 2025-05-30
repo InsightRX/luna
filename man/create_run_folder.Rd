@@ -4,7 +4,7 @@
 \alias{create_run_folder}
 \title{Create a folder for a run}
 \usage{
-create_run_folder(id, path, force = FALSE, verbose = TRUE)
+create_run_folder(id, path, tool = NULL, force = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{id}{run id, e.g. \code{run1}. This will be the folder in which the NONMEM

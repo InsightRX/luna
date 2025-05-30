@@ -9,6 +9,7 @@ call_psn <- function(
     output_file,
     path,
     tool = c("execute", "vpc", "bootstrap", "sir", "proseval"),
+    options = NULL,
     console = FALSE,
     verbose = TRUE
 ) {
@@ -19,10 +20,7 @@ call_psn <- function(
   path <- normalizePath(path, mustWork = TRUE)
 
   if(verbose) {
-    cli::cli_process_start(
-      paste0("Starting PsN {tool} run in ", path),
-      on_exit = "failed"
-    )
+    cli::cli_alert_info("Starting PsN {tool} run in {path}")
   }
 
   ## Output to console or to file?
@@ -41,12 +39,12 @@ call_psn <- function(
   suppressWarnings(
     res <- system2(
       command = tool,
-      args = model_file,
+      args = c(model_file, options),
       wait = TRUE,
       stdout = stdout,
       stderr = stderr
     )
   )
-  cli::cli_process_done()
-  handle_run_errors(res, tool)
+  cli::cli_alert_success("Done")
+  handle_system_errors(res, tool)
 }

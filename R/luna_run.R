@@ -21,6 +21,14 @@ luna_run <- function(
   config <- get_luna_config()
   folder <- .luna_cache$get("folder")
 
+  ## Make sure we have up-to-date project info
+  metadata <- .luna_cache$get("metadata")
+  luna_load_project(
+    name = .luna_cache$get("name"),
+    folder = .luna_cache$get("folder"),
+    verbose = FALSE
+  )
+
   # Transform folder path to absolute path
   folder <- normalizePath(folder, mustWork = TRUE)
 

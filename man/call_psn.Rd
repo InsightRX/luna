@@ -9,6 +9,7 @@ call_psn(
   output_file,
   path,
   tool = c("execute", "vpc", "bootstrap", "sir", "proseval"),
+  options = NULL,
   console = FALSE,
   verbose = TRUE
 )

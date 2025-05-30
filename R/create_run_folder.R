@@ -5,13 +5,15 @@
 create_run_folder <- function(
   id,
   path,
+  tool = NULL,
   force = FALSE,
   verbose = TRUE
 ) {
   if(is.null(id)) {
     id <- paste0("run", get_new_run_number(path))
   }
-  fit_folder <- file.path(path, id)
+  tool_postfix <- ifelse(is.null(tool), "", paste0(".", tool))
+  fit_folder <- file.path(path, paste0(id, tool_postfix))
   if(dir.exists(fit_folder)) {
     if(force) {
       if(verbose) cli::cli_alert_warning("Existing results found, removing")
