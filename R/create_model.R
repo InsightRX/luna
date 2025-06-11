@@ -53,6 +53,8 @@
 #' method.
 #' @param settings additional settings for model creation and model estimation.
 #' TBD
+#' @param tables which pre-specified tables to add, defaults to `parameters` 
+#' and `fit` tables.
 #' @param name name of model
 #' @param tool output model type, either `nonmem` or `nlmixr`
 #' @param verbose verbose output?
@@ -76,6 +78,7 @@ create_model <- function(
     estimation_options = list(),
     uncertainty_method = c("sandwich", "smat", "rmat", "efim"),
     tool = c("nonmem", "nlmixr", "nlmixr2"),
+    tables = c("parameters", "fit"),
     auto_init = TRUE,
     auto_stack_encounters = TRUE,
     mu_reference = FALSE,
@@ -151,11 +154,15 @@ create_model <- function(
   if(!is.null(data) && auto_init) {
     if(verbose) cli::cli_alert_info("Setting initial estimates")
     inits <- get_initial_estimates_from_data(data, n_cmt = n_cmt)
-    inits <- setNames(inits, paste0("POP_", names(inits)))
-    mod <- pharmr::set_initial_estimates(
-      model = mod,
-      inits = inits
-    )
+    if(length(inits) == 0) {
+      cli::cli_alert_warning("Could not compute initil estimates.")
+    } else {
+      inits <- setNames(inits, paste0("POP_", names(inits)))
+      mod <- pharmr::set_initial_estimates(
+        model = mod, 
+        inits = inits
+      )      
+    }
   }
 
   ## Add individual variability
@@ -227,16 +234,30 @@ create_model <- function(
     )
   }
 
-  ## Add $TABLE for individual parameter estimates
+  ## Add $TABLEs
   if(tool == "nonmem") {
-    if(verbose) cli::cli_alert_info("Adding output table for individual parameters")
-    ind_parameters <- pharmr::get_individual_parameters(mod)
-    mod <- add_table_to_model(
-      model = mod,
-      variables = c("ID", ind_parameters),
-      firstonly = TRUE,
-      file = "patab"
-    )
+    ## for individual parameter estimates
+    if("parameters" %in% tables) {
+      if(verbose) cli::cli_alert_info("Adding output table for individual parameters")
+      ind_parameters <- pharmr::get_individual_parameters(mod)
+      mod <- add_table_to_model(
+        model = mod, 
+        variables = c("ID", ind_parameters), 
+        firstonly = TRUE, 
+        file = "patab"
+      )
+    }
+    ## for goodness of fit
+    if("fit" %in% tables) {
+      if(verbose) cli::cli_alert_info("Adding output table for goodness of fit")
+      gof_vars <- c("DV", "EVID", "MDV", "PRED", "IPRED", "CWRES", "NPDE")
+      mod <- add_table_to_model(
+        model = mod,
+        variables = c("ID", "TIME", gof_vars), 
+        firstonly = FALSE, 
+        file = "sdtab"
+      )
+    }
   }
 
   ## Add dataset (needed if we want to add covariates to the model)
