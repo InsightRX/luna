@@ -38,10 +38,10 @@ create_pkmodel_search_space <- function(
 
   ## combine into a MFL search space definition
   paste0(c(
-    paste0("ABSORPTION:[", paste0(absorption, collapse=","), "]"),
-    paste0("ELIMINATION:[", paste0(elimination, collapse=","), "]"),
-    paste0("PERIPHERALS:[", paste0(peripherals, collapse=","), "]"),
-    paste0("TRANSITS:[", paste0(transits, collapse=","), "]"),
-    paste0("LAGTIME:[", paste0(lagtime, collapse=","), "]")
+    paste0("ABSORPTION([", paste0(absorption, collapse=","), "])"),
+    paste0("ELIMINATION([", paste0(elimination, collapse=","), "])"),
+    paste0("PERIPHERALS([", paste0(peripherals, collapse=","), "])"),
+    paste0("TRANSITS([", paste0(transits, collapse=","), "])"),
+    paste0("LAGTIME([", paste0(lagtime, collapse=","), "])")
   ), collapse = "; ")
 }
