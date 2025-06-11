@@ -1,3 +1,5 @@
+** THIS R PACKAGE IS UNDER DEVELOPMENT, NOT READY FOR PRODUCTION USE!! **
+
 # Luna
 
 Luna is a tool to organize your NONMEM and nlmixr2 modeling workflows. 
@@ -7,11 +9,8 @@ makes it easy to work with from either RStudio or from the command line.
 
 ## Goals and rationale
 
-The goal of Luna is to implement a structured model development:
-
-- if model development and results are structured, it’s easier for anyone to 
-interpret. (human and AI)
-- future: AI agent could use (or write) specs like this, but it’s not an immediate goal.
+The goal of Luna is to implement a structured model development: if model development 
+and results are structured, it’s easier for anyone to interpret (human and AI agents).
 
 ## Justification
 
