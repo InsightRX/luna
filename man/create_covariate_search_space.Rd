@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_covariate_search_space.R
 \name{create_covariate_search_space}
 \alias{create_covariate_search_space}
-\title{Create covariate search space definition for pharmpy cov_search}
+\title{Create covariate search space definition for pharmpy \code{covsearch}}
 \usage{
 create_covariate_search_space(
   parameters,
@@ -14,6 +14,24 @@ create_covariate_search_space(
   struct_operation = c("*", "+", "EXP", "POW")
 )
 }
+\arguments{
+\item{parameters}{vector of parameter names}
+
+\item{covariates}{vector of covariate names}
+
+\item{operation}{parameter-covariate model type (operation)}
+
+\item{explore}{should the specified \code{parameters} and \code{covariates}
+be used as structural model elements, or as exploration space?}
+
+\item{struct_parameters}{vector of parameter names for structural model}
+
+\item{struct_covariates}{vector of covariate names for structural model}
+
+\item{struct_operation}{parameter-covariate model type (operation)
+for structural model}
+}
 \description{
-Create covariate search space definition for pharmpy cov_search
+See Pharmpy MFL documentation for more info:
+https://pharmpy.github.io/latest/covsearch.html
 }

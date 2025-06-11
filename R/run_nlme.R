@@ -19,7 +19,8 @@
 #' subsequent run.
 #' @param path path to nonmem model. If not specified, will assume current
 #' working directory.
-#' @param method run method, either `nmfe` or `psn` (execute).
+#' @param method run method, either `pharmpy` dispatch, `nmfe` or `psn`
+#' (psn::execute).
 #' @param nmfe full path to nmfe file to run NONMEM with, if `method=="nmfe"`.
 #' @param console show stderr and stdout in R console? If FALSE, will stream
 #' to files `stdout` and `stderr` in fit folder.
@@ -50,9 +51,9 @@
 run_nlme <- function(
   model,
   data = NULL,
-  id = NULL,
+  id,
   path = getwd(),
-  method = c("psn", "nmfe"),
+  method = c("pharmpy", "psn", "nmfe"),
   nmfe = get_nmfe_location_for_run(),
   force = FALSE,
   console = FALSE,
@@ -71,7 +72,10 @@ run_nlme <- function(
   fit_folder <- create_run_folder(id, path, force, verbose)
 
   ## Set model name
-  model <- pharmr::set_name(model = model, new_name = id)
+  model <- pharmr::set_name(
+    model = model,
+    new_name = id
+  )
 
   ## Set up other files
   dataset_path <- file.path(fit_folder, "data.csv")
@@ -109,7 +113,24 @@ run_nlme <- function(
   if(verbose) cli::cli_process_done()
 
   ## Run NONMEM and direct stdout/stderr
-  if(method ==  "nmfe") {
+  if(method == "pharmpy") {
+    model <- pharmr::read_model(model_path)
+    curr_wd <- getwd()
+    setwd(fit_folder)
+    tmp <- pharmr::fit(model)
+    setwd(curr_wd)
+    ## Copy all results from temp folder back into main folder
+    run_folder <- file.path(fit_folder, "modelfit1", "models", "run")
+    files <- dir(run_folder)
+    for(f in files) {
+      file.copy(
+        file.path(run_folder, f),
+        file.path(fit_folder, f)
+      )
+    }
+    model_file <- "model.ctl" # Pharmpy model file name
+    unlink(file.path(fit_folder, "modelfit1"), recursive = TRUE)
+  } else if(method ==  "nmfe") {
     call_nmfe(
       model_file = model_file,
       output_file = output_file,
@@ -138,7 +159,9 @@ run_nlme <- function(
 
   ## Read results using Pharmpy and return
   if(verbose) cli::cli_process_start("Parsing results from run")
-  fit <- pharmr::read_modelfit_results(file.path(fit_folder, model_file))
+  fit <- pharmr::read_modelfit_results(
+    file.path(fit_folder, model_file)
+  )
   if(is.null(fit)) {
     if(verbose) {
       if(!console) {

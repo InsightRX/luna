@@ -7,9 +7,9 @@
 run_nlme(
   model,
   data = NULL,
-  id = NULL,
+  id,
   path = getwd(),
-  method = c("psn", "nmfe"),
+  method = c("pharmpy", "psn", "nmfe"),
   nmfe = get_nmfe_location_for_run(),
   force = FALSE,
   console = FALSE,
@@ -35,7 +35,8 @@ subsequent run.}
 \item{path}{path to nonmem model. If not specified, will assume current
 working directory.}
 
-\item{method}{run method, either \code{nmfe} or \code{psn} (execute).}
+\item{method}{run method, either \code{pharmpy} dispatch, \code{nmfe} or \code{psn}
+(psn::execute).}
 
 \item{nmfe}{full path to nmfe file to run NONMEM with, if \code{method=="nmfe"}.}
 

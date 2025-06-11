@@ -53,7 +53,7 @@
 #' method.
 #' @param settings additional settings for model creation and model estimation.
 #' TBD
-#' @param tables which pre-specified tables to add, defaults to `parameters` 
+#' @param tables which pre-specified tables to add, defaults to `parameters`
 #' and `fit` tables.
 #' @param name name of model
 #' @param tool output model type, either `nonmem` or `nlmixr`
@@ -110,7 +110,7 @@ create_model <- function(
   mod <- pharmr::read_model(
     path = system.file(
       paste0("models/nonmem/base_", route, ".mod"),
-      package = "pharmaair"
+      package = "luna"
     )
   )
 
@@ -159,9 +159,9 @@ create_model <- function(
     } else {
       inits <- setNames(inits, paste0("POP_", names(inits)))
       mod <- pharmr::set_initial_estimates(
-        model = mod, 
+        model = mod,
         inits = inits
-      )      
+      )
     }
   }
 
@@ -241,9 +241,9 @@ create_model <- function(
       if(verbose) cli::cli_alert_info("Adding output table for individual parameters")
       ind_parameters <- pharmr::get_individual_parameters(mod)
       mod <- add_table_to_model(
-        model = mod, 
-        variables = c("ID", ind_parameters), 
-        firstonly = TRUE, 
+        model = mod,
+        variables = c("ID", ind_parameters),
+        firstonly = TRUE,
         file = "patab"
       )
     }
@@ -253,8 +253,8 @@ create_model <- function(
       gof_vars <- c("DV", "EVID", "MDV", "PRED", "IPRED", "CWRES", "NPDE")
       mod <- add_table_to_model(
         model = mod,
-        variables = c("ID", "TIME", gof_vars), 
-        firstonly = FALSE, 
+        variables = c("ID", "TIME", gof_vars),
+        firstonly = FALSE,
         file = "sdtab"
       )
     }
