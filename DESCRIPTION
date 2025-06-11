@@ -15,8 +15,9 @@ Imports:
     stringr, 
     stats, 
     cli, 
-    cachem, 
-    rlang
+    cachem,
+    rlang,
+    withr
 Suggests: 
     httr,
     ellmer,

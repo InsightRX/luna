@@ -115,10 +115,9 @@ run_nlme <- function(
   ## Run NONMEM and direct stdout/stderr
   if(method == "pharmpy") {
     model <- pharmr::read_model(model_path)
-    curr_wd <- getwd()
-    setwd(fit_folder)
-    tmp <- pharmr::fit(model)
-    setwd(curr_wd)
+    withr::with_dir(fit_folder, {
+      tmp <- pharmr::fit(model)
+    })
     ## Copy all results from temp folder back into main folder
     run_folder <- file.path(fit_folder, "modelfit1", "models", "run")
     files <- dir(run_folder)
