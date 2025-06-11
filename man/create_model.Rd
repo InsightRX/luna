@@ -21,6 +21,7 @@ create_model(
   estimation_options = list(),
   uncertainty_method = c("sandwich", "smat", "rmat", "efim"),
   tool = c("nonmem", "nlmixr", "nlmixr2"),
+  tables = c("parameters", "fit"),
   auto_init = TRUE,
   auto_stack_encounters = TRUE,
   mu_reference = FALSE,
@@ -64,6 +65,9 @@ e.g. \code{NITER} or \code{ISAMPLE}.}
 One of \code{sandwich} (default), \code{smat}, \code{fmat}, \code{efim}.}
 
 \item{tool}{output model type, either \code{nonmem} or \code{nlmixr}}
+
+\item{tables}{which pre-specified tables to add, defaults to \code{parameters}
+and \code{fit} tables.}
 
 \item{auto_init}{automatically update initial estimates to reasonable values
 based on a crude assessment of the PK data. Default is \code{TRUE}.}
