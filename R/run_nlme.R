@@ -53,7 +53,7 @@ run_nlme <- function(
   id = NULL,
   path = getwd(),
   method = c("psn", "nmfe"),
-  nmfe = get_nmfe_location_for_run(nmfe),
+  nmfe = get_nmfe_location_for_run(),
   force = FALSE,
   console = FALSE,
   save_fit = TRUE,
