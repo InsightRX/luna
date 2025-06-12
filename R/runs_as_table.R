@@ -21,7 +21,7 @@ runs_as_table <- function(x) {
         ifelse0(y$description, "")
       }),
       "notes" = sapply(models, function(y) {
-        ifelse0(y$notes, "")
+        ifelse0(paste(y$notes, collapse = ", "), "")
       }),
       "output_file" = sapply(models, function(y) {
         ifelse0(find_file_with_fallback(
