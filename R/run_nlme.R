@@ -114,21 +114,12 @@ run_nlme <- function(
 
   ## Run NONMEM and direct stdout/stderr
   if(method == "pharmpy") {
-    model <- pharmr::read_model(model_path)
-    withr::with_dir(fit_folder, {
-      tmp <- pharmr::fit(model)
-    })
-    ## Copy all results from temp folder back into main folder
-    run_folder <- file.path(fit_folder, "modelfit1", "models", "run")
-    files <- dir(run_folder)
-    for(f in files) {
-      file.copy(
-        file.path(run_folder, f),
-        file.path(fit_folder, f)
-      )
-    }
-    model_file <- "model.ctl" # Pharmpy model file name
-    unlink(file.path(fit_folder, "modelfit1"), recursive = TRUE)
+    call_pharmpy_fit(
+      model_file = model_file,
+      path = fit_folder,
+      verbose = verbose,
+      console = console
+    )
   } else if(method ==  "nmfe") {
     call_nmfe(
       model_file = model_file,
@@ -323,7 +314,7 @@ call_nmfe <- function(
 
   if(verbose) {
     cli::cli_process_start(
-      paste0("Starting NONMEM run in ", path),
+      paste0("Starting NONMEM (nmfe) run in ", path),
       on_exit = "failed"
     )
   }

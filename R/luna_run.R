@@ -52,7 +52,7 @@ luna_run <- function(
     id = id,
     path = folder,
     verbose = TRUE,
-    method = config$tools$modelfit$method,
+    method = method,
     ...
   )
 

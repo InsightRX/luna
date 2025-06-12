@@ -1,6 +1,6 @@
 tools:
   modelfit:
-    method: nmfe
+    method: pharmpy
   bootstrap:
     method: pharmpy
     samples: 500

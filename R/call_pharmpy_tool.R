@@ -1,16 +1,17 @@
-#' Run a pharmpy tool, like bootstrap, or modelsearch
-#' 
-#' @param model Pharmpy model object, preferably created using 
+#' Generic function for running a pharmpy tool, like bootstrap,
+#' or modelsearch. A separate function is available for `fit()`
+#'
+#' @param model Pharmpy model object, preferably created using
 #' `luna::create_model()`.
-#' @param id model id. Optional. If not specified, will generate random modelfit 
+#' @param id model id. Optional. If not specified, will generate random modelfit
 #' id. The `id` will be used to create the run folder.
 #' @param verbose verbose output?
-#' 
+#'
 #' @return fit object
-#' 
+#'
 #' @export
-#' 
-run_pharmpy_tool <- function(
+#'
+call_pharmpy_tool <- function(
   id,
   model,
   results,
@@ -18,7 +19,14 @@ run_pharmpy_tool <- function(
   verbose = FALSE,
   ...
 ) {
-  
+
+  if(verbose) {
+    cli::cli_process_start(
+      paste0("Starting {tool} in ", path),
+      on_exit = "failed"
+    )
+  }
+
   run_folder <- file.path(getwd(), id)
   withr::with_dir(run_folder, {
     res <- do.call(
@@ -33,5 +41,5 @@ run_pharmpy_tool <- function(
   })
 
   res
-  
+
 }
