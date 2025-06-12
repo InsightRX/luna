@@ -21,8 +21,9 @@ By default it will pick the most recent error from NONMEM
 as prompt, but can also ask questions.
 }
 \examples{
-# example code
+\dontrun{
 luna_help() # will get help from LLM on last NONMEM error
 luna_help("How do I write a model with non-linear elimination?")
+}
 
 }
