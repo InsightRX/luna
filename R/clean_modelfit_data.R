@@ -15,7 +15,7 @@ clean_modelfit_data <- function(model, data = NULL) {
 
     if(tool != "nonmem") { ## nlmixr2 requires lower-case `cmt`
       data <- data |>
-        rename(cmt = CMT)
+        dplyr::rename(cmt = CMT)
     }
 
     ## Save dataset

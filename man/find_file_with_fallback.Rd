@@ -4,7 +4,13 @@
 \alias{find_file_with_fallback}
 \title{Find a file(s) from a model run with a potential fallback}
 \usage{
-find_file_with_fallback(folder, filename, fallback, verbose = TRUE)
+find_file_with_fallback(
+  folder,
+  filename,
+  fallback,
+  verbose = TRUE,
+  abort = TRUE
+)
 }
 \arguments{
 \item{folder}{main model folder}

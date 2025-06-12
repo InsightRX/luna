@@ -10,9 +10,10 @@
 #' @param ... optional parameters passed onto ellmer::chat()
 #'
 #' @examples
-#' # example code
+#' \dontrun{
 #' luna_help() # will get help from LLM on last NONMEM error
 #' luna_help("How do I write a model with non-linear elimination?")
+#' }
 #'
 #' @export
 #'
@@ -22,6 +23,7 @@ luna_help <- function(
   verbose = TRUE,
   ...
 ) {
+  is_luna_cache_available(abort = TRUE)
   if(is.null(prompt)) {
     event <- log_get_last_event()
     if(verbose)

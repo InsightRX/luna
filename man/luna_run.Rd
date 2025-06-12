@@ -4,13 +4,16 @@
 \alias{luna_run}
 \title{Run a NONMEM model}
 \usage{
-luna_run(id, folder, type = "modelfit", nmfe = NULL, ...)
+luna_run(id, folder, nmfe = NULL, diagnostic = NULL, ...)
 }
 \arguments{
 \item{id}{run id, e.g. \code{run1}. This will be the folder in which the NONMEM
 model is run.}
 
 \item{folder}{path to folder containing the model file. Default is current directory.}
+
+\item{diagnostic}{run a diagnostic for the run, like a bootstrap or vpc. The
+id \code{diagnostic} needs to be defined in the project yaml file.}
 }
 \description{
 Run a NONMEM model

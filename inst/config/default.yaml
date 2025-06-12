@@ -1,0 +1,16 @@
+tools:
+  modelfit:
+    method: pharmpy
+  bootstrap:
+    method: pharmpy
+    samples: 500
+  vpc:
+    method: pharmpy
+    samples: 500
+files:
+  folder_name: run_name
+  run_prefix: run
+file_extensions:
+  model: mod
+  output: lst
+

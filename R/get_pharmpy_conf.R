@@ -7,7 +7,7 @@
 get_pharmpy_conf <- function() {
 
   ## Get path to config file
-  pharmpy_conf <- pharmr:::get_config_path()
+  pharmpy_conf <- pharmr::get_config_path()
   pharmpy_stop_msg <- "Cannot find Pharmpy configuration file. Please check your Pharmpy / pharmr installation."
   if(is.null(pharmpy_conf)) {
     cli::cli_abort(pharmpy_stop_msg)

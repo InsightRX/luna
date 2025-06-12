@@ -4,11 +4,11 @@
 #' @param iiv what parameters to put IIV on. Can be one of three formats:
 #' - character: `all` or `basic`.
 #' - character: `c("CL", "V")`. Will assume SD of 0.5 for initial estimate.
-#' - list of numeric: e.g. `list(CL = 0.5, V = 0.5)` with SD for initial 
+#' - list of numeric: e.g. `list(CL = 0.5, V = 0.5)` with SD for initial
 #' estimates.
 #' @param iiv_type one of IIV types accepted by pharmr::add_iiv(), i.e.
 #' `add`, `prop`, `exp` (default), `log`, or `re_log`.
-#' 
+#'
 set_iiv <- function(mod, iiv, iiv_type) {
   if(inherits(iiv, "character")) {
     pars <- get_defined_pk_parameters(mod)
@@ -44,7 +44,7 @@ set_iiv <- function(mod, iiv, iiv_type) {
     map <- data.frame( # build a map for each parameter, whether it needs to be reset or not
       name = c(to_add, to_reset),
       reset = c(rep(FALSE, length(to_add)), rep(TRUE, length(to_reset)))
-    ) %>%
+    ) |>
       dplyr::arrange(reset) # make sure to first do the parmaeters that don't need a reset,
     # to avoid creating DUMMYOMEGA
     for(key in map$name) {
@@ -53,7 +53,7 @@ set_iiv <- function(mod, iiv, iiv_type) {
       }
       if(length(mod$statements$find_assignment(key)) > 0) {
         mod <- pharmr::add_iiv(
-          model = mod, 
+          model = mod,
           list_of_parameters = key,
           expression = iiv_type_list[[key]],
           initial_estimate = signif(iiv[[key]]^2, 5)
@@ -68,7 +68,7 @@ set_iiv <- function(mod, iiv, iiv_type) {
 
 
 #' Get a character vector with all parameters on which IIV is present
-#' 
+#'
 get_parameters_with_iiv <- function(mod) {
   pars <- unlist(mod$random_variables$parameter_names)
   idx <- grep("IIV_", pars)
@@ -81,7 +81,7 @@ get_parameters_with_iiv <- function(mod) {
 }
 
 #' Get all parameters that are defined (from a predefined vector of possible parameters)
-#' 
+#'
 get_defined_pk_parameters <- function(
     mod,
     possible = c("CL", "V", "V2", "V3", "Q", "Q2", "Q3", "K10", "K12", "K21", "K13", "K31")

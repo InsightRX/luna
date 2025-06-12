@@ -5,7 +5,14 @@
 #'
 get_status <- function(id, folder = ".") {
   status <- "not run"
-  if(file.exists(file.path(folder, paste0(id, ".lst")))) {
+  tmp <- find_file_with_fallback(
+    folder,
+    file.path(id, paste0("run", ".lst")),
+    fallback = file.path(paste0(id, ".lst")),
+    verbose = FALSE,
+    abort = FALSE
+  )
+  if(!is.null(tmp)) {
     status <- "finished"
   }
   status
