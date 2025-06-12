@@ -9,15 +9,19 @@ Description: Organizes model development workflows in NONMEM and nlmixr2. The
 Depends: R (>= 4.3.0)
 Imports: 
     dplyr, 
+    tidyr,
+    purrr,
+    glue,
+    rlang,
+    withr,
     lubridate, 
     pharmr, 
     yaml, 
-    stringr, 
-    stats, 
+    stringr,
     cli, 
     cachem,
-    rlang,
-    withr
+    vpc,
+    stats
 Suggests: 
     httr,
     ellmer,

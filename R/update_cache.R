@@ -25,7 +25,7 @@ update_cache <- function(
   )
 
   ## Models
-  model_list <- dir(folder, patter = ".mod$", include.dirs = FALSE)
+  model_list <- dir(folder, pattern = ".mod$", include.dirs = FALSE)
   for(m in model_list) {
     id <- stringr::str_replace(m, "\\.mod$", "")
     timestamps$models[[id]] <- get_time_last_updated_file(

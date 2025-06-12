@@ -6,11 +6,11 @@
 #' @param clear should existing notes be cleared? Default is `FALSE`
 #'
 #' @examples
-#' # example code
-#'
+#' \dontrun{
 #' luna_note("run1", "Initial model") # adds a note
 #' luna_note("run1", "Initial model", clear=TRUE) # first clears existing notes, then adds a note
 #' luna_note("run1", clear=TRUE) # only clears existing notes
+#' }
 #'
 #' @export
 #'

@@ -29,8 +29,8 @@ get_initial_estimates_from_data <- function(
       pars <- dplyr::bind_rows(pars, tmp)
     }
   }
-  est <- pars %>%
-    dplyr::summarise_all(function(x) signif(mean(x, na.rm=TRUE), 3)) %>%
+  est <- pars |>
+    dplyr::summarise_all(function(x) signif(mean(x, na.rm=TRUE), 3)) |>
     as.list()
   if(n_cmt >= 2) {
     est$QP1 <- est$CL
@@ -48,26 +48,26 @@ get_initial_estimates_from_data <- function(
 #'
 get_initial_estimates_from_individual_data <- function(data, ...) {
 
-  dat <- data %>%
+  dat <- data |>
    dplyr::mutate(dosenr = cumsum(EVID))
 
   ## Get first dose number for which more than two samples are available.
-  dose_nr <- dat %>%
-    dplyr::filter(MDV == 0) %>%
-    dplyr::group_by(dosenr) %>%
-    dplyr::summarise(n_obs = length(TIME)) %>%
-    dplyr::filter(n_obs >= 2) %>%
-    dplyr::slice(1) %>%
+  dose_nr <- dat |>
+    dplyr::filter(MDV == 0) |>
+    dplyr::group_by(dosenr) |>
+    dplyr::summarise(n_obs = length(TIME)) |>
+    dplyr::filter(n_obs >= 2) |>
+    dplyr::slice(1) |>
     dplyr::pull(dosenr)
 
   if(length(dose_nr) == 0) {
     ## take first observation for which at least one obs is available
-    dose_nr <- dat %>%
-      dplyr::filter(MDV == 0) %>%
-      dplyr::group_by(dosenr) %>%
-      dplyr::summarise(n_obs = length(TIME)) %>%
-      dplyr::filter(n_obs == 1) %>%
-      dplyr::slice(1) %>%
+    dose_nr <- dat |>
+      dplyr::filter(MDV == 0) |>
+      dplyr::group_by(dosenr) |>
+      dplyr::summarise(n_obs = length(TIME)) |>
+      dplyr::filter(n_obs == 1) |>
+      dplyr::slice(1) |>
       dplyr::pull(dosenr)
   }
   if(length(dose_nr) == 0) { # no observations in data
@@ -75,11 +75,11 @@ get_initial_estimates_from_individual_data <- function(data, ...) {
   }
 
   ## get peak value. This leads to estimate for V
-  tmp <- dat %>%
-    dplyr::filter(dosenr == dose_nr & MDV == 0) %>%
+  tmp <- dat |>
+    dplyr::filter(dosenr == dose_nr & MDV == 0) |>
     dplyr::slice(unique(c(which.max(DV), which.min(DV))))
-  dose <- dat %>%
-    dplyr::filter(dosenr == dose_nr & EVID == 1) %>%
+  dose <- dat |>
+    dplyr::filter(dosenr == dose_nr & EVID == 1) |>
     dplyr::pull(AMT)
   est <- c()
   est$V <- dose / max(tmp$DV)

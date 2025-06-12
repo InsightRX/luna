@@ -118,17 +118,17 @@ create_model <- function(
   if(verbose) cli::cli_alert_info("Parsing absorption model")
   if(lag_time) {
     if(route == "iv") {
-      cli::clia_alert_warning("IV administration selected, ignoring `lag_time`")
+      cli::cli_alert_warning("IV administration selected, ignoring `lag_time`")
     } else {
       mod <- pharmr::add_lag_time(mod)
     }
   }
   if(isTRUE(bioavailability)) {
-    mod <- mod %>%
+    mod <- mod |>
       pharmr::add_bioavailability(
         add_parameter = TRUE,
         logit_transform = TRUE
-      ) %>%
+      ) |>
       pharmr::set_initial_estimates(list(POP_BIO = 0.5))
   }
   if(n_transit_compartments > 0) {
@@ -146,7 +146,7 @@ create_model <- function(
   ## Elimination
   if(elimination == "michaelis-menten") {
     if(verbose) cli::cli_alert_info("Adding Michaelis-Menten elimination")
-    mod <- mod %>%
+    mod <- mod |>
       pharmr::set_michaelis_menten_elimination()
   }
 
@@ -157,7 +157,7 @@ create_model <- function(
     if(length(inits) == 0) {
       cli::cli_alert_warning("Could not compute initil estimates.")
     } else {
-      inits <- setNames(inits, paste0("POP_", names(inits)))
+      inits <- stats::setNames(inits, paste0("POP_", names(inits)))
       mod <- pharmr::set_initial_estimates(
         model = mod,
         inits = inits
@@ -269,8 +269,8 @@ create_model <- function(
       )
     }
     if(verbose) cli::cli_alert_info("Updating model dataset with provided dataset")
-    mod <- mod %>%
-      pharmr::unload_dataset() %>%
+    mod <- mod |>
+      pharmr::unload_dataset() |>
       pharmr::set_dataset(
         path_or_df = data,
         datatype = "nonmem"
@@ -351,13 +351,13 @@ get_route_from_data <- function(data, default = "iv") {
   if(is.null(data)) {
     return(default)
   }
-  dose_cmt <- data %>%
-    dplyr::filter(EVID == 1) %>%
-    dplyr::pull(CMT) %>%
+  dose_cmt <- data |>
+    dplyr::filter(EVID == 1) |>
+    dplyr::pull(CMT) |>
     unique()
-  obs_cmt <- data %>%
-    dplyr::filter(EVID == 0) %>%
-    dplyr::pull(CMT) %>%
+  obs_cmt <- data |>
+    dplyr::filter(EVID == 0) |>
+    dplyr::pull(CMT) |>
     unique()
   if(length(setdiff(dose_cmt, obs_cmt)) > 0) {
     route <- "oral"
