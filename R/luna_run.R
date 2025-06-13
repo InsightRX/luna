@@ -71,7 +71,7 @@ get_nmfe_location_for_run <- function(nmfe = NULL, verbose = FALSE) {
   if(!is.null(nmfe)) {
     if(verbose) cli::cli_alert_info("Using user-specified NONMEM version at {nmfe}")
   } else {
-    pharmpy_conf <- .luna_cache$get("pharmpy_conf")
+    pharmpy_conf <- get_pharmpy_conf()
     nm_path <- pharmpy_conf$pharmpy.plugins.nonmem$default_nonmem_path
     if(is.null(nm_path)) {
       cli::cli_abort("Pharmpy is not configured to run NONMEM.")

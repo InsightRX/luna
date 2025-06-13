@@ -27,6 +27,7 @@ call_pharmpy_tool <- function(
     )
   }
 
+  ## Run fit
   run_folder <- file.path(getwd(), id)
   withr::with_dir(run_folder, {
     res <- do.call(

@@ -53,7 +53,7 @@ run_nlme <- function(
   data = NULL,
   id,
   path = getwd(),
-  method = c("pharmpy", "psn", "nmfe"),
+  method = c("nmfe", "pharmpy", "psn"),
   nmfe = get_nmfe_location_for_run(),
   force = FALSE,
   console = FALSE,

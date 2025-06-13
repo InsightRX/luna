@@ -78,7 +78,7 @@ create_model <- function(
     estimation_options = list(),
     uncertainty_method = c("sandwich", "smat", "rmat", "efim"),
     tool = c("nonmem", "nlmixr", "nlmixr2"),
-    tables = c("parameters", "fit"),
+    tables = c("fit"),
     auto_init = TRUE,
     auto_stack_encounters = TRUE,
     mu_reference = FALSE,
