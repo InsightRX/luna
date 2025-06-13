@@ -7,7 +7,7 @@
 compare_nlme_fit <- function(..., return_object = FALSE) {
   fits <- list(...)
   if(length(fits) == 1) {
-    if(length(fits[[1]]) > 1) {
+    if(length(fits[[1]]) >= 1) {
       fits <- fits[[1]]
     }
   }
