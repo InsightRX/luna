@@ -89,7 +89,7 @@ create_modelfit_info_table <- function(fit) {
     c("- Run time:", paste0(x$runtime$estimation, " sec (estimation), ", x$runtime$total, " sec (total)"))
   ) |>
     t()
-  colnames(info_tab) <- c(paste0("Run: ", attr(fit, "model")$name), "Result")
+  colnames(info_tab) <- c("Result", "Value")
   rownames(info_tab) <- NULL
   info_tab
 }

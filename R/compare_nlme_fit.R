@@ -58,21 +58,20 @@ combine_info_columns <- function(
 ) {
   comb <- dplyr::bind_rows(
     purrr::map(fit_info, function(x) {
-      cols <- data.frame(x[[table]][,-1])
-      rownames(cols) <- x[[table]][,1]
+      run_name <- ifelse0(x$name, "n/a")
+      res <- data.frame(x[[table]][,-1])
+      first_label <- names(res)[1]
+      res[,1] <- as.character(res[,1])
+      cols <- dplyr::bind_rows(
+        data.frame(run_name) |> setNames(first_label),
+        res
+      )
+      rownames(cols) <- c("Run id", x[[table]][,1])
       t(cols) |>
         data.frame() # leverage bind_rows to match parameter names and insert NAs. bind_cols cannot do that.
     })
   ) |>
     t() |>
     data.frame() # pivot back again
-  run_names <- unlist(purrr::map(fit_info, function(x) x$name ))
-  table_colnames <- colnames(fit_info[[1]][[table]][,-1])
-  cols <- paste0(
-    rep(run_names, each = length(table_colnames)),
-    ": ",
-    rep(table_colnames, length(run_names))
-  )
-  names(comb) <- cols
   comb
 }
