@@ -2,10 +2,15 @@
 
 # Luna
 
-Luna is a tool to organize your NONMEM and nlmixr2 modeling workflows. 
-It is an acronym for Light-weight Universal NLME Admininstrator. 
+Luna is a tool to organize your NONMEM and nlmixr2 modeling workflows in 
+a structured and traceable manner. Luna is an acronym for 
+**Light-weight Universal NLME Admininstrator**
+
 The organization of projects is implemented through YAML files, which
-makes it easy to work with from either RStudio or from the command line.
+forces the modeler to define each step during the modeling process prior 
+to execution of the step. This ensures that all steps are properly
+logged and at any time during the model development a clear log of
+modeling steps is available.
 
 ## Goals and rationale
 
@@ -21,7 +26,7 @@ that, especially for advanced modelers or modelers who come in from a
 (software-) engineering background, often prefer an interface that is accessible
 either programmatically (from R) or from the command line (CLI). This is the
 primary target audience of Luna. However, we do think that many novice modelers will
-also like the flexibility of Luna, especially modelers with experience in R.
+also like the flexibility of Luna.
 
 __But why not just keep a modeling workflow in RMarkdown or Quarto notebooks__
 
@@ -33,7 +38,28 @@ will have features to export to R notebooks in the future, so the ability to
 use R notebooks for creating automated reports and slides will still be
 available.
 
-## Example usage
+# Implementation
+
+## Structure
+
+All high-level luna functions that the user needs start with `luna_`. For example,
+to run a model, use `luna_run(...)`, and to get a list of models in the current 
+project, use `luna_list()`. 
+
+The luna package also exposes various other functions to perform certain tasks, but those
+do not make use of the `luna` workflow and in principle should not be used within
+a luna workflow.
+
+## Dependencies and extensions
+
+Luna depends on Pharmpy and pharmr (the R wrapper around Pharmpy). The dependency
+is primarily to use parsing of models and result files. It can of course also
+leverage Pharmpy's model execution tools, bootstrap tool, and the automated model
+development tools. Luna is, however, flexible in what tools are used to perform 
+modeling analyses. It provides an interface to PsN for running models, bootstraps,
+and any other PsN tools.
+
+# Example usage
 
 ```
 library(luna)
@@ -85,6 +111,10 @@ luna_info()
 luna_compare()
 luna_help()
 luna_note()
+luna_tag()
+
+## External tools
+luna_tool()
 
 ## Diagnostic plots
 luna_gof()
@@ -93,5 +123,4 @@ luna_xpose()
 ## Misc
 luna_dataset()
 luna_tables()
-luna_sync() # TODO
 ```

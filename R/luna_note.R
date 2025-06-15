@@ -4,6 +4,7 @@
 #' @inheritParams luna_run
 #' @param note note(s) to add (character vector)
 #' @param clear should existing notes be cleared? Default is `FALSE`
+#' @param element what element in the YAML contains the notes, default is `notes`.
 #'
 #' @examples
 #' \dontrun{
@@ -15,11 +16,12 @@
 #' @export
 #'
 luna_note <- function(
-  id,
+  id = NULL,
   note = NULL,
   clear = FALSE,
   force = TRUE,
-  verbose = TRUE
+  verbose = FALSE,
+  element = "notes"
 ) {
 
   is_luna_cache_available(abort = TRUE)
@@ -34,40 +36,48 @@ luna_note <- function(
   )
 
   ## update yaml and cache
+  if(is.null(id)) {
+    cli::cli_abort("Please specify an `id` to read or update metadata for.")
+  }
   if(verbose)
     cli::cli_alert_info("Reading {name} project file and finding data for {id}")
   project <- .luna_cache$get("project")
   run <- pluck_entry(project$yaml$runs, id)
-  run$notes <- c(
-    run$notes,
-    note
-  )
 
-  if(!clear && is.null(note)) {
-    cli::cli_abort("Either use `note` or `clear=TRUE` to set or clear notes.")
-  }
+  if(!clear && is.null(note)) { # just show current notes / tags
+    if(is.null(run[[element]])) {
+      cli::cli_alert_info("No entry found for {id}.")
+    }
+    return(run[[element]])
+  } else { # add or clear notes/tags
 
-  ## Clear existing notes
-  if(clear) {
-    run$notes <- NULL
-  }
+    ## Clear existing notes
+    if(clear) {
+      run[[element]] <- NULL
+    }
 
-  ## Add note
-  if(!is.null(note)) {
-    project$yaml$runs <- insert_entry(
-      x = project$yaml$runs,
-      id = id,
-      entry = run
+    ## Add note
+    run[[element]] <- c(
+      run[[element]],
+      note
     )
+    if(!is.null(note)) {
+      project$yaml$runs <- insert_entry(
+        x = project$yaml$runs,
+        id = id,
+        entry = run
+      )
+    }
+
+    ## Update cache
+    .luna_cache$set("project", project)
+
+    ## Write yaml back to disk
+    yaml_file <- file.path(folder, paste0(name, ".yaml"))
+    yaml::write_yaml(project$yaml, file = yaml_file)
+    if(verbose)
+      cli::cli_alert_success("{element} updated for {id}")
+
   }
-
-  ## Update cache
-  .luna_cache$set("project", project)
-
-  ## Write yaml back to disk
-  yaml_file <- file.path(folder, paste0(name, ".yaml"))
-  yaml::write_yaml(project$yaml, file = yaml_file)
-  if(verbose)
-    cli::cli_alert_success("Notes updated for {id}")
 
 }

@@ -20,6 +20,9 @@ runs_as_table <- function(x) {
       "description" = sapply(models, function(y) {
         ifelse0(y$description, "")
       }),
+      "tag" = sapply(models, function(y) {
+        ifelse0(paste(y$tag, collapse = ", "), "")
+      }),
       "notes" = sapply(models, function(y) {
         ifelse0(paste(y$notes, collapse = ", "), "")
       }),
@@ -46,6 +49,7 @@ runs_as_table <- function(x) {
       id = NA,
       reference = 1,
       description = 2,
+      tag = 1,
       notes = 2,
       status = NA,
       finished = NA,

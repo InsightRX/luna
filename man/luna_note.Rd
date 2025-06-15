@@ -5,7 +5,14 @@
 \title{Annotate a run
 Either add a note or clear notes from a run}
 \usage{
-luna_note(id, note = NULL, clear = FALSE, force = TRUE, verbose = TRUE)
+luna_note(
+  id = NULL,
+  note = NULL,
+  clear = FALSE,
+  force = TRUE,
+  verbose = FALSE,
+  element = "notes"
+)
 }
 \arguments{
 \item{id}{run id, e.g. \code{run1}. This will be the folder in which the NONMEM
@@ -14,6 +21,8 @@ model is run.}
 \item{note}{note(s) to add (character vector)}
 
 \item{clear}{should existing notes be cleared? Default is \code{FALSE}}
+
+\item{element}{what element in the YAML contains the notes, default is \code{notes}.}
 }
 \description{
 Annotate a run
