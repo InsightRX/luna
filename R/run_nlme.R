@@ -210,12 +210,12 @@ run_nlme <- function(
     txt_summ <- knitr::kable(fit_summ, row.names = FALSE, format = "simple")
     writeLines(
       txt_summ,
-      paste0("fit_summary_", id, ".txt")
+      paste0(id, "_fit_summary.txt")
     )
     par_est <- create_modelfit_parameter_table(fit)
     write.csv(
       par_est,
-      paste0("fit_parameters_", id, ".csv"),
+      paste0(id, "_fit_parameters.csv"),
       quote=F, row.names=F
     )
     if(verbose) cli::cli_process_done()
