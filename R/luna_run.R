@@ -18,7 +18,15 @@ luna_run <- function(
   ## Get cache and config
   is_luna_cache_available(abort = TRUE)
   config <- get_luna_config()
-  folder <- .luna_cache$get("folder")
+  name <- .luna_cache$get("project")$metadata$name
+  folder <- .luna_cache$get("project")$metadata$folder
+
+  ## make sure we're up to date
+  luna_load_project(
+    name = name,
+    folder = folder,
+    verbose = FALSE
+  )
 
   # Transform folder path to absolute path
   folder <- normalizePath(folder, mustWork = TRUE)
@@ -43,10 +51,10 @@ luna_run <- function(
   )
 
   # Determine nmfe location to use.
-  method <- config$tools$modelfit$method
-  if(is.null(method)) {
-    cli::cli_abort("Run method not specified")
+  if(is.null(config$tools$modelfit$method)) {
+    cli::cli_alert_warning("Default method for modelfit not configured, using pharmpy dispatcher.")
   }
+  method <- ifelse0(config$tools$modelfit$method, "pharmpy")
   fit <- run_nlme(
     model = model,
     id = id,

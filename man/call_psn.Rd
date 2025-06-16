@@ -8,8 +8,9 @@ call_psn(
   model_file,
   output_file,
   path,
+  options = c(),
   tool = c("execute", "vpc", "bootstrap", "sir", "proseval"),
-  console = FALSE,
+  console = TRUE,
   verbose = TRUE
 )
 }
@@ -19,6 +20,9 @@ call_psn(
 \item{output_file}{output file, e.g. "run.lst"}
 
 \item{path}{run folder path, e.g. "run1"}
+
+\item{options}{a vector of arguments to pass to the PsN tool, e.g.
+\verb{c("--samples=100", "--dir="test")}}
 
 \item{console}{show output from nmfe in console? Default \code{FALSE}}
 

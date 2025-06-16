@@ -1,16 +1,19 @@
 #' Call PsN
 #'
 #' @inheritParams call_nmfe
+#' @param options a vector of arguments to pass to the PsN tool, e.g.
+#' `c("--samples=100", "--dir="test")`
 #'
 #' @export
 #'
 call_psn <- function(
-    model_file,
-    output_file,
-    path,
-    tool = c("execute", "vpc", "bootstrap", "sir", "proseval"),
-    console = FALSE,
-    verbose = TRUE
+  model_file,
+  output_file,
+  path,
+  options = c(),
+  tool = c("execute", "vpc", "bootstrap", "sir", "proseval"),
+  console = TRUE,
+  verbose = TRUE
 ) {
 
   tool <- match.arg(tool)
@@ -18,12 +21,8 @@ call_psn <- function(
   # Transform folder path to absolute path
   path <- normalizePath(path, mustWork = TRUE)
 
-  if(verbose) {
-    cli::cli_process_start(
-      paste0("Starting PsN {tool} run in ", path),
-      on_exit = "failed"
-    )
-  }
+  if(verbose)
+    cli::cli_alert_info(paste0("Starting PsN {tool} run in ", path))
 
   ## Output to console or to file?
   if(console) {
@@ -33,26 +32,28 @@ call_psn <- function(
     stdout <- file.path(path, "stdout")
     stderr <- file.path(path, "stderr")
   }
-  curr_dir <- getwd()
-  on.exit({
-    setwd(curr_dir)
-  })
-  setwd(path)
-  suppressWarnings(
-    res <- system2(
-      command = tool,
-      args = model_file,
-      wait = TRUE,
-      stdout = stdout,
-      stderr = stderr
+
+  withr::with_dir(path, {
+    suppressWarnings(
+      res <- system2(
+        command = tool,
+        args = c(basename(model_file), options),
+        wait = TRUE,
+        stdout = stdout,
+        stderr = stderr
+      )
     )
-  )
+  })
   cli::cli_process_done()
   if(length(res) == 1 && is.numeric(res)) {
     if(res == 127) {
       cli::cli_abort("PsN {tool} was not found. Make sure PsN is installed in your environment and on the path.")
     } else {
-      cli::cli_abort("A unknown error occurred running PsN {tool}. Error code: {res}.")
+      if(res != 0) {
+        cli::cli_abort("A unknown error occurred running PsN {tool}. Error code: {res}.")
+      } else {
+        cli::cli_alert_success("PsN {tool} done.")
+      }
     }
   }
 }
