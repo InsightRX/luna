@@ -35,7 +35,7 @@ Suggests:
     rmarkdown,
     Rapp
 License: MIT + file LICENSE
-URL: https://github.com/InsightRX/uno, https://insightrx.github.io/uno/
+URL: https://github.com/InsightRX/uno, https://insightrx.github.io/uno/, https://insightrx.github.io/luna/
 LazyData: TRUE
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
