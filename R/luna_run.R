@@ -15,6 +15,8 @@ luna_run <- function(
   ...
 ) {
 
+  id <- validate_id(id)
+
   ## Get cache and config
   is_luna_cache_available(abort = TRUE)
   config <- get_luna_config()

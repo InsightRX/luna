@@ -4,10 +4,10 @@
 \alias{luna_dataset}
 \title{Get data from a model}
 \usage{
-luna_dataset(run, folder = ".")
+luna_dataset(id, folder = ".")
 }
 \arguments{
-\item{run}{run id, e.g. \code{run1}}
+\item{id}{run id, e.g. \code{run1}}
 
 \item{folder}{folder containing the model file}
 }

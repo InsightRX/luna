@@ -9,7 +9,7 @@ luna_xpose <- function(
   id,
   verbose = TRUE
 ) {
-  runno <- stringr::str_replace(id, "run", "")
+  runno <- stringr::str_replace(as.character(id), "run", "")
   xpdb <- xpose_data(runno = runno)
   xpdb
 }

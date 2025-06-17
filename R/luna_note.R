@@ -24,6 +24,7 @@ luna_note <- function(
   element = "notes"
 ) {
 
+  id <- validate_id(id)
   is_luna_cache_available(abort = TRUE)
 
   ## make sure we're up to date
@@ -36,9 +37,6 @@ luna_note <- function(
   )
 
   ## update yaml and cache
-  if(is.null(id)) {
-    cli::cli_abort("Please specify an `id` to read or update metadata for.")
-  }
   if(verbose)
     cli::cli_alert_info("Reading {name} project file and finding data for {id}")
   project <- .luna_cache$get("project")
