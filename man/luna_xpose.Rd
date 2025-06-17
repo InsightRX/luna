@@ -4,10 +4,12 @@
 \alias{luna_xpose}
 \title{Read tables for a model and parse into an Xpose database}
 \usage{
-luna_xpose(id, verbose = TRUE)
+luna_xpose(id, folder = NULL, verbose = TRUE)
 }
 \arguments{
 \item{id}{run id}
+
+\item{folder}{folder}
 
 \item{verbose}{verbose output?}
 }

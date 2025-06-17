@@ -13,13 +13,18 @@ luna_tables <- function(
   if(verbose)
     cli::cli_alert_info("Looking for output tables for run {id}")
   if(is.null(folder)) {
-    is_luna_cache_available(abort = TRUE)
-    folder <- .luna_cache$get("project")$metadata$folder
+    if(is_luna_cache_available(abort = FALSE)) {
+      folder <- .luna_cache$get("project")$metadata$folder
+    } else {
+      folder <- "."
+    }
   }
-  model_file <- paste0(id, ".mod")
-  model <- pharmr::read_model(file.path(folder, model_file))
+  model_file <- file.path(folder, id, "run.mod")
+  if(!file.exists(model_file))
+    cli::cli_abort("Model file not found in run folder")
+  model <- pharmr::read_model(model_file)
   get_tables_from_fit(
     model,
-    path = folder
+    path = file.path(folder, id)
   )
 }
