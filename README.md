@@ -112,6 +112,7 @@ luna_compare()
 luna_help()
 luna_note()
 luna_tag()
+luna_edit()
 
 ## External tools
 luna_tool()
