@@ -19,7 +19,7 @@ create_model(
   name = NULL,
   estimation_method = c("foce", "saem"),
   estimation_options = list(),
-  uncertainty_method = c("sandwich", "smat", "rmat", "efim"),
+  uncertainty_method = c("sandwich", "smat", "rmat", "efim", "none"),
   tool = c("nonmem", "nlmixr", "nlmixr2"),
   tables = c("fit"),
   auto_init = TRUE,

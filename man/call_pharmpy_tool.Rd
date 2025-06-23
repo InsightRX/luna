@@ -5,7 +5,7 @@
 \title{Generic function for running a pharmpy tool, like bootstrap,
 or modelsearch. A separate function is available for \code{fit()}}
 \usage{
-call_pharmpy_tool(id, model, results, tool = "bootstrap", verbose = FALSE, ...)
+call_pharmpy_tool(id, model, results, tool, verbose = FALSE, ...)
 }
 \arguments{
 \item{id}{model id. Optional. If not specified, will generate random modelfit

@@ -15,7 +15,7 @@ call_pharmpy_tool <- function(
   id,
   model,
   results,
-  tool = "bootstrap",
+  tool,
   verbose = FALSE,
   ...
 ) {
@@ -29,6 +29,8 @@ call_pharmpy_tool <- function(
 
   ## Run fit
   run_folder <- file.path(getwd(), id)
+  if(!dir.exists(run_folder))
+    dir.create(run_folder)
   withr::with_dir(run_folder, {
     res <- do.call(
       paste0("run_", tool),

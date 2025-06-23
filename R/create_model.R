@@ -76,7 +76,7 @@ create_model <- function(
     name = NULL,
     estimation_method = c("foce", "saem"),
     estimation_options = list(),
-    uncertainty_method = c("sandwich", "smat", "rmat", "efim"),
+    uncertainty_method = c("sandwich", "smat", "rmat", "efim", "none"),
     tool = c("nonmem", "nlmixr", "nlmixr2"),
     tables = c("fit"),
     auto_init = TRUE,
@@ -93,6 +93,8 @@ create_model <- function(
   tool <- match.arg(tool)
   estimation_method <- match.arg(estimation_method)
   uncertainty_method <- match.arg(uncertainty_method)
+  if(uncertainty_method == "none")
+    uncertainty_method <- NULL
 
   ## identify tool
   if(tool == "nlmixr2") { # pharmpy identifies "nlmixr2" as "nlmixr"
@@ -216,7 +218,8 @@ create_model <- function(
       method = estimation_method,
       idx = n_steps - 1,
       interaction = TRUE,
-      tool_options = tool_options
+      tool_options = tool_options,
+      parameter_uncertainty_method = uncertainty_method
     )
   }
 
