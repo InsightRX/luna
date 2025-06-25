@@ -13,7 +13,6 @@ luna_tool <- function(
   id,
   tool,
   as_job = TRUE,
-  options = list(),
   verbose = TRUE
 ) {
 
@@ -29,8 +28,12 @@ luna_tool <- function(
         {
           devtools::load_all("~/git/pharmaai/luna")
           luna::luna_load_project(name, folder)
-          luna::luna_tool(id, tool, as_job = FALSE, options = options,
-                          verbose = verbose)
+          luna::luna_tool(
+            id,
+            tool,
+            as_job = FALSE,
+            verbose = verbose
+          )
         }
       )
     })
@@ -65,7 +68,7 @@ luna_tool <- function(
   }
   results <- pharmr::read_modelfit_results(model_run_file)
 
-  ## Determine method
+  ## Determine method and options
   method <- ifelse0(config$tools[[tool]]$method, "pharmpy")
   if(stringr::str_detect(tool_obj$tool, "::")) {
     full_tool <- stringr::str_split(tool_obj$tool, "::")[[1]]
@@ -74,6 +77,7 @@ luna_tool <- function(
   if(!method %in% c("psn", "pharmpy")) {
     cli::cli_abort("Requested tools from {method} not currently supported in luna.")
   }
+  options <- tool_obj$options[[1]]
 
   ## Determine what to do
   if(method == "pharmpy") {
