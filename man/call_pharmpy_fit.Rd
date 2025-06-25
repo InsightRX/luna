@@ -4,7 +4,13 @@
 \alias{call_pharmpy_fit}
 \title{Run model with pharmpy}
 \usage{
-call_pharmpy_fit(model_file, path, console = TRUE, verbose = TRUE)
+call_pharmpy_fit(
+  model_file,
+  path,
+  clean = TRUE,
+  console = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{model_file}{model file, e.g. "run.mod"}

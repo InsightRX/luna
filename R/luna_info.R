@@ -47,6 +47,11 @@ luna_info <- function(
   }
   attr(fit, "info") <- fit_info
 
+  ## Attach tool info
+  defined_tools <- unique(unlist(lapply(run_info$tools, function(x) x$tool)))
+  tools_info <- get_tools_info(id, folder, defined_tools)
+  attr(fit, "tools") <- tools_info
+
   ## attach model object
   model <- pharmr::read_model(
     path = model_file

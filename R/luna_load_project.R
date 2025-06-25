@@ -28,7 +28,7 @@ luna_load_project <- function(
 
   if(verbose) cli::cli_alert_info("Reading project YAML file")
   filename <- file.path(folder, paste0(name, ".yaml"))
-  yaml_data <- yaml::read_yaml(file = filename)
+  yaml_data <- read_yaml_safe(filename)
 
   project <- list(
     yaml = yaml_data,

@@ -5,7 +5,18 @@
 \title{Generic function for running a pharmpy tool, like bootstrap,
 or modelsearch. A separate function is available for \code{fit()}}
 \usage{
-call_pharmpy_tool(id, model, results, tool, verbose = FALSE, ...)
+call_pharmpy_tool(
+  id,
+  model = NULL,
+  results = NULL,
+  tool = NULL,
+  folder = NULL,
+  clean = TRUE,
+  verbose = TRUE,
+  force = FALSE,
+  options = list(),
+  ...
+)
 }
 \arguments{
 \item{id}{model id. Optional. If not specified, will generate random modelfit
@@ -15,6 +26,11 @@ id. The \code{id} will be used to create the run folder.}
 \code{luna::create_model()}.}
 
 \item{verbose}{verbose output?}
+
+\item{...}{passed onto tool}
+
+\item{clear}{if one or more run folders exists for the tool,
+do we want to remove them first?}
 }
 \value{
 fit object

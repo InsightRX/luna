@@ -12,11 +12,12 @@ run_nlme(
   method = c("nmfe", "pharmpy", "psn"),
   nmfe = get_nmfe_location_for_run(),
   force = FALSE,
-  console = TRUE,
+  console = FALSE,
   save_fit = TRUE,
   save_summary = TRUE,
   auto_stack_encounters = TRUE,
   clean = TRUE,
+  as_job = FALSE,
   verbose = TRUE
 )
 }
@@ -67,6 +68,8 @@ individual ispresent but is included in the dataset as time-after-dose and
 not actual time since first overall dose.}
 
 \item{clean}{clean up run folder after NONMEM execution?}
+
+\item{as_job}{run as RStudio job?}
 
 \item{verbose}{verbose output?}
 }

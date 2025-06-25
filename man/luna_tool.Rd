@@ -6,10 +6,11 @@
 This can be used e.g. for bootstraps and VPCs. The function is implemented
 in a modular way so that it can be easily extended.}
 \usage{
-luna_tool(id, tool, verbose = TRUE)
+luna_tool(id, tool = NULL, as_job = FALSE, verbose = TRUE)
 }
 \arguments{
-\item{id}{run id}
+\item{id}{run id, e.g. \code{run1}. This will be the folder in which the NONMEM
+model is run.}
 
 \item{tool}{id for the tool, needs to be referenced in project YAML. See examples
 for further details.}

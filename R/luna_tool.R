@@ -2,7 +2,7 @@
 #' This can be used e.g. for bootstraps and VPCs. The function is implemented
 #' in a modular way so that it can be easily extended.
 #'
-#' @param id run id
+#' @inheritParams luna_run
 #' @param tool id for the tool, needs to be referenced in project YAML. See examples
 #' for further details.
 #' @param verbose verbose output
@@ -11,14 +11,39 @@
 #'
 luna_tool <- function(
   id,
-  tool,
+  tool = NULL,
+  as_job = FALSE,
   verbose = TRUE
 ) {
+
+  id <- validate_id(id)
 
   is_luna_cache_available(abort = TRUE)
   config <- get_luna_config()
   name <- .luna_cache$get("project")$metadata$name
   folder <- .luna_cache$get("project")$metadata$folder
+
+  if(as_job) {
+    if(is.null(tool))
+      cli::cli_abort("Please specify which `tool` to run as job")
+    suppressMessages({
+      jobid <- job::job(
+        title = paste0(id, "-", tool),
+        {
+          devtools::load_all("~/git/pharmaai/luna")
+          luna::luna_load_project(name, folder)
+          luna::luna_tool(
+            id,
+            tool = tool,
+            as_job = FALSE,
+            verbose = verbose
+          )
+        }
+      )
+    })
+    cli::cli_alert_info("Job with id {jobid} started")
+    return(invisible(jobid))
+  }
 
   ## make sure we're up to date
   luna_load_project(
@@ -27,13 +52,17 @@ luna_tool <- function(
     verbose = FALSE
   )
 
-
   # Transform folder path to absolute path
   folder <- normalizePath(folder, mustWork = TRUE)
 
   # Load project data
   project <- .luna_cache$get("project")
   run <- pluck_entry(project$yaml$runs, id = id)
+  if(is.null(tool)) {
+    specified_tools <- unique(unlist(lapply(run$tools, function(x) { x$tool })))
+    cli::cli_alert_info("Please specify `tool` to run. Specified tools for this run: {specified_tools}")
+    return(invisible())
+  }
   tool_obj <- pluck_entry(run$tools, id = tool, el = "tool")
   if(is.null(tool_obj)) {
     cli::cli_abort("No `{tool}` run defined for run `{id}`")
@@ -48,7 +77,7 @@ luna_tool <- function(
   }
   results <- pharmr::read_modelfit_results(model_run_file)
 
-  ## Determine method
+  ## Determine method and options
   method <- ifelse0(config$tools[[tool]]$method, "pharmpy")
   if(stringr::str_detect(tool_obj$tool, "::")) {
     full_tool <- stringr::str_split(tool_obj$tool, "::")[[1]]
@@ -57,6 +86,7 @@ luna_tool <- function(
   if(!method %in% c("psn", "pharmpy")) {
     cli::cli_abort("Requested tools from {method} not currently supported in luna.")
   }
+  options <- tool_obj$options[[1]]
 
   ## Determine what to do
   if(method == "pharmpy") {
@@ -64,7 +94,8 @@ luna_tool <- function(
       id = id,
       model = model,
       results = results,
-      tool = tool
+      tool = tool,
+      options = options
     )
   } else if(method == "psn") {
 

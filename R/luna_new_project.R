@@ -55,7 +55,7 @@ luna_new_project <- function(
   # create a project object from template
   if(!is.null(template)) {
     template <- stringr::str_replace(template, "\\.yaml$", "")
-    project <- yaml::read_yaml(
+    project <- read_yaml_safe(
       file.path(system.file("templates", package = "luna"),
       paste0(template, ".yaml"))
     )
