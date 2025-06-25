@@ -2,7 +2,11 @@
 #'
 #' @inheritParams call_pharmpy_tool
 #'
-get_last_pharmpy_runfolder <- function(id, folder = NULL, tool) {
+get_pharmpy_runfolders <- function(
+  id,
+  folder = NULL,
+  tool
+) {
   if(is.null(folder)) {
     folder <- getwd()
   }
@@ -14,6 +18,6 @@ get_last_pharmpy_runfolder <- function(id, folder = NULL, tool) {
   )
   pattern <- paste0("^", tool, "[0-9]+?$")
   tool_dirs <- tool_dirs[stringr::str_detect(tool_dirs, pattern)]
-  last_dir <- tool_dirs[which.max(stringr::str_rank(tool_dirs, numeric = TRUE))]
+  last_dir <- tool_dirs[order(stringr::str_rank(tool_dirs, numeric = TRUE))]
   last_dir
 }

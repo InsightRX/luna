@@ -6,7 +6,8 @@
 #' @param id model id. Optional. If not specified, will generate random modelfit
 #' id. The `id` will be used to create the run folder.
 #' @param verbose verbose output?
-#' @param force if results exists, overwrite?
+#' @param clear if one or more run folders exists for the tool,
+#' do we want to remove them first?
 #' @param ... passed onto tool
 #'
 #' @return fit object
@@ -19,6 +20,7 @@ call_pharmpy_tool <- function(
   results = NULL,
   tool = NULL,
   folder = NULL,
+  clean = TRUE,
   verbose = TRUE,
   force = FALSE,
   ...
@@ -59,6 +61,20 @@ call_pharmpy_tool <- function(
   run_folder <- file.path(getwd(), id)
   if(!dir.exists(run_folder))
     run_folder <- create_run_folder(id, folder, force, verbose)
+  tool_runfolders <- get_pharmpy_runfolders(id, folder, tool)
+  if(length(tool_runfolders) > 0) {
+    if(clean) {
+      cli::cli_alert_info("Cleaning {length(tool_runfolders)} existing {tool} folders for {id}")
+      for(f in tool_runfolders) {
+        full_folder_path <- file.path(run_folder, f)
+        if(f != "") {
+          unlink(full_folder_path, recursive = TRUE, force = TRUE)
+        }
+      }
+    } else {
+      cli::cli_alert_info("Leaving {length(tool_runfolders)} existing {tool} folders for {id}. Use `clean=TRUE` to remove.")
+    }
+  }
 
   if(verbose) {
     cli::cli_alert_info(
@@ -98,12 +114,12 @@ call_pharmpy_tool <- function(
 
   ## Post-processing, tool-specific
   if(tool == "simulation") {
-    last_pharmpy_runfolder <- get_last_pharmpy_runfolder(
+    pharmpy_runfolders <- get_pharmpy_runfolders(
       id = id,
       folder = folder,
       tool = tool
     )
-    full_table_path <- file.path(run_folder, last_pharmpy_runfolder, "models", "sim")
+    full_table_path <- file.path(run_folder, tail(pharmpy_runfolders, 1), "models", "sim")
     tables <- get_tables_from_fit(
       model,
       path = full_table_path

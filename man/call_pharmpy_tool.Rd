@@ -11,6 +11,7 @@ call_pharmpy_tool(
   results = NULL,
   tool = NULL,
   folder = NULL,
+  clean = TRUE,
   verbose = TRUE,
   force = FALSE,
   ...
@@ -25,9 +26,10 @@ id. The \code{id} will be used to create the run folder.}
 
 \item{verbose}{verbose output?}
 
-\item{force}{if results exists, overwrite?}
-
 \item{...}{passed onto tool}
+
+\item{clear}{if one or more run folders exists for the tool,
+do we want to remove them first?}
 }
 \value{
 fit object
