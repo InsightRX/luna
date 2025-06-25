@@ -3,15 +3,13 @@
 #' @param id run id, e.g. `run1`. This will be the folder in which the NONMEM
 #' model is run.
 #' @param folder path to folder containing the model file. Default is current directory.
-#' @param diagnostic run a diagnostic for the run, like a bootstrap or vpc. The
-#' id `diagnostic` needs to be defined in the project yaml file.
 #'
 #' @export
 luna_run <- function(
   id,
   folder,
   nmfe = NULL,
-  diagnostic = NULL,
+  as_job = FALSE,
   ...
 ) {
 
@@ -60,16 +58,15 @@ luna_run <- function(
     cli::cli_alert_warning("Default method for modelfit not configured, using pharmpy dispatcher.")
   }
   method <- ifelse0(config$tools$modelfit$method, "pharmpy")
-  fit <- run_nlme(
+  run_nlme(
     model = model,
     id = id,
     path = folder,
     verbose = TRUE,
     method = method,
+    as_job = as_job,
     ...
   )
-
-  fit
 }
 
 #' Helper function to determine nmfe location from various sources

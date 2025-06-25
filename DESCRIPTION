@@ -21,7 +21,9 @@ Imports:
     cli, 
     cachem,
     vpc,
-    stats
+    stats,
+    job,
+    rstudioapi
 Suggests: 
     httr,
     ellmer,

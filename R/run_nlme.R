@@ -44,6 +44,7 @@
 #' individual ispresent but is included in the dataset as time-after-dose and
 #' not actual time since first overall dose.
 #' @param clean clean up run folder after NONMEM execution?
+#' @param as_job run as RStudio job?
 #' @param verbose verbose output?
 #'
 #' @export
@@ -61,6 +62,7 @@ run_nlme <- function(
   save_summary = TRUE,
   auto_stack_encounters = TRUE,
   clean = TRUE,
+  as_job = FALSE,
   verbose = TRUE
 ) {
 
@@ -114,12 +116,33 @@ run_nlme <- function(
 
   ## Run NONMEM and direct stdout/stderr
   if(method == "pharmpy") {
-    call_pharmpy_fit(
-      model_file = model_file,
-      path = fit_folder,
-      verbose = verbose,
-      console = console
-    )
+    if(as_job) {
+      if(! rstudioapi::isAvailable()) {
+        cli::cli_abort("RStudio API not available, cannot start job.")
+      }
+      suppressMessages({
+        jobid <- job::job(
+          title = paste0(id, "-", "modelfit"),
+          {
+            call_pharmpy_fit(
+              model_file = model_file,
+              path = fit_folder,
+              verbose = verbose,
+              console = console
+            )
+          }
+        )
+      })
+      cli::cli_alert_info("Job with id {jobid} started")
+      return(invisible(jobid))
+    } else {
+      call_pharmpy_fit(
+        model_file = model_file,
+        path = fit_folder,
+        verbose = verbose,
+        console = console
+      )
+    }
   } else if(method ==  "nmfe") {
     call_nmfe(
       model_file = model_file,
