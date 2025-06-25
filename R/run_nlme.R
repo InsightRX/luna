@@ -57,7 +57,7 @@ run_nlme <- function(
   method = c("nmfe", "pharmpy", "psn"),
   nmfe = get_nmfe_location_for_run(),
   force = FALSE,
-  console = TRUE,
+  console = FALSE,
   save_fit = TRUE,
   save_summary = TRUE,
   auto_stack_encounters = TRUE,

@@ -10,7 +10,9 @@ get_tools_info <- function(id, folder, tools = c()) {
   folders <- list.dirs(run_folder, full.names = FALSE, recursive = FALSE)
   tool_list <- list()
   for(tool in tools) {
-    tool_list[tool] <- folders[stringr::str_detect(folders, tool)]
+    if(any(stringr::str_detect(folders, tool))) {
+      tool_list[tool] <- folders[stringr::str_detect(folders, tool)]
+    }
   }
   tool_list
 }
