@@ -75,22 +75,28 @@ create_modelfit_info_table <- function(fit) {
     ref_run <- ""
   }
   condition_number <- ifelse(!is.null(x$condition_number), signif(x$condition_number, 3), NA)
+  tools <- attr(fit, "tools")
+  model <- attr(fit, "model")
+  est_steps <- model$execution_steps$to_dataframe()
   info_tab <- data.frame(
     c("OFV:", paste0(ofv, " (", sign, dofv, ref_run, ")")),
     c("Condition number:", condition_number),
     c("ETA Shrinkage: ", paste0(paste0(eta_shrinkage$ETA, ": ", eta_shrinkage$value, " %"), collapse=", ")),
     c("Run info:", ""),
+    c("- Estimation step(s): ", ifelse0(paste0(est_steps$method, collapse = ", "), "NA")),
     c("- Minimization success:", x$run_info$minimization_successful),
     c("- Covariance step success:", x$run_info$covstep_successful),
     c("- Evaluations: ", x$function_evaluations),
     c("- Termination cause:", ifelse0(x$run_info$termination_cause, "")),
     c("- Warnings:", paste(x$run_info$warnings, collapse = " / ")),
     c("- Sign. digits:", x$run_info$significant_digits),
-    c("- Run time:", paste0(x$runtime$estimation, " sec (estimation), ", x$runtime$total, " sec (total)"))
+    c("- Run time:", paste0(x$runtime$estimation, " sec (estimation), ", x$runtime$total, " sec (total)")),
+    c("Tool folders:", ifelse0(paste0(tools, collapse = ", "), "None"))
   ) |>
     t()
   colnames(info_tab) <- c("Result", "Value")
   rownames(info_tab) <- NULL
+
   info_tab
 }
 
