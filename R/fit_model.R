@@ -95,7 +95,7 @@ fit_model_nonmem <- function(model, data = NULL, ...) {
 
   ## Return pharmpy results object, attach output data as well
   res <- pharmr::read_modelfit_results(model_filename)
-  attr(res, "sdtab") <- vpc::read_table_nm(file.path(folder, "sdtab1"))
+  attr(res, "sdtab") <- read_table_nm(file.path(folder, "sdtab1"))
 
   res
 }
