@@ -1,6 +1,7 @@
 tools:
   nmfe_wrapper:
-    method: luna|pharmpy|psn
+    method: nmfe|pharmpy|psn
+    console: true|false # only affects `nmfe` method
   bootstrap:
     method: pharmpy|psn
     samples: 500

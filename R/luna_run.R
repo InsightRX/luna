@@ -58,6 +58,7 @@ luna_run <- function(
     cli::cli_alert_warning("Default method for modelfit not configured, using pharmpy dispatcher.")
   }
   method <- ifelse0(config$tools$modelfit$method, "pharmpy")
+  console <- ifelse0(config$tools$modelfit$console, TRUE)
   run_nlme(
     model = model,
     id = id,
@@ -65,6 +66,7 @@ luna_run <- function(
     verbose = TRUE,
     method = method,
     as_job = as_job,
+    console = console,
     ...
   )
 }

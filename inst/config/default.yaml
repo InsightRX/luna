@@ -1,6 +1,7 @@
 tools:
   modelfit:
     method: pharmpy
+    console: true
   bootstrap:
     method: pharmpy
     samples: 500
