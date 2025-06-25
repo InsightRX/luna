@@ -11,7 +11,6 @@ luna_edit <- function(
   folder = NULL,
   verbose = TRUE
 ) {
-  id <- validate_id(id)
   if(is.null(folder)) {
     if(is_luna_cache_available(abort = FALSE)) {
       folder <- .luna_cache$get("project")$metadata$folder
@@ -19,6 +18,7 @@ luna_edit <- function(
       folder = "."
     }
   }
+  id <- validate_id(id)
   model_file <- file.path(folder, paste0(id, ".mod"))
   if(file.exists(model_file)) {
     if(verbose)

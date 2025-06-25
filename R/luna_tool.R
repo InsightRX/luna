@@ -2,7 +2,7 @@
 #' This can be used e.g. for bootstraps and VPCs. The function is implemented
 #' in a modular way so that it can be easily extended.
 #'
-#' @param id run id
+#' @inheritParams luna_run
 #' @param tool id for the tool, needs to be referenced in project YAML. See examples
 #' for further details.
 #' @param verbose verbose output
@@ -12,6 +12,8 @@
 luna_tool <- function(
   id,
   tool,
+  as_job = TRUE,
+  options = list(),
   verbose = TRUE
 ) {
 
@@ -20,13 +22,28 @@ luna_tool <- function(
   name <- .luna_cache$get("project")$metadata$name
   folder <- .luna_cache$get("project")$metadata$folder
 
+  if(as_job) {
+    suppressMessages({
+      jobid <- job::job(
+        title = paste0(id, "-", tool),
+        {
+          devtools::load_all("~/git/pharmaai/luna")
+          luna::luna_load_project(name, folder)
+          luna::luna_tool(id, tool, as_job = FALSE, options = options,
+                          verbose = verbose)
+        }
+      )
+    })
+    cli::cli_alert_info("Job with id {jobid} started")
+    return(invisible(jobid))
+  }
+
   ## make sure we're up to date
   luna_load_project(
     name = name,
     folder = folder,
     verbose = FALSE
   )
-
 
   # Transform folder path to absolute path
   folder <- normalizePath(folder, mustWork = TRUE)
@@ -64,7 +81,8 @@ luna_tool <- function(
       id = id,
       model = model,
       results = results,
-      tool = tool
+      tool = tool,
+      options = options
     )
   } else if(method == "psn") {
 

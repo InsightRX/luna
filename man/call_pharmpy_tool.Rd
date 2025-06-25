@@ -14,6 +14,7 @@ call_pharmpy_tool(
   clean = TRUE,
   verbose = TRUE,
   force = FALSE,
+  options = list(),
   ...
 )
 }

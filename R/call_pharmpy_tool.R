@@ -23,6 +23,7 @@ call_pharmpy_tool <- function(
   clean = TRUE,
   verbose = TRUE,
   force = FALSE,
+  options = list(),
   ...
 ) {
 
@@ -86,9 +87,9 @@ call_pharmpy_tool <- function(
   }
 
   ## prepare arguments for call
-  args <- list(
-    model = model,
-    ...
+  args <- c(
+    list(model = model),
+    options
   )
   if(tool %in% req_results)
     args$results <- results
