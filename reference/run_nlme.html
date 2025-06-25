@@ -55,11 +55,12 @@ inspection of intermediate model fit.</p>
 <span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nmfe"</span>, <span class="st">"pharmpy"</span>, <span class="st">"psn"</span><span class="op">)</span>,</span>
 <span>  nmfe <span class="op">=</span> <span class="fu"><a href="get_nmfe_location_for_run.html">get_nmfe_location_for_run</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  force <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  console <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  console <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  save_fit <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  save_summary <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  auto_stack_encounters <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  clean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  as_job <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -137,6 +138,10 @@ not actual time since first overall dose.</p></dd>
 
 <dt id="arg-clean">clean<a class="anchor" aria-label="anchor" href="#arg-clean"></a></dt>
 <dd><p>clean up run folder after NONMEM execution?</p></dd>
+
+
+<dt id="arg-as-job">as_job<a class="anchor" aria-label="anchor" href="#arg-as-job"></a></dt>
+<dd><p>run as RStudio job?</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>

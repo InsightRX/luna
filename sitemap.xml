@@ -14,6 +14,7 @@
 <url><loc>https://insightrx.github.io/luna/reference/check_llm_key.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/clean_modelfit_data.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/clean_nonmem_folder.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/clean_pharmpy_runfolders.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/combine_info_columns.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/compare_nlme_fit.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/create_cache.html</loc></url>
@@ -44,16 +45,19 @@
 <url><loc>https://insightrx.github.io/luna/reference/get_nmfe_output.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_parameters_with_iiv.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_pharmpy_conf.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/get_pharmpy_runfolders.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_route_from_data.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_shrinkage_summary.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_shrinkage_values.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_status.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_tables_from_fit.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/get_tables_from_folder.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_tables_in_model_code.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_time_ago.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_time_last_updated_file.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_time_last_updated_folder.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_tool_from_model.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/get_tools_info.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/ifelse0.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/index.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/insert_entry.html</loc></url>
@@ -62,8 +66,10 @@
 <url><loc>https://insightrx.github.io/luna/reference/log_get_last_event.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/luna_cache_get.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/luna_compare.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/luna_config.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/luna_dataset.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/luna_edit.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/luna_edit_project.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/luna_gof.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/luna_help.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/luna_info.html</loc></url>
@@ -90,6 +96,8 @@
 <url><loc>https://insightrx.github.io/luna/reference/print.pharmpy.workflows.results.ModelfitResults.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/print_nmfe_output.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/read_ini.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/read_table_nm.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/read_yaml_safe.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/remove_table_from_model.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/remove_table_sections.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/remove_tables_from_model.html</loc></url>
