@@ -3,14 +3,18 @@
 #' @inheritParams call_pharmpy_tool
 #'
 get_pharmpy_runfolders <- function(
-  id,
+  id = NULL,
   folder = NULL,
   tool
 ) {
   if(is.null(folder)) {
     folder <- getwd()
   }
-  fit_folder <- file.path(folder, id)
+  if(!is.null(id)) {
+    fit_folder <- file.path(folder, id)
+  } else {
+    fit_folder <- folder
+  }
   tool_dirs <- list.dirs(
     path = fit_folder,
     recursive = FALSE,

@@ -4,7 +4,7 @@
 \alias{get_pharmpy_runfolders}
 \title{Find last pharmpy run folder}
 \usage{
-get_pharmpy_runfolders(id, folder = NULL, tool)
+get_pharmpy_runfolders(id = NULL, folder = NULL, tool)
 }
 \arguments{
 \item{id}{model id. Optional. If not specified, will generate random modelfit

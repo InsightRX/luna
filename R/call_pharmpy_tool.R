@@ -61,21 +61,11 @@ call_pharmpy_tool <- function(
   run_folder <- file.path(getwd(), id)
   if(!dir.exists(run_folder))
     run_folder <- create_run_folder(id, folder, force, verbose)
-  tool_runfolders <- get_pharmpy_runfolders(id, folder, tool)
-  if(length(tool_runfolders) > 0) {
-    if(clean) {
-      cli::cli_alert_info("Cleaning {length(tool_runfolders)} existing {tool} folders for {id}")
-      for(f in tool_runfolders) {
-        full_folder_path <- file.path(run_folder, f)
-        if(f != "") {
-          unlink(full_folder_path, recursive = TRUE, force = TRUE)
-        }
-      }
-    } else {
-      cli::cli_alert_info("Leaving {length(tool_runfolders)} existing {tool} folders for {id}. Use `clean=TRUE` to remove.")
-    }
-  }
 
+  ## Clean Pharmpy run folders, if requested
+  clean_pharmpy_runfolders(id, folder, tool, remove = clean)
+
+  ## Run tool
   if(verbose) {
     cli::cli_alert_info(
       paste0("Starting {tool} in ", run_folder)

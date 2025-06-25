@@ -15,7 +15,10 @@ luna_run <- function(
   ...
 ) {
 
-  id <- validate_id(id)
+  id <- unlist(lapply(id, validate_id))
+  if(length(id) > 1) {
+    cli::cli_abort("Sorry, running of multiple runs in batch is not yet supported.")
+  }
 
   ## Get cache and config
   is_luna_cache_available(abort = TRUE)
