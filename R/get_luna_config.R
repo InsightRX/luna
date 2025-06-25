@@ -10,7 +10,7 @@ get_luna_config <- function(
   if(!file.exists("~/.config/luna/config.yaml")) {
     cli::cli_abort("Luna config file not found. A config file should've been created upon first load of the `luna` package. Please check installation. Luna config file can also be created manually, at `~/.config/luna/config.yaml`.")
   }
-  conf <- yaml::read_yaml(global_conf_file)
+  conf <- read_yaml_safe(global_conf_file)
   if(is_luna_cache_available(abort = FALSE)) {
     proj_yaml <- .luna_cache$get("yaml")
     proj_conf <- proj_yaml$project$config

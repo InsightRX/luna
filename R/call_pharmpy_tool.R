@@ -77,13 +77,12 @@ call_pharmpy_tool <- function(
   ##
   ## - simulation: ensure it is a simulation
   if(tool == "simulation") {
-    if(! pharmr::is_simulation_model(model)) {
-      if(verbose)
-        cli::cli_alert_info("Last step is not a simulation, changing model to simulation model")
-      model <- model |>
-        pharmr::set_simulation() |>
-        pharmr::set_name("sim")
-    }
+    if(verbose)
+      cli::cli_alert_info("Making sure model is a simulation model")
+    model <- model |>
+      pharmr::set_simulation(n = ifelse0(options$n, 1)) |>
+      pharmr::set_name("sim")
+    options$n <- NULL
   }
 
   ## prepare arguments for call

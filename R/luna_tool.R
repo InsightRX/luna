@@ -12,7 +12,7 @@
 luna_tool <- function(
   id,
   tool,
-  as_job = TRUE,
+  as_job = FALSE,
   verbose = TRUE
 ) {
 
