@@ -9,7 +9,6 @@ general:
       tools: true
       status: true
       ofv: true
-      dofv: true
       finished: true
   runs:
     as_job: true

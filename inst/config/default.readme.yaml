@@ -8,6 +8,7 @@ general:
       notes: true
       tools: true
       status: true
+      ofv: true
       finished: true
   runs:
     as_job: true|false # run as RStudio job?

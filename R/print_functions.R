@@ -42,7 +42,13 @@ truncate_columns <- function(
   if(is.null(total_width))
     total_width <- getOption("width")
   result <- df
-  all_widths <- sapply(df, function(col) max(nchar(col), na.rm = TRUE))
+  all_widths <- sapply(df, function(col) {
+    if(all(is.na(col))) {
+      return(0)
+    } else {
+      max(nchar(col), na.rm = TRUE)
+    }
+  })
   fixed_widths <- all_widths[is.na(width_specs)]
   remaining_width <- total_width - sum(fixed_widths)
   scale <- 1/sum(as.numeric(width_specs[!is.na(width_specs)]))

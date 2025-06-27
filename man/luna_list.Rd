@@ -4,10 +4,12 @@
 \alias{luna_list}
 \title{List runs in current project}
 \usage{
-luna_list(project = NULL)
+luna_list(raw = FALSE)
 }
 \arguments{
-\item{project}{project name. Default is \code{NULL}, will use active project}
+\item{raw}{if \code{TRUE}, will return a tibble with all information
+this is more useful for exporting to a file rather than viewing
+in console.}
 }
 \description{
 List runs in current project
