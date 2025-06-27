@@ -1,3 +1,22 @@
+general:
+  list:
+    columns:
+      id: true
+      reference: false
+      description: true
+      tag: false
+      notes: true
+      tools: true
+      status: true
+      ofv: true
+      finished: true
+  runs:
+    as_job: true|false # run as RStudio job?
+
+file_extensions:
+  model: mod
+  output: lst
+
 tools:
   nmfe_wrapper:
     method: nmfe|pharmpy|psn
@@ -8,10 +27,3 @@ tools:
   vpc:
     method: pharmpy|psn
     samples: 500
-files:
-  folder_name: run_name|run_name_sequential
-  run_prefix: run|mod|...
-file_extensions:
-  model: mod|ctl|...
-  output: lst|res|...
-

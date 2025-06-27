@@ -4,13 +4,16 @@
 \alias{luna_run}
 \title{Run a NONMEM model}
 \usage{
-luna_run(id, folder, nmfe = NULL, as_job = FALSE, ...)
+luna_run(id, folder, nmfe = NULL, as_job = NULL, ...)
 }
 \arguments{
 \item{id}{run id, e.g. \code{run1}. This will be the folder in which the NONMEM
 model is run.}
 
 \item{folder}{path to folder containing the model file. Default is current directory.}
+
+\item{as_job}{run as an RStudio job (async), or in the console. If left \code{NULL}
+will use setting in luna config.}
 }
 \description{
 Run a NONMEM model

@@ -128,3 +128,15 @@ read_yaml_safe <- function(filename) {
   yaml_raw <- stringr::str_replace_all(txt, "[\\s\\t]n\\:", ' "n":')
   yaml::read_yaml(text = yaml_raw)
 }
+
+#' Checks config if should run as job
+#'
+#' @param config config list
+#' @param as_job boolean, manual override over config
+#'
+is_run_as_job <- function(config, as_job = NULL) {
+  if(is.null(as_job)) {
+    as_job <- isTRUE(config$general$runs$as_job)
+  }
+  as_job
+}

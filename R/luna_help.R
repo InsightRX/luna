@@ -72,7 +72,7 @@ luna_help <- function(
         ...
       )
     } else {
-      cli::cli_abort("Sorry, I'm don't see anything I can help with now.")
+      cli::cli_abort("Sorry, I don't see anything I can help with now.")
     }
   }
   cli::cli_text(response)
