@@ -1,3 +1,9 @@
+general:
+  runs:
+    as_job: true
+file_extensions:
+  model: mod
+  output: lst
 tools:
   modelfit:
     method: pharmpy
@@ -8,10 +14,3 @@ tools:
   vpc:
     method: pharmpy
     samples: 500
-files:
-  folder_name: run_name
-  run_prefix: run
-file_extensions:
-  model: mod
-  output: lst
-

@@ -12,7 +12,7 @@
 luna_tool <- function(
   id,
   tool = NULL,
-  as_job = FALSE,
+  as_job = NULL,
   verbose = TRUE
 ) {
 
@@ -22,6 +22,7 @@ luna_tool <- function(
   config <- get_luna_config()
   name <- .luna_cache$get("project")$metadata$name
   folder <- .luna_cache$get("project")$metadata$folder
+  as_job <- is_run_as_job(config, as_job)
 
   if(as_job) {
     if(is.null(tool))

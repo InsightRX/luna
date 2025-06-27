@@ -3,13 +3,15 @@
 #' @param id run id, e.g. `run1`. This will be the folder in which the NONMEM
 #' model is run.
 #' @param folder path to folder containing the model file. Default is current directory.
+#' @param as_job run as an RStudio job (async), or in the console. If left `NULL`
+#' will use setting in luna config.
 #'
 #' @export
 luna_run <- function(
   id,
   folder,
   nmfe = NULL,
-  as_job = FALSE,
+  as_job = NULL,
   ...
 ) {
 
@@ -23,6 +25,7 @@ luna_run <- function(
   config <- get_luna_config()
   name <- .luna_cache$get("project")$metadata$name
   folder <- .luna_cache$get("project")$metadata$folder
+  as_job <- is_run_as_job(config, as_job)
 
   ## make sure we're up to date
   luna_load_project(
