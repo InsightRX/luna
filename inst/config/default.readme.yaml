@@ -1,9 +1,21 @@
 general:
+  list:
+    columns:
+      id: true
+      reference: false
+      description: true
+      tag: false
+      notes: true
+      tools: true
+      status: true
+      finished: true
   runs:
     as_job: true|false # run as RStudio job?
+
 file_extensions:
   model: mod
   output: lst
+
 tools:
   nmfe_wrapper:
     method: nmfe|pharmpy|psn

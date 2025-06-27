@@ -1,9 +1,23 @@
 general:
+  list:
+    columns:
+      id: true
+      reference: false
+      description: true
+      tag: false
+      notes: true
+      tools: true
+      status: true
+      ofv: true
+      dofv: true
+      finished: true
   runs:
     as_job: true
+
 file_extensions:
   model: mod
   output: lst
+
 tools:
   modelfit:
     method: pharmpy

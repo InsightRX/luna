@@ -4,7 +4,10 @@
 \alias{luna_list}
 \title{List runs in current project}
 \usage{
-luna_list(project = NULL, return_object = FALSE)
+luna_list(project = NULL)
+}
+\arguments{
+\item{project}{project name. Default is \code{NULL}, will use active project}
 }
 \description{
 List runs in current project
