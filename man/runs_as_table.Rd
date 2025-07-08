@@ -4,7 +4,13 @@
 \alias{runs_as_table}
 \title{Convert runs in a project object to a data.frame}
 \usage{
-runs_as_table(x)
+runs_as_table(x, raw = FALSE)
+}
+\arguments{
+\item{x}{data.frame with model info}
+
+\item{raw}{if \code{TRUE}, will not parse data but just return all
+raw data}
 }
 \description{
 Convert runs in a project object to a data.frame

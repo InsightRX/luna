@@ -15,12 +15,14 @@ luna_info <- function(
   model_file <- find_file_with_fallback(
     folder,
     filename = file.path(id, paste0("run", ".mod")),
-    fallback = paste0(id, ".mod")
+    fallback = paste0(id, ".mod"),
+    verbose = FALSE
   )
   output_file <- find_file_with_fallback(
     folder,
     filename = file.path(id, paste0("run", ".lst")),
-    fallback = paste0(id, ".lst")
+    fallback = paste0(id, ".lst"),
+    verbose = FALSE
   )
 
   fit <- pharmr::read_modelfit_results(
