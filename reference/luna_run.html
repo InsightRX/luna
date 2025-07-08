@@ -38,7 +38,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">luna_run</span><span class="op">(</span><span class="va">id</span>, <span class="va">folder</span>, nmfe <span class="op">=</span> <span class="cn">NULL</span>, as_job <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">luna_run</span><span class="op">(</span><span class="va">id</span>, <span class="va">folder</span>, nmfe <span class="op">=</span> <span class="cn">NULL</span>, as_job <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -52,6 +52,11 @@ model is run.</p></dd>
 
 <dt id="arg-folder">folder<a class="anchor" aria-label="anchor" href="#arg-folder"></a></dt>
 <dd><p>path to folder containing the model file. Default is current directory.</p></dd>
+
+
+<dt id="arg-as-job">as_job<a class="anchor" aria-label="anchor" href="#arg-as-job"></a></dt>
+<dd><p>run as an RStudio job (async), or in the console. If left <code>NULL</code>
+will use setting in luna config.</p></dd>
 
 </dl></div>
 

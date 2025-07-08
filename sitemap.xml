@@ -33,6 +33,7 @@
 <url><loc>https://insightrx.github.io/luna/reference/fit_model.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/fit_model_nlmixr.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/fit_model_nonmem.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/get_all_results.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_condition_number_for_fit.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_defined_pk_parameters.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_estimation_options.html</loc></url>
@@ -62,6 +63,7 @@
 <url><loc>https://insightrx.github.io/luna/reference/index.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/insert_entry.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/is_luna_cache_available.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/is_run_as_job.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/log_add.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/log_get_last_event.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/luna_cache_get.html</loc></url>
