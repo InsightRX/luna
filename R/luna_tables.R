@@ -19,9 +19,15 @@ luna_tables <- function(
       folder <- "."
     }
   }
-  model_file <- file.path(folder, id, "run.mod")
-  if(!file.exists(model_file))
+  model_file <- find_file_with_fallback(
+    folder,
+    filename = file.path(id, paste0("run", ".mod")),
+    fallback = paste0(id, ".mod"),
+    verbose = FALSE
+  )
+  if(! file.exists(model_file)) {
     cli::cli_abort("Model file not found in run folder")
+  }
   model <- pharmr::read_model(model_file)
   get_tables_from_fit(
     model,

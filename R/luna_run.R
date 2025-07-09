@@ -9,7 +9,7 @@
 #' @export
 luna_run <- function(
   id,
-  folder,
+  folder = NULL,
   nmfe = NULL,
   as_job = NULL,
   ...
@@ -24,7 +24,9 @@ luna_run <- function(
   is_luna_cache_available(abort = TRUE)
   config <- get_luna_config()
   name <- .luna_cache$get("project")$metadata$name
-  folder <- .luna_cache$get("project")$metadata$folder
+  if(is.null(folder)) {
+    folder <- .luna_cache$get("project")$metadata$folder
+  }
   as_job <- is_run_as_job(config, as_job)
 
   ## make sure we're up to date
@@ -38,7 +40,11 @@ luna_run <- function(
   folder <- normalizePath(folder, mustWork = TRUE)
 
   # read the model file with nm_read_model()
-  model <- pharmr::read_model(file.path(folder, paste0(id, ".mod")))
+  model_file <- file.path(folder, paste0(id, ".mod"))
+  if(! file.exists(model_file)) {
+    cli::cli_abort("Model file for run {id} not found!")
+  }
+  model <- pharmr::read_model(model_file)
 
   # Some integrity checksa
   if(! inherits(model, "pharmpy.model.model.Model")) {

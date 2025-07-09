@@ -4,7 +4,7 @@
 \alias{luna_dataset}
 \title{Get data from a model}
 \usage{
-luna_dataset(id, folder = ".")
+luna_dataset(id, folder = NULL)
 }
 \arguments{
 \item{id}{run id, e.g. \code{run1}}

@@ -7,9 +7,12 @@
 #'
 luna_dataset <- function(
   id,
-  folder = "."
+  folder = NULL
 ) {
   id <- validate_id(id)
+  if(is.null(folder)) {
+    folder <- .luna_cache$get("project")$metadata$folder
+  }
   model_file <- file.path(folder, paste0(id, ".mod"))
   if(!file.exists(model_file)) {
     cli::cli_abort("Model file not found. Please check the model file and run folder.")

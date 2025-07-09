@@ -82,11 +82,17 @@ get_time_last_updated_folder <- function(folder) {
     files,
     FUN = function(v) file.mtime(v)
   ) |>
-    unlist() |>
-    max() |>
-    lubridate::as_datetime() |>
-    lubridate::format_ISO8601()
-  if(is.na(dt)) dt <- ""
+    unlist()
+  if(length(dt) > 0) {
+    dt <- max(na.rm = TRUE) |>
+      lubridate::as_datetime() |>
+      lubridate::format_ISO8601()
+    if(is.na(dt)) {
+      dt <- ""
+    }
+  } else {
+    dt <- ""
+  }
   dt
 }
 
@@ -116,6 +122,7 @@ find_file_with_fallback <- function(folder, filename, fallback, verbose = TRUE, 
   f
 }
 
+#'
 #' Safe way to read YAML
 #'
 #' Workaround to avoid issue with "n" entries

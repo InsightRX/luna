@@ -6,7 +6,7 @@
 \usage{
 luna_new_project(
   name,
-  folder = ".",
+  folder = getwd(),
   description,
   import_models = TRUE,
   force = FALSE,

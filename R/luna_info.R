@@ -1,17 +1,17 @@
 #' Show info for a model run
 #'
-#' @param id run id, e.g. `run1`. This will be the folder in which the NONMEM
-#' model is run.
-#' @param folder path to folder containing the model file. Default is current directory.
+#' @inheritParams luna_run
 #'
 #' @export
 #'
 luna_info <- function(
   id,
-  folder = ".",
-  ...
+  folder = NULL
 ) {
   id <- validate_id(id)
+  if(is.null(folder)) {
+    folder <- .luna_cache$get("project")$metadata$folder
+  }
   model_file <- find_file_with_fallback(
     folder,
     filename = file.path(id, paste0("run", ".mod")),

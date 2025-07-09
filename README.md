@@ -119,6 +119,7 @@ luna_tool()
 
 ## Diagnostic plots
 luna_gof()
+luna_ind()
 luna_xpose()
 
 ## Misc

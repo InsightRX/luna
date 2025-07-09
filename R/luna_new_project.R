@@ -17,13 +17,16 @@
 #'
 luna_new_project <- function(
   name,
-  folder = ".",
+  folder = getwd(),
   description,
   import_models = TRUE,
   force = FALSE,
   template = NULL,
   verbose = TRUE
 ) {
+
+  ## make sure we have a full folder name:
+  folder <- normalizePath(folder, winslash = "/", mustWork = FALSE)
 
   ## If parent folder doesn't exist, throw an error
   parent_folder <- dirname(folder)
