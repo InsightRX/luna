@@ -53,7 +53,7 @@ get_initial_estimates_from_individual_data <- function(data, ...) {
 
   ## Get first dose number for which more than two samples are available.
   dose_nr <- dat |>
-    dplyr::filter(MDV == 0) |>
+    dplyr::filter(EVID == 0) |>
     dplyr::group_by(dosenr) |>
     dplyr::summarise(n_obs = length(TIME)) |>
     dplyr::filter(n_obs >= 2) |>
