@@ -239,26 +239,10 @@ create_model <- function(
 
   ## Add $TABLEs
   if(tool == "nonmem") {
-    ## for individual parameter estimates
-    if("parameters" %in% tables) {
-      if(verbose) cli::cli_alert_info("Adding output table for individual parameters")
-      ind_parameters <- pharmr::get_individual_parameters(mod)
-      mod <- add_table_to_model(
+    if(!is.null(tables)) {
+      mod <- add_default_output_tables(
         model = mod,
-        variables = c("ID", ind_parameters),
-        firstonly = TRUE,
-        file = "patab"
-      )
-    }
-    ## for goodness of fit
-    if("fit" %in% tables) {
-      if(verbose) cli::cli_alert_info("Adding output table for goodness of fit")
-      gof_vars <- c("DV", "EVID", "MDV", "PRED", "IPRED", "CWRES", "NPDE")
-      mod <- add_table_to_model(
-        model = mod,
-        variables = c("ID", "TIME", gof_vars),
-        firstonly = FALSE,
-        file = "sdtab"
+        tables = tables
       )
     }
   }

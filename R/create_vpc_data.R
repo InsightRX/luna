@@ -61,14 +61,15 @@ create_vpc_data <- function(
     inits = parameters
   )
 
-  ## Remove tables, add back table with stuff that the VPC needs (ID TIME DV EVID MDV)
-  sim_model <- remove_tables_from_model(sim_model)
-  sim_model <- add_table_to_model(
-    sim_model,
-    variables = c("ID", "TIME", "PRED", "DV", "EVID", "MDV"),
-    firstonly = FALSE,
-    file = "sdtab"
-  )
+  ## Remove tables and covariance step, add back table with stuff that the VPC needs (ID TIME DV EVID MDV)
+  sim_model <- sim_model |>
+    pharmr::remove_parameter_uncertainty_step() |>
+    remove_tables_from_model() |>
+    add_table_to_model(
+      variables = c("ID", "TIME", "PRED", "DV", "EVID", "MDV"),
+      firstonly = FALSE,
+      file = "sdtab"
+    )
 
   ## Make sure data is clean for modelfit
   sim_model <- clean_modelfit_data(sim_model)

@@ -3,6 +3,7 @@
 S3method(print,luna.run_table)
 S3method(print,pharmpy.workflows.results.ModelfitResults)
 export(add_covariates_to_model)
+export(add_default_output_tables)
 export(add_table_to_model)
 export(attach_fit_info)
 export(call_nmfe)

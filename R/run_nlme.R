@@ -13,6 +13,9 @@
 #' to NONMEM model file.
 #' @param data dataset (data.frame). Optional, can also be included in `model`
 #' object (if specified as pharmpy model object).
+#' @param tables acharacter vector of which default tables
+#' to add, options are `fit` and `parameters`. Default is NULL,
+#' i.e. don't add any new tables (but will keep existing).
 #' @param id run id, e.g. `run1`. This will be the folder in which the NONMEM
 #' model is run. If no folder is specified, it will create a folder `run1` in
 #' the current working directory, and will increment the run number for each
@@ -52,6 +55,7 @@
 run_nlme <- function(
   model,
   data = NULL,
+  tables = NULL,
   id,
   path = getwd(),
   method = c("nmfe", "pharmpy", "psn"),
@@ -84,6 +88,14 @@ run_nlme <- function(
   model_file <- "run.mod"
   output_file <- "run.lst"
   model_path <- file.path(fit_folder, model_file)
+
+  ## Add default tables, if requested
+  if(!is.null(tables)) {
+    model <- add_default_output_tables(
+      model = model,
+      tables = tables
+    )
+  }
 
   ## Make sure data is clean for modelfit
   if(verbose) cli::cli_process_start("Checking dataset and copying")

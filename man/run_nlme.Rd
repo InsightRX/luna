@@ -7,6 +7,7 @@
 run_nlme(
   model,
   data = NULL,
+  tables = NULL,
   id,
   path = getwd(),
   method = c("nmfe", "pharmpy", "psn"),
@@ -27,6 +28,10 @@ to NONMEM model file.}
 
 \item{data}{dataset (data.frame). Optional, can also be included in \code{model}
 object (if specified as pharmpy model object).}
+
+\item{tables}{acharacter vector of which default tables
+to add, options are \code{fit} and \code{parameters}. Default is NULL,
+i.e. don't add any new tables (but will keep existing).}
 
 \item{id}{run id, e.g. \code{run1}. This will be the folder in which the NONMEM
 model is run. If no folder is specified, it will create a folder \code{run1} in
