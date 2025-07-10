@@ -1,50 +1,33 @@
 #' Creates a ggplot2 panel object with basic goodness of fit plots
 #'
-#' @param id run id
+#' @inheritParams luna_run
 #' @param residual either "CWRES" or "NPDE"
 #' @param smooth_method ggplot2-supported smooth method, e.g. "loess"
+#' @param ltbs log-transform-both-sides error model? If `TRUE`, will
+#' exponentiate DV, PRED, and IPRED.
 #'
 #' @export
 #'
 luna_gof <- function(
   id,
+  folder = NULL,
   residual = c("CWRES", "NPDE"),
   theme = ggplot2::theme_classic,
   smooth_method = "loess",
-  folder = NULL,
+  ltbs = FALSE,
   verbose = TRUE
 ) {
 
-  id <- validate_id(id)
-  residual <- match.arg(residual)
-
-  ## Get tables from run
-  tables <- luna_tables(
-    id,
+  tab <- get_table_for_plots(
+    id = id,
     folder = folder,
+    residual = residual,
+    ltbs = ltbs,
     verbose = verbose
   )
 
-  ## Check that required data is available
-  reqd <- c("DV", "PRED", "IPRED", residual, "TIME", "EVID")
-  tab_sel <- NULL
-  for(tab in tables) {
-    if(all(reqd %in% names(tab))) {
-      tab_sel <- tab
-      break()
-    }
-  }
-  if(is.null(tab_sel)) {
-    cli::cli_abort(
-      paste0(
-        "Could not find a table with all required variables: ",
-        paste0(reqd, collapse = ", ")
-      )
-    )
-  }
-
   ## PRED/IPRED vs DV
-  p1 <- tab_sel |>
+  p1 <- tab |>
     dplyr::filter(MDV == 0) |>
     tidyr::pivot_longer(cols = c(IPRED, PRED)) |>
     ggplot2::ggplot(
@@ -58,7 +41,7 @@ luna_gof <- function(
       ggplot2::ylab("Obervation (DV)") +
       theme()
   ## CWRES vs TIME / PRED
-  p2 <- tab_sel |>
+  p2 <- tab |>
     dplyr::filter(MDV == 0) |>
     tidyr::pivot_longer(cols = c(TIME, PRED)) |>
     ggplot2::ggplot(

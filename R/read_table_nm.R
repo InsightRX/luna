@@ -25,11 +25,12 @@
 #' @export
 #'
 read_table_nm <- function(
-    file = NULL,
-    skip = NULL,
-    header = NULL,
-    rm_duplicates = FALSE,
-    nonmem_tab = TRUE) {
+  file = NULL,
+  skip = NULL,
+  header = NULL,
+  rm_duplicates = FALSE,
+  nonmem_tab = TRUE
+) {
 
   # Check inputs
   if(is.null(file)) {
