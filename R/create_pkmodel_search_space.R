@@ -12,11 +12,11 @@
 #' @export
 #'
 create_pkmodel_search_space <- function(
-    absorption = c("FO", "ZO"),
-    elimination = c("FO", "MM"),
-    peripherals = c(0, 1),
-    transits = c(0, 1, 3),
-    lagtime = c("OFF", "ON")
+  absorption = c("FO", "ZO"),
+  elimination = c("FO", "MM"),
+  peripherals = c(0, 1),
+  transits = c(0, 1, 3),
+  lagtime = c("OFF", "ON")
 ) {
 
   ## Confirm all requested options are allowed
@@ -28,20 +28,22 @@ create_pkmodel_search_space <- function(
     LAGTIME = c("OFF", "ON")
   )
   args <- c("absorption", "transits", "lagtime", "elimination", "peripherals")
+  out <- c()
   for(key in args) {
-    tmp <- get(key)
-    tmp[is.numeric(tmp)] <- rep("number", sum(is.numeric(tmp)))
-    if (! all(tmp %in% all_options[[toupper(key)]])) {
-      cli::cli_abort("Some options not recongized: {}")
+    value <- get(key)
+    if(!is.null(value) & length(value) > 0) {
+      tmp <- value
+      tmp[is.numeric(tmp)] <- rep("number", sum(is.numeric(tmp)))
+      if (! all(tmp %in% all_options[[toupper(key)]])) {
+        cli::cli_abort("Some options not recongized: {}")
+      }
+      out <- c(
+        out,
+        paste0(toupper(key), "([", paste0(value, collapse=","), "])")
+      )
     }
   }
 
-  ## combine into a MFL search space definition
-  paste0(c(
-    paste0("ABSORPTION([", paste0(absorption, collapse=","), "])"),
-    paste0("ELIMINATION([", paste0(elimination, collapse=","), "])"),
-    paste0("PERIPHERALS([", paste0(peripherals, collapse=","), "])"),
-    paste0("TRANSITS([", paste0(transits, collapse=","), "])"),
-    paste0("LAGTIME([", paste0(lagtime, collapse=","), "])")
-  ), collapse = "; ")
+  paste(out, collapse = "; ")
+
 }

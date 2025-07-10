@@ -11,7 +11,9 @@ create_vpc_data(
   parameters = NULL,
   keep_columns = c("GROUP"),
   n = 100,
-  verbose = FALSE
+  verbose = FALSE,
+  id = NULL,
+  use_pharmpy = TRUE
 )
 }
 \arguments{

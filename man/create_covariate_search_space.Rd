@@ -7,11 +7,11 @@
 create_covariate_search_space(
   parameters,
   covariates,
-  operation = c("POW", "*", "+", "LIN", "EXP", "PIECE_LIN"),
+  operation = c("LIN", "POW"),
   explore = TRUE,
   struct_parameters = NULL,
   struct_covariates = NULL,
-  struct_operation = c("POW", "*", "+", "LIN", "EXP", "PIECE_LIN")
+  struct_operation = "POW"
 )
 }
 \arguments{
