@@ -53,6 +53,7 @@
 <url><loc>https://insightrx.github.io/luna/reference/get_shrinkage_summary.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_shrinkage_values.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_status.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/get_table_for_plots.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_tables_from_fit.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_tables_from_folder.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_tables_in_model_code.html</loc></url>
@@ -77,6 +78,7 @@
 <url><loc>https://insightrx.github.io/luna/reference/luna_edit_project.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/luna_gof.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/luna_help.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/luna_ind.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/luna_info.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/luna_list.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/luna_load_project.html</loc></url>
