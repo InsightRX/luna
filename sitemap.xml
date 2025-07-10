@@ -5,6 +5,7 @@
 <url><loc>https://insightrx.github.io/luna/index.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/add_covariates_to_model.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/add_table_to_model.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/attach_fit_info.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/calc_condition_number.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/call_nmfe.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/call_pharmpy_fit.html</loc></url>
@@ -37,6 +38,7 @@
 <url><loc>https://insightrx.github.io/luna/reference/get_condition_number_for_fit.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_defined_pk_parameters.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_estimation_options.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/get_final_results_from_search.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_fit_info.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_initial_estimates_from_data.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_initial_estimates_from_individual_data.html</loc></url>
@@ -63,6 +65,7 @@
 <url><loc>https://insightrx.github.io/luna/reference/index.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/insert_entry.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/is_luna_cache_available.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/is_maxeval_zero.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/is_run_as_job.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/log_add.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/log_get_last_event.html</loc></url>
