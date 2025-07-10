@@ -18,7 +18,9 @@ create_vpc_data <- function(
   parameters = NULL,
   keep_columns = c("GROUP"),
   n = 100,
-  verbose = FALSE
+  verbose = FALSE,
+  id = NULL,
+  use_pharmpy = TRUE
 ) {
 
   ## Make a copy of the model for simulations, and update initial estimates
@@ -63,7 +65,7 @@ create_vpc_data <- function(
   sim_model <- remove_tables_from_model(sim_model)
   sim_model <- add_table_to_model(
     sim_model,
-    variables = c("ID", "TIME", "DV", "EVID", "MDV"),
+    variables = c("ID", "TIME", "PRED", "DV", "EVID", "MDV"),
     firstonly = FALSE,
     file = "sdtab"
   )
@@ -71,36 +73,75 @@ create_vpc_data <- function(
   ## Make sure data is clean for modelfit
   sim_model <- clean_modelfit_data(sim_model)
 
+  tmp_path <- file.path(
+    tempdir(),
+    paste0("simulation_", random_string(5))
+  )
+  dir.create(tmp_path)
+  if(is.null(id)) {
+    id <- "tmp"
+  }
+
+  ## Run maxeval=0 run to get obs dataset
+  if(verbose) cli::cli_alert_info("Running input model evaluation for VPC")
+  eval_model <- sim_model |>
+    pharmr::set_evaluation_step(idx = 0)
+  eval_res <- run_nlme(
+    model = eval_model,
+    path = tmp_path,
+    force = TRUE,
+    id = id
+  )
+  obs <- attr(eval_res, "tables")[[1]]
+
   ## Run the simulation
-  if(verbose) message("Running simulations for VPC")
-  tmp_path <- file.path(tempdir(), paste0("simulation_", random_string(5)))
-  # sim_model <- pharmr::set_simulation(
-  #   model,
-  #   n = n
-  # )
-  # sim_model <- pharmr::remove_estimation_step(sim_model, 0)
+  if(verbose) cli::cli_alert_info("Running simulation for VPC")
   sim_model <- pharmr::set_simulation(
     sim_model,
     n = n
   )
-  sim_data <- pharmr::run_simulation(
-    sim_model,
-    path = tmp_path
+
+  sim_data <- run_nlme(
+    model = sim_model,
+    path = tmp_path,
+    force = TRUE,
+    id = id
   )
-  if(!inherits(sim_data, "pharmpy.workflows.results.SimulationResults")) {
-    cli::cli_abort("Simulation for VPC failed. Please check model and settings.")
-  }
+  sim <- attr(sim_data, "tables")[[1]]
 
   ## Parse the output and make ready for vpc::vpc()
-  if(verbose) message("Preparing simulated output data for plotting")
-  sim <- sim_data$table
-  sim$ID <- model$dataset$ID
-  sim$TIME <- model$dataset$TIME
-  sim$ENC_TIME <- model$dataset$ENC_TIME
+  if(verbose) cli::cli_alert_info("Preparing simulated output data for plotting")
+
+  ## Generate a TAD colunmn
+  if(is.null(obs$TAD)) {
+    obs <- obs |>
+      dplyr::group_by(ID) |>
+      dplyr::mutate(last_dose_time = if_else(EVID == 1, TIME, NA)) |>
+      tidyr::fill(last_dose_time, .direction = "downup") |>
+      dplyr::mutate(TAD = TIME - last_dose_time) |>
+      dplyr::select(-last_dose_time)
+  }
+
+  ## Check if obs and sim match up, and make sure sim has the columns it needs
+  len_obs <- nrow(obs)
+  len_sim <- nrow(sim)
+  if((len_sim %% len_obs) != 0) {
+    cli::cli_abort("The simulated dataset length is not a multiple of the length of the original dataset. Please check model and simulation settings.")
+  }
+  if(use_pharmpy) {
+    transfer <- c("ID", "TIME", "PRED", "TAD", "ENC_TIME")
+    for(col in transfer) {
+      if(!is.null(obs[[col]])) {
+        sim[[col]] <- obs[[col]]
+      } else {
+        cli::cli_alert_warning("Column {col} not found in original dataset.")
+      }
+    }
+  }
   for(col in keep_columns) {
-    sim[[col]] <- model$dataset[[col]]
+    sim[[col]] <- obs[[col]]
   }
 
   ## Return
-  list(obs = model$dataset, sim = sim)
+  list(obs = obs, sim = sim)
 }
