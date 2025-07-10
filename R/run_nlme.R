@@ -175,45 +175,36 @@ run_nlme <- function(
   fit <- pharmr::read_modelfit_results(
     file.path(fit_folder, model_file)
   )
-  if(is.null(fit)) {
-    if(verbose) {
-      if(!console) {
-        cli::cli_alert_danger("Something went wrong with fit. Output shown below.")
-        nmfe_output <- get_nmfe_output(path = fit_folder, output_file)
-        log_add(
-          event = "error",
-          action = "modelfit",
-          id = id,
-          context = nmfe_output
-        )
-        print_nmfe_output(nmfe_output)
+  if(verbose) cli::cli_process_done()
+
+  ## Check if sim / eval model only
+  is_sim_model <- pharmr::is_simulation_model(model)
+  is_eval_model <- is_maxeval_zero(model)
+  if(is_sim_model || is_eval_model) {
+    fit <- list(
+      ## just return empty list for now
+    )
+  } else {
+    if(is.null(fit)) {
+      if(verbose) {
+        if(!console) {
+          cli::cli_alert_danger("Something went wrong with fit. Output shown below.")
+          nmfe_output <- get_nmfe_output(path = fit_folder, output_file)
+          log_add(
+            event = "error",
+            action = "modelfit",
+            id = id,
+            context = nmfe_output
+          )
+          print_nmfe_output(nmfe_output)
+        }
       }
+      cli::cli_abort("No results from modelfit, please check run output.")
     }
-    cli::cli_abort("No results from modelfit, please check run output.")
   }
-  if(verbose) cli::cli_process_done()
 
-  ## Attach model object (with dataset) to fit, for traceability or use in post-processing
-  attr(fit, "model") <- model
-
-  ## Attach tables to model fit
-  if(verbose) cli::cli_process_start("Importing generated tables")
-  tables <- get_tables_from_fit(
-    model,
-    fit_folder
-  )
-  attr(fit, "tables") <- tables
-  if(verbose) cli::cli_process_done()
-
-  ## Generate a summary of fit info
-  if(verbose) cli::cli_process_start("Summarizing fit results")
-  fit_info <- get_fit_info(
-    fit,
-    path = fit_folder,
-    output_file = output_file
-  )
-  attr(fit, "info") <- fit_info
-  if(verbose) cli::cli_process_done()
+  ## Attach fit info / tables as attributes, also for simulation
+  fit <- attach_fit_info(fit, model, fit_folder, output_file)
 
   ## save fit object to file
   if(!is.null(save_fit)){

@@ -18,13 +18,12 @@
 create_covariate_search_space <- function(
   parameters,
   covariates,
-  operation = c("POW", "*", "+", "LIN", "EXP", "PIECE_LIN"),
+  operation = c("LIN", "POW"), # options: c("POW", "*", "+", "LIN", "EXP", "PIECE_LIN")
   explore = TRUE,
   struct_parameters = NULL,
   struct_covariates = NULL,
-  struct_operation = c("POW", "*", "+", "LIN", "EXP", "PIECE_LIN")
+  struct_operation = "POW"
 ) {
-  operation <- match.arg(operation)
   struct_space <- NULL
   if(!is.null(struct_parameters)) {
     if(is.null(struct_covariates)) {
@@ -37,13 +36,18 @@ create_covariate_search_space <- function(
       explore = FALSE
     )
   }
+  if("*" %in% operation) {
+    operation_string <- "*"
+  } else {
+    operation_string <- paste0("[", paste0(operation, collapse=","), "]")
+  }
   search_space <- paste0(
     "COVARIATE", ifelse(explore, "?", ""), "([",
     paste0(parameters, collapse=","),
     "], [",
     paste0(covariates, collapse=","),
     "], ",
-    operation,
+    operation_string,
     ")"
   )
   paste0(

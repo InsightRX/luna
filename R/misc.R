@@ -147,3 +147,12 @@ is_run_as_job <- function(config, as_job = NULL) {
   }
   as_job
 }
+
+#' Does the last estimation method in a model have maxeval=0?
+#'
+#' @export
+#'
+is_maxeval_zero <- function(model) {
+  last_step <- model$execution_steps$to_dataframe() |> tail(1)
+  is.na(last_step$maximum_evaluations) || last_step$maximum_evaluations == 0
+}
