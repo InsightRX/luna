@@ -46,8 +46,6 @@ clean_modelfit_data <- function(
     write.csv(data, dataset_file, quote=F, row.names=F)
 
     ## Update dataset in model
-    dat <- luna_dataset(11)
-
     model <- pharmr::set_dataset(
       model,
       path_or_df = dataset_file,
