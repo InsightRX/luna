@@ -16,6 +16,8 @@
 #' @param tables acharacter vector of which default tables
 #' to add, options are `fit` and `parameters`. Default is NULL,
 #' i.e. don't add any new tables (but will keep existing).
+#' @param full_tables For the default tables, should all input columns from be
+#' included in the output tables? Default `FALSE`.
 #' @param id run id, e.g. `run1`. This will be the folder in which the NONMEM
 #' model is run. If no folder is specified, it will create a folder `run1` in
 #' the current working directory, and will increment the run number for each
@@ -56,6 +58,7 @@ run_nlme <- function(
   model,
   data = NULL,
   tables = NULL,
+  full_tables = FALSE,
   id,
   path = getwd(),
   method = c("nmfe", "pharmpy", "psn"),
@@ -93,7 +96,8 @@ run_nlme <- function(
   if(!is.null(tables)) {
     model <- add_default_output_tables(
       model = model,
-      tables = tables
+      tables = tables,
+      full_tables = full_tables
     )
   }
 

@@ -22,6 +22,7 @@ create_model(
   uncertainty_method = c("sandwich", "smat", "rmat", "efim", "none"),
   tool = c("nonmem", "nlmixr", "nlmixr2"),
   tables = c("fit"),
+  full_tables = FALSE,
   auto_init = TRUE,
   auto_stack_encounters = TRUE,
   mu_reference = FALSE,
@@ -68,6 +69,9 @@ One of \code{sandwich} (default), \code{smat}, \code{fmat}, \code{efim}.}
 
 \item{tables}{which pre-specified tables to add, defaults to \code{parameters}
 and \code{fit} tables.}
+
+\item{full_tables}{For the default tables, should all input columns from be
+included in the output tables? Default \code{FALSE}.}
 
 \item{auto_init}{automatically update initial estimates to reasonable values
 based on a crude assessment of the PK data. Default is \code{TRUE}.}

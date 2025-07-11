@@ -55,6 +55,8 @@
 #' TBD
 #' @param tables which pre-specified tables to add, defaults to `parameters`
 #' and `fit` tables.
+#' @param full_tables For the default tables, should all input columns from be
+#' included in the output tables? Default `FALSE`.
 #' @param name name of model
 #' @param tool output model type, either `nonmem` or `nlmixr`
 #' @param verbose verbose output?
@@ -79,6 +81,7 @@ create_model <- function(
     uncertainty_method = c("sandwich", "smat", "rmat", "efim", "none"),
     tool = c("nonmem", "nlmixr", "nlmixr2"),
     tables = c("fit"),
+    full_tables = FALSE,
     auto_init = TRUE,
     auto_stack_encounters = TRUE,
     mu_reference = FALSE,
@@ -242,7 +245,8 @@ create_model <- function(
     if(!is.null(tables)) {
       mod <- add_default_output_tables(
         model = mod,
-        tables = tables
+        tables = tables,
+        full_tables = full_tables
       )
     }
   }

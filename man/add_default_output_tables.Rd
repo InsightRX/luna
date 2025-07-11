@@ -8,6 +8,7 @@ if they don't already exist in the model.}
 add_default_output_tables(
   model,
   tables = c("fit", "parameters"),
+  full_tables = FALSE,
   verbose = TRUE
 )
 }
@@ -16,6 +17,9 @@ add_default_output_tables(
 
 \item{tables}{character vector of which default tables
 to add, options are \code{fit} and \code{parameters}.}
+
+\item{full_tables}{For the default tables, should all input columns from be
+included in the output tables? Default \code{FALSE}.}
 
 \item{verbose}{verbose output?}
 }

@@ -8,6 +8,7 @@ run_nlme(
   model,
   data = NULL,
   tables = NULL,
+  full_tables = FALSE,
   id,
   path = getwd(),
   method = c("nmfe", "pharmpy", "psn"),
@@ -32,6 +33,9 @@ object (if specified as pharmpy model object).}
 \item{tables}{acharacter vector of which default tables
 to add, options are \code{fit} and \code{parameters}. Default is NULL,
 i.e. don't add any new tables (but will keep existing).}
+
+\item{full_tables}{For the default tables, should all input columns from be
+included in the output tables? Default \code{FALSE}.}
 
 \item{id}{run id, e.g. \code{run1}. This will be the folder in which the NONMEM
 model is run. If no folder is specified, it will create a folder \code{run1} in
