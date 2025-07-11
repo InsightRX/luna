@@ -15,13 +15,22 @@ add_default_output_tables <- function(
   model,
   tables = c("fit", "parameters"),
   full_tables = FALSE,
+  remove_existing = TRUE,
   verbose = TRUE
 ) {
   default_table_names <- list(
     "parameters" = "patab",
     "fit" = "sdtab"
   )
+
   existing_tables <- get_tables_in_model_code(model$code)
+  ## by default will remove existing tables
+  ## If these are not removed, and patab and sdtab are already present,
+  ## will not override them
+  if(remove_existing) {
+    model <- remove_tables_from_model(model)
+    existing_tables <- c()
+  }
 
   ## individual parameters, first row only
   if("parameters" %in% tables && !(default_table_names[["parameters"]] %in% existing_tables)) {

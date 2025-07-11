@@ -1,14 +1,11 @@
 #' Remove all $TABLE records from a model
-#' 
+#'
 #' @param model pharmpy model object
-#' @param variables character vector with variable names
-#' @param firstonly add `FIRSTONLY` parameter to $TABLE record
-#' 
+#'
 #' @export
-#' 
+#'
 remove_tables_from_model <- function(
-    model,
-    file
+  model
 ) {
   tool <- get_tool_from_model(model)
   if(tool == "nonmem") {
@@ -31,13 +28,13 @@ remove_tables_from_model <- function(
 remove_table_sections <- function(text) {
   pattern <- "\\$TABLE[^$]+"
   result <- gsub(pattern, "", text, perl = TRUE)
-  
+
   # Handle case where $TABLE is the last section
   result <- gsub("\\$TABLE.*$", "", result, perl = TRUE)
-  
+
   # Clean up any extra newlines that might be left
   result <- gsub("\n{3,}", "\n\n", result)
-  
+
   # Trim any trailing whitespace
   result <- trimws(result, which = "right")
   return(result)

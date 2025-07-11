@@ -4,14 +4,10 @@
 \alias{remove_tables_from_model}
 \title{Remove all $TABLE records from a model}
 \usage{
-remove_tables_from_model(model, file)
+remove_tables_from_model(model)
 }
 \arguments{
 \item{model}{pharmpy model object}
-
-\item{variables}{character vector with variable names}
-
-\item{firstonly}{add \code{FIRSTONLY} parameter to $TABLE record}
 }
 \description{
 Remove all $TABLE records from a model

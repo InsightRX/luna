@@ -9,6 +9,7 @@ add_default_output_tables(
   model,
   tables = c("fit", "parameters"),
   full_tables = FALSE,
+  remove_existing = TRUE,
   verbose = TRUE
 )
 }
