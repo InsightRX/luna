@@ -44,6 +44,7 @@ if they don't already exist in the model.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">add_default_output_tables</span><span class="op">(</span></span>
 <span>  <span class="va">model</span>,</span>
 <span>  tables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fit"</span>, <span class="st">"parameters"</span><span class="op">)</span>,</span>
+<span>  full_tables <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -59,6 +60,11 @@ if they don't already exist in the model.</p>
 <dt id="arg-tables">tables<a class="anchor" aria-label="anchor" href="#arg-tables"></a></dt>
 <dd><p>character vector of which default tables
 to add, options are <code>fit</code> and <code>parameters</code>.</p></dd>
+
+
+<dt id="arg-full-tables">full_tables<a class="anchor" aria-label="anchor" href="#arg-full-tables"></a></dt>
+<dd><p>For the default tables, should all input columns from be
+included in the output tables? Default <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
