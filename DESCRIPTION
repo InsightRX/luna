@@ -23,6 +23,7 @@ Imports:
     vpc,
     stats,
     job,
+    diffr,
     rstudioapi
 Suggests: 
     httr,
