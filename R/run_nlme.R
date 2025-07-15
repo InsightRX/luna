@@ -160,6 +160,9 @@ run_nlme <- function(
       )
     }
   } else if(method ==  "nmfe") {
+    if(as_job) {
+      cli::cli_alert_warning("Sorry, running as job not implemented yet for nmfe runs.")
+    }
     call_nmfe(
       model_file = model_file,
       output_file = output_file,
@@ -169,6 +172,9 @@ run_nlme <- function(
       verbose = verbose
     )
   } else if(method == "psn") {
+    if(as_job) {
+      cli::cli_alert_warning("Sorry, running as job not implemented yet for PsN runs.")
+    }
     call_psn(
       model_file = model_file,
       output_file = output_file,
