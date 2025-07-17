@@ -63,7 +63,7 @@ run_nlme <- function(
   path = getwd(),
   method = c("nmfe", "pharmpy", "psn"),
   nmfe = get_nmfe_location_for_run(),
-  force = FALSE,
+  force = NULL,
   console = FALSE,
   save_fit = TRUE,
   save_summary = TRUE,
@@ -76,6 +76,10 @@ run_nlme <- function(
   time_start <- Sys.time()
   model <- validate_model(model)
   method <- match.arg(method)
+  force <- get_flag_from_config(
+    flag = c("tools", "modelfit", "force"),
+    FALSE
+  )
 
   ## Set up run folder
   fit_folder <- create_run_folder(id, path, force, verbose)

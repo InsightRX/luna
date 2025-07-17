@@ -13,7 +13,7 @@ run_nlme(
   path = getwd(),
   method = c("nmfe", "pharmpy", "psn"),
   nmfe = get_nmfe_location_for_run(),
-  force = FALSE,
+  force = NULL,
   console = FALSE,
   save_fit = TRUE,
   save_summary = TRUE,

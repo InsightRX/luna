@@ -102,6 +102,7 @@ luna_tool <- function(
 
     ## Parse options into args
     args <- parse_psn_args(tool_obj)
+    tool_clean <- gsub("^(.*?)::", "", tool)
 
     ## call PsN tool
     if(verbose)
@@ -111,7 +112,7 @@ luna_tool <- function(
         model_file = model_run_file,
         path = run_folder,
         options = args,
-        tool = tool,
+        tool = tool_clean,
         console = TRUE
       )
     )
@@ -126,6 +127,9 @@ luna_tool <- function(
 parse_psn_args <- function(options) {
   options$id <- NULL
   options$tool <- NULL
+  if(is.null(options) || length(options) == 0) {
+    return("")
+  }
   ## split in logical and epxlicit options
   logical_options <- list()
   for(key in names(options)) {
