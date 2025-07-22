@@ -40,6 +40,20 @@ get_fit_info <- function(fit, path = NULL, output_file = "run.lst") {
 #' @export
 print.pharmpy.workflows.results.ModelfitResults <- function(x, ...) {
 
+  ## Run description, notes, etc
+  run <- attr(x, "run")
+  data.frame(
+    "Run log" = c("Description", "Notes", "Tags"),
+    "Value" = c(
+      run$description,
+      ifelse0(run$notes, ""),
+      paste0(ifelse0(run$tags, ""), collapse = ", ")
+    )
+  ) |>
+    dplyr::filter(Value != "") |>
+    knitr::kable(row.names = FALSE, format = "simple") |>
+    print()
+
   ## General run info
   info_tab <- create_modelfit_info_table(x)
   print(knitr::kable(info_tab, row.names = FALSE, format = "simple"))

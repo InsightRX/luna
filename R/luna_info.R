@@ -47,6 +47,7 @@ luna_info <- function(
       fit_info$dofv <- fit$ofv - fit_ref$ofv
     }
   }
+  attr(fit, "run") <- run_info
   attr(fit, "info") <- fit_info
 
   ## Attach tool info
