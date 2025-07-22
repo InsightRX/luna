@@ -76,25 +76,18 @@ run_nlme <- function(
   time_start <- Sys.time()
   model <- validate_model(model)
   method <- match.arg(method)
-  force <- get_flag_from_config(
-    flag = c("tools", "modelfit", "force"),
-    FALSE
-  )
-
-  ## Set up run folder
-  fit_folder <- create_run_folder(id, path, force, verbose)
+  if(is.null(force)) {
+    force <- get_flag_from_config(
+      flag = c("tools", "modelfit", "force"),
+      FALSE
+    )
+  }
 
   ## Set model name
   model <- pharmr::set_name(
     model = model,
     new_name = id
   )
-
-  ## Set up other files
-  dataset_path <- file.path(fit_folder, "data.csv")
-  model_file <- "run.mod"
-  output_file <- "run.lst"
-  model_path <- file.path(fit_folder, model_file)
 
   ## Add default tables, if requested
   if(!is.null(tables)) {
@@ -105,34 +98,19 @@ run_nlme <- function(
     )
   }
 
-  ## Make sure data is clean for modelfit
-  if(verbose) cli::cli_process_start("Checking dataset and copying")
-
   ## Add dataset (and potentially stack encounters)
-  if(!is.null(data)) {
-    if(isTRUE(auto_stack_encounters)) {
-      data <- stack_encounters(
-        data = data,
-        verbose = verbose
-      )
-    }
-    if(verbose) cli::cli_alert_info("Updating model dataset with provided dataset")
-    model <- model |>
-      pharmr::unload_dataset() |>
-      pharmr::set_dataset(
-        path_or_df = data,
-        datatype = "nonmem"
-      )
-  }
-  model <- clean_modelfit_data(model)
-  data <- model$dataset
-
-  ## Copy modelfile + dataset
-  write.csv(data, file = dataset_path, quote=F, row.names=F)
-  model_code <- model$code
-  model_code <- change_nonmem_dataset(model_code, dataset_path)
-  writeLines(model_code, model_path)
-  if(verbose) cli::cli_process_done()
+  ## Make sure data is clean for modelfit
+  obj <- prepare_run_folder(
+    id = id,
+    model = model,
+    path = path,
+    data = data,
+    force = force,
+    model_path = model_path,
+    dataset_path = dataset_path,
+    auto_stack_encounters = auto_stack_encounters,
+    verbose = verbose
+  )
 
   ## Run NONMEM and direct stdout/stderr
   if(method == "pharmpy") {
@@ -145,8 +123,8 @@ run_nlme <- function(
           title = paste0(id, "-", "modelfit"),
           {
             call_pharmpy_fit(
-              model_file = model_file,
-              path = fit_folder,
+              model_file = obj$model_file,
+              path = obj$fit_folder,
               verbose = verbose,
               console = console
             )
@@ -157,8 +135,8 @@ run_nlme <- function(
       return(invisible(jobid))
     } else {
       call_pharmpy_fit(
-        model_file = model_file,
-        path = fit_folder,
+        model_file = obj$model_file,
+        path = obj$fit_folder,
         verbose = verbose,
         console = console
       )
@@ -168,9 +146,9 @@ run_nlme <- function(
       cli::cli_alert_warning("Sorry, running as job not implemented yet for nmfe runs.")
     }
     call_nmfe(
-      model_file = model_file,
-      output_file = output_file,
-      path = fit_folder,
+      model_file = obj$model_file,
+      output_file = obj$output_file,
+      path = obj$fit_folder,
       nmfe = nmfe,
       console = console,
       verbose = verbose
@@ -180,9 +158,9 @@ run_nlme <- function(
       cli::cli_alert_warning("Sorry, running as job not implemented yet for PsN runs.")
     }
     call_psn(
-      model_file = model_file,
-      output_file = output_file,
-      path = fit_folder,
+      model_file = obj$model_file,
+      output_file = obj$output_file,
+      path = obj$fit_folder,
       tool = "execute",
       console = console,
       verbose = verbose
@@ -193,13 +171,13 @@ run_nlme <- function(
 
   if(clean) {
     if(verbose) cli::cli_alert_info("Cleaning up run folder")
-    clean_nonmem_folder(fit_folder)
+    clean_nonmem_folder(obj$fit_folder)
   }
 
   ## Read results using Pharmpy and return
   if(verbose) cli::cli_process_start("Parsing results from run")
   fit <- pharmr::read_modelfit_results(
-    file.path(fit_folder, model_file)
+    file.path(obj$fit_folder, obj$model_file)
   )
   if(verbose) cli::cli_process_done()
 
@@ -215,7 +193,10 @@ run_nlme <- function(
       if(verbose) {
         if(!console) {
           cli::cli_alert_danger("Something went wrong with fit. Output shown below.")
-          nmfe_output <- get_nmfe_output(path = fit_folder, output_file)
+          nmfe_output <- get_nmfe_output(
+            path = obj$fit_folder,
+            obj$output_file
+          )
           log_add(
             event = "error",
             action = "modelfit",
@@ -230,7 +211,7 @@ run_nlme <- function(
   }
 
   ## Attach fit info / tables as attributes, also for simulation
-  fit <- attach_fit_info(fit, model, fit_folder, output_file)
+  fit <- attach_fit_info(fit, obj$model, obj$fit_folder, obj$output_file)
 
   ## save fit object to file
   if(!is.null(save_fit)){

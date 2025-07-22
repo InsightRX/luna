@@ -4,7 +4,14 @@
 \alias{luna_clone}
 \title{Clone model}
 \usage{
-luna_clone(id, new_id, folder = NULL, force = FALSE, verbose = TRUE)
+luna_clone(
+  id,
+  new_id,
+  folder = NULL,
+  force = FALSE,
+  update_inits = FALSE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{id}{run id, e.g. \code{run1}. This will be the folder in which the NONMEM
@@ -13,6 +20,9 @@ model is run.}
 \item{new_id}{new run id}
 
 \item{folder}{path to folder containing the model file. Default is current directory.}
+
+\item{update_inits}{use the final estimates from the source model
+as initial estimates for the cloned model. Default \code{FALSE}}
 }
 \description{
 Clone model

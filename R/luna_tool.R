@@ -12,6 +12,7 @@
 luna_tool <- function(
   id,
   tool = NULL,
+  force = FALSE,
   as_job = NULL,
   verbose = TRUE
 ) {
@@ -72,11 +73,12 @@ luna_tool <- function(
   ## Load model and results
   model <- pharmr::read_model(file.path(folder, paste0(id, ".mod")))
   run_folder <- file.path(folder, id)
-  model_run_file <- file.path(run_folder, "run.mod")
-  if(!file.exists(model_run_file)) {
-    cli::cli_abort("No run files found for run {id}. Please first run the model before requesting a {tool}.")
-  }
-  results <- pharmr::read_modelfit_results(model_run_file)
+  model_run_file <- find_file_with_fallback(
+    folder,
+    filename = file.path(id, paste0("run", ".mod")),
+    fallback = paste0(id, ".mod"),
+    verbose = FALSE
+  )
 
   ## Determine method and options
   method <- ifelse0(config$tools[[tool]]$method, "pharmpy")
@@ -89,8 +91,20 @@ luna_tool <- function(
   }
   options <- tool_obj$options[[1]]
 
+  ## create run folder, if needed
+  model <- prepare_run_folder(
+    id = id,
+    model = model,
+    path = folder,
+    force = force,
+    model_path =  file.path(fit_folder, "run.mod"),
+    dataset_path = file.path(fit_folder, "data.csv"),
+    verbose = verbose
+  )
+
   ## Determine what to do
   if(method == "pharmpy") {
+    results <- pharmr::read_modelfit_results(model_run_file)
     call_pharmpy_tool(
       id = id,
       model = model,
@@ -105,11 +119,12 @@ luna_tool <- function(
     tool_clean <- gsub("^(.*?)::", "", tool)
 
     ## call PsN tool
-    if(verbose)
+    if(verbose) {
       cli::cli_alert_info("Running: {tool} on {id} with args: {args}")
+    }
     suppressWarnings(
       call_psn(
-        model_file = model_run_file,
+        model_file = "run.mod",
         path = run_folder,
         options = args,
         tool = tool_clean,
@@ -128,7 +143,7 @@ parse_psn_args <- function(options) {
   options$id <- NULL
   options$tool <- NULL
   if(is.null(options) || length(options) == 0) {
-    return("")
+    return(NULL)
   }
   ## split in logical and epxlicit options
   logical_options <- list()

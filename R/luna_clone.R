@@ -2,6 +2,8 @@
 #'
 #' @inheritParams luna_run
 #' @param new_id new run id
+#' @param update_inits use the final estimates from the source model
+#' as initial estimates for the cloned model. Default `FALSE`
 #'
 #' @export
 #'
@@ -10,6 +12,7 @@ luna_clone <- function(
   new_id,
   folder = NULL,
   force = FALSE,
+  update_inits = FALSE,
   verbose = TRUE
 ) {
   id <- validate_id(id)
@@ -22,20 +25,51 @@ luna_clone <- function(
   if(file.exists(new_file)) {
     if(force) {
       if(verbose) {
-        cli::cli_alert_info("File {new_file} exists, overwriting.")
+        cli::cli_alert_info("File {new_file} exists, overwriting")
       }
     } else {
       cli::cli_abort("New file {new_file} exists, use `force=TRUE` to overwrite.")
     }
   }
   if(verbose) {
-    cli::cli_alert_info("Cloning model {id} to {new_id}.")
+    cli::cli_alert_info("Cloning model {id} to {new_id}")
   }
-  file.copy(
-    old_file,
-    new_file
-  )
-  
+  if(!update_inits) {
+    file.copy(
+      old_file,
+      new_file,
+      overwrite = TRUE
+    )
+  } else {
+    cli::cli_alert_info("Updating parameters in cloned model")
+    ## TODO: this currently doesn't work, due to a Pharmpy bug.
+    ## Therefore, we'll be using PsN for now
+    pharmpy_works <- FALSE
+    if(pharmpy_works) {
+      model <- pharmr::read_model(old_file)
+      info <- luna_info(id)
+      parameters <- replace_list_elements(
+        model$parameters$inits,
+        as.list(info$parameter_estimates)
+      )
+      model <- pharmr::set_initial_estimates(
+        model,
+        inits = parameters
+      )
+      writeLines(model$code, new_file)
+    } else {
+      call_psn(
+        "run.mod",
+        tool = "update_inits",
+        path = file.path(folder, id),
+        options = list(
+          output_model = paste0("../", new_id, ".mod")
+        ),
+        verbose = T
+      )
+    }
+  }
+
   ## Update yaml
   if(verbose) {
     cli::cli_alert_info("Updating project YAML")
@@ -49,7 +83,7 @@ luna_clone <- function(
     folder = folder,
     verbose = FALSE
   )
-  
+
   ## Update cache
   project <- .luna_cache$get("project")
   entry <- pluck_entry(project$yaml$runs, new_id, "id")
@@ -60,7 +94,7 @@ luna_clone <- function(
       reference = id
     )
     .luna_cache$set("project", project)
-    
+
     ## Write yaml back to disk
     yaml_file <- file.path(folder, paste0(name, ".yaml"))
     yaml::write_yaml(project$yaml, file = yaml_file)
@@ -70,5 +104,7 @@ luna_clone <- function(
   } else {
     cli::cli_alert_warning("Run already exists in YAML, not updating.")
   }
+
+  luna_edit(new_id)
 
 }
