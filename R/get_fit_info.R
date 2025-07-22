@@ -60,7 +60,7 @@ print.pharmpy.workflows.results.ModelfitResults <- function(x, ...) {
 
   ## Parameter estimates + uncertainty
   par_tab <- create_modelfit_parameter_table(x)
-  print(knitr::kable(par_tab, row.names = FALSE, format = "simple"))
+  print(knitr::kable(par_tab, row.names = FALSE))
 
 }
 
@@ -125,7 +125,9 @@ create_modelfit_parameter_table <- function(fit) {
   }
   data.frame(
     Parameter = names(x$parameter_estimates),
-    Estimate = as.numeric(x$parameter_estimates),
+    Estimate = as.numeric(
+      x$parameter_estimates
+    ),
     SD = stdevs
   ) |>
     dplyr::mutate(`RSE %` = dplyr::if_else(
@@ -134,5 +136,11 @@ create_modelfit_parameter_table <- function(fit) {
       NA
     )
   ) |>
-    dplyr::select(-SD)
+    dplyr::select(-SD) |>
+    dplyr::mutate(
+      Estimate = format(
+        signif(Estimate, 5),
+        trim = FALSE, drop0trailing = TRUE, scientific = FALSE
+      )
+    )
 }
