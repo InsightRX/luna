@@ -88,7 +88,10 @@ luna_run <- function(
 #' 3. check pharmpy config
 #' 4. throw error, force user to specify
 #'
-get_nmfe_location_for_run <- function(nmfe = NULL, verbose = FALSE) {
+get_nmfe_location_for_run <- function(
+  nmfe = NULL,
+  verbose = FALSE
+) {
   if(!is.null(nmfe)) {
     if(verbose) cli::cli_alert_info("Using user-specified NONMEM version at {nmfe}")
   } else {

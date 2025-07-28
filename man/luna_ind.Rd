@@ -8,8 +8,12 @@ by subject}
 luna_ind(
   id,
   folder = NULL,
+  data = NULL,
   theme = ggplot2::theme_classic,
   smooth_method = "loess",
+  exponentiate = FALSE,
+  show = list(dv = TRUE, ipred = TRUE, pred = TRUE, doses = TRUE, se = TRUE),
+  se_factor = 1,
   ltbs = FALSE,
   ncol = 3,
   nrow = 3,
@@ -24,7 +28,16 @@ model is run.}
 
 \item{folder}{path to folder containing the model file. Default is current directory.}
 
+\item{data}{instead of getting an output table from a run, supply a
+data.frame with the relevant data columns.}
+
 \item{smooth_method}{ggplot2-supported smooth method, e.g. "loess"}
+
+\item{exponentiate}{exponentiate DV, PRED, and IPRED columns?}
+
+\item{se_factor}{when plotting uncertainty for IPRED, factor to multiply
+the SE with. Default is 1, i.e. show the standard error. If set to 1.96,
+it will show the 95\% CI. (Use \code{qnorm()} to find relevant factor for CI)}
 
 \item{ltbs}{log-transform-both-sides error model? If \code{TRUE}, will
 exponentiate DV, PRED, and IPRED.}

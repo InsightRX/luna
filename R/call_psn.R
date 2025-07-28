@@ -11,7 +11,10 @@ call_psn <- function(
   output_file,
   path,
   options = c(),
-  tool = c("execute", "vpc", "bootstrap", "sir", "proseval"),
+  tool = c(
+    "execute", "vpc", "bootstrap", "sir", "proseval", "update_inits",
+    "cdd"
+  ),
   console = TRUE,
   verbose = TRUE
 ) {
@@ -33,11 +36,15 @@ call_psn <- function(
     stderr <- file.path(path, "stderr")
   }
 
+  psn_args <- parse_psn_args(options)
+  if(verbose) {
+    cli::cli_alert_info("Running: {tool} {model_file} {psn_args}")
+  }
   withr::with_dir(path, {
     suppressWarnings(
       res <- system2(
         command = tool,
-        args = c(basename(model_file), options),
+        args = paste(basename(model_file), psn_args),
         wait = TRUE,
         stdout = stdout,
         stderr = stderr
