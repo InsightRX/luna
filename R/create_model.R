@@ -245,6 +245,7 @@ create_model <- function(
     if(!is.null(tables)) {
       mod <- add_default_output_tables(
         model = mod,
+        iiv = iiv,
         tables = tables,
         full_tables = full_tables
       )

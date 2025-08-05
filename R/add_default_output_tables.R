@@ -3,6 +3,8 @@
 #' if they don't already exist in the model.
 #'
 #' @param model Pharmpy model object
+#' @param iiv vector of parameters with iiv. Optional, if not specified
+#' will use pharmpy function to retrieve it.
 #' @param tables character vector of which default tables
 #' to add, options are `fit` and `parameters`.
 #' @param full_tables For the default tables, should all input columns from be
@@ -13,6 +15,7 @@
 #'
 add_default_output_tables <- function(
   model,
+  iiv = NULL,
   tables = c("fit", "parameters"),
   full_tables = FALSE,
   remove_existing = TRUE,
@@ -35,7 +38,12 @@ add_default_output_tables <- function(
   ## individual parameters, first row only
   if("parameters" %in% tables && !(default_table_names[["parameters"]] %in% existing_tables)) {
     if(verbose) cli::cli_alert_info("Adding output table for individual parameters")
-    cols <- pharmr::get_individual_parameters(model)
+    if(is.null(iiv)) {
+      ## Pharmpy bug, cannot retrieve IIV if only one parameter has IIV
+      cols <- pharmr::get_individual_parameters(model)
+    } else {
+      cols <- iiv
+    }
     if(full_tables) {
       cols <- unique(c(cols, model$datainfo$names))
     }

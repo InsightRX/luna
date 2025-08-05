@@ -7,6 +7,7 @@ if they don't already exist in the model.}
 \usage{
 add_default_output_tables(
   model,
+  iiv = NULL,
   tables = c("fit", "parameters"),
   full_tables = FALSE,
   remove_existing = TRUE,
@@ -15,6 +16,9 @@ add_default_output_tables(
 }
 \arguments{
 \item{model}{Pharmpy model object}
+
+\item{iiv}{vector of parameters with iiv. Optional, if not specified
+will use pharmpy function to retrieve it.}
 
 \item{tables}{character vector of which default tables
 to add, options are \code{fit} and \code{parameters}.}
