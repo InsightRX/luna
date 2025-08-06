@@ -18,7 +18,8 @@ add_default_output_tables(
 \item{model}{Pharmpy model object}
 
 \item{iiv}{vector of parameters with iiv. Optional, if not specified
-will use pharmpy function to retrieve it.}
+will use pharmpy function to retrieve it. Shortcut strings "basic" and "all"
+are also treated as NULL and will auto-detect parameters.}
 
 \item{tables}{character vector of which default tables
 to add, options are \code{fit} and \code{parameters}.}
