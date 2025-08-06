@@ -4,7 +4,8 @@
 #'
 #' @param model Pharmpy model object
 #' @param iiv vector of parameters with iiv. Optional, if not specified
-#' will use pharmpy function to retrieve it.
+#' will use pharmpy function to retrieve it. Shortcut strings "basic" and "all"
+#' are also treated as NULL and will auto-detect parameters.
 #' @param tables character vector of which default tables
 #' to add, options are `fit` and `parameters`.
 #' @param full_tables For the default tables, should all input columns from be
