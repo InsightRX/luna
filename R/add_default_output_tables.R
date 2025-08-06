@@ -38,8 +38,9 @@ add_default_output_tables <- function(
   ## individual parameters, first row only
   if("parameters" %in% tables && !(default_table_names[["parameters"]] %in% existing_tables)) {
     if(verbose) cli::cli_alert_info("Adding output table for individual parameters")
-    if(is.null(iiv)) {
+    if(is.null(iiv) || (is.character(iiv) && length(iiv) == 1 && iiv %in% c("basic", "all"))) {
       ## Pharmpy bug, cannot retrieve IIV if only one parameter has IIV
+      ## Also ignore shortcut strings like "basic" or "all"
       cols <- pharmr::get_individual_parameters(model)
     } else {
       cols <- iiv
