@@ -10,22 +10,24 @@
 #' @param page page number of plots to show
 #' @param scales passed to `facet_wrap()` function as the `scales`
 #' argument, can be "free", "free_x", or "free_y".
+#' @param indiv_ids list of individual IDs to be plotted.
 #'
 #' @export
 #'
 luna_ind <- function(
-  id,
-  folder = NULL,
-  theme = ggplot2::theme_classic,
-  smooth_method = "loess",
-  ltbs = FALSE,
-  ncol = 3,
-  nrow = 3,
-  page = 1,
-  scales = NULL,
-  verbose = TRUE
+    id,
+    folder = NULL,
+    theme = ggplot2::theme_classic,
+    smooth_method = "loess",
+    ltbs = FALSE,
+    ncol = 3,
+    nrow = 3,
+    page = 1,
+    scales = NULL,
+    indiv_ids = NULL,
+    verbose = TRUE
 ) {
-
+  
   tab <- get_table_for_plots(
     id = id,
     folder = folder,
@@ -33,24 +35,35 @@ luna_ind <- function(
     ltbs = ltbs,
     verbose = verbose
   )
-
+  
   ## Pagination
   ids <- unique(tab$ID)
   set_len <- ncol * nrow
-  start_idx <- set_len * (page-1) + 1
-  end_idx <- set_len * page
-  max_pages <- floor(length(ids) / (ncol * nrow))
-  if(page > max_pages) {
-    cli::cli_abort("Sorry, only {max_pages} pages available.")
+  
+  if (is.null(indiv_ids)){
+    start_idx <- set_len * (page-1) + 1
+    end_idx <- set_len * page
+    max_pages <- floor(length(ids) / (ncol * nrow))
+    if(page > max_pages) {
+      cli::cli_abort("Sorry, only {max_pages} pages available.")
+    }
+    if(end_idx > length(ids)) {
+      end_idx <- length(ids)
+    }
+    if(verbose) {
+      cli::cli_alert_info("Showing page {page}/{max_pages}.")
+    }
+    ids_sel <- ids[start_idx:end_idx]
+  } else {
+    if (length(indiv_ids) > set_len){
+      cli::cli_alert_info("Only first {set_len} IDs will be shown.")
+      ids_sel <- indiv_ids[1:set_len]
+    } else {
+      ids_sel <- indiv_ids
+    }
   }
-  if(end_idx > length(ids)) {
-    end_idx <- length(ids)
-  }
-  if(verbose) {
-    cli::cli_alert_info("Showing page {page}/{max_pages}.")
-  }
-  ids_sel <- ids[start_idx:end_idx]
-
+  
+  
   ## PRED/IPRED vs DV
   tab_long <- tab |>
     dplyr::filter(ID %in% ids_sel) |>
