@@ -46,6 +46,7 @@ set_iiv <- function(mod, iiv, iiv_type) {
     current <- get_parameters_with_iiv(mod)
     iiv_goal <- names(iiv)[!stringr::str_detect(names(iiv), "~")]
     iiv_corr <- names(iiv)[stringr::str_detect(names(iiv), "~")]
+    has_corr <- unique(unlist(stringr::str_split(iiv_corr, "~")))
     to_remove <- setdiff(current, iiv_goal)
     to_reset <- intersect(iiv_goal, current)
     to_add <- setdiff(iiv_goal, current)
@@ -53,8 +54,8 @@ set_iiv <- function(mod, iiv, iiv_type) {
       name = c(to_add, to_reset),
       reset = c(rep(FALSE, length(to_add)), rep(TRUE, length(to_reset)))
     ) |>
-      dplyr::arrange(reset) # make sure to first do the parameters that don't need a reset,
-    # to avoid creating DUMMYOMEGA
+      dplyr::mutate(correlation = name %in% has_corr) |>
+      dplyr::arrange(reset, correlation) # make sure to first do the parameters that don't need a reset, to avoid creating DUMMYOMEGA
 
     ## Then, add univariate IIV (no BLOCKs yet)
     for(key in map$name) {
@@ -89,9 +90,6 @@ set_iiv_block <- function(
   model,
   iiv
 ) {
-  code <- stringr::str_split(model$code, "\\n")[[1]]
-  idx <- grep("^\\$OMEGA", code)
-  omega_lines <- code[idx]
 
   ## make sure we have the IIV object in the same
   ## order as the IIVs in the NONMEM model
@@ -101,9 +99,20 @@ set_iiv_block <- function(
     iiv_ordered[[par]] <- iiv[[par]]
     iiv[[par]] <- NULL
   }
-  for(par in names(iiv)) { # remainder of parameters
+  corr_params <- names(iiv)[grep("~", names(iiv))]
+  for(par in corr_params) { # remainder of parameters
     iiv_ordered[[par]] <- iiv[[par]]
   }
+  pars_with_corr <- unique(unlist(stringr::str_split(corr_params, "~")))
+
+  ## get omega lines, only the ones with correlations
+  code <- stringr::str_split(model$code, "\\n")[[1]]
+  omega_idx <- c()
+  for(par in pars_with_corr) {
+    idx <- grep(paste0("^\\$OMEGA .*? ; IIV_", par), code)
+    omega_idx <- c(omega_idx, idx)
+  }
+  omega_lines <- code[omega_idx]
 
   ## Create the omega block
   om_block <- get_cov_matrix(iiv_ordered, nonmem = TRUE)
@@ -112,9 +121,9 @@ set_iiv_block <- function(
     om_block
   )
   new_code <- c(
-    code[1:(min(idx)-1)],
+    code[1:(min(omega_idx)-1)],
     omega,
-    code[(max(idx)+1):length(code)]
+    code[(max(omega_idx)+1):length(code)]
   )
   model <- pharmr::read_model_from_string(
     paste0(new_code, collapse = "\n")
