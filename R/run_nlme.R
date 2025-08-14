@@ -50,6 +50,9 @@
 #' not actual time since first overall dose.
 #' @param clean clean up run folder after NONMEM execution?
 #' @param as_job run as RStudio job?
+#' @param check if `TRUE`, will only check the model code (NM-TRAN in the case
+#' of NONMEM), but not run the model. Will return `TRUE` if model syntax is
+#' correct, and `FALSE` if not. Will also attach stdout as `message` attribute.
 #' @param verbose verbose output?
 #'
 #' @export
@@ -70,6 +73,7 @@ run_nlme <- function(
   auto_stack_encounters = TRUE,
   clean = TRUE,
   as_job = FALSE,
+  check = FALSE,
   verbose = TRUE
 ) {
 
@@ -129,6 +133,20 @@ run_nlme <- function(
   model_code <- change_nonmem_dataset(model_code, dataset_path)
   writeLines(model_code, model_path)
   if(verbose) cli::cli_process_done()
+
+  ## If only `check` requested:
+  if(check) {
+    model_ok <- call_nmfe(
+      model_file = model_file,
+      output_file = output_file,
+      path = fit_folder,
+      nmfe = nmfe,
+      nmtran_only = TRUE,
+      console = console,
+      verbose = verbose
+    )
+    return(model_ok)
+  }
 
   ## Run NONMEM and direct stdout/stderr
   if(method == "pharmpy") {
@@ -330,13 +348,16 @@ call_nmfe <- function(
   path,
   nmfe = "/opt/NONMEM/nm_current/run/nmfe75",
   console = FALSE,
-  verbose = TRUE
+  nmtran_only = FALSE,
+  verbose = FALSE
 ) {
 
   if(! file.exists(nmfe)) {
     cli::cli_abort("NONMEM (nmfe) not found at {nmfe}")
   } else {
-    cli::cli_alert_success("NONMEM found at {nmfe}")
+    if(verbose) {
+      cli::cli_alert_success("NONMEM found at {nmfe}")
+    }
   }
 
   # Transform folder path to absolute path
@@ -362,14 +383,40 @@ call_nmfe <- function(
     setwd(curr_dir)
   })
   setwd(path)
-  system2(
-    command = nmfe,
-    args = c(model_file, output_file),
-    wait = TRUE,
-    stdout = stdout,
-    stderr = stderr,
-  )
+  if(nmtran_only) {
+    nmtran <- get_nmtran_from_nmfe(nmfe)
+    system2(
+      command = nmtran,
+      args = c("<", model_file),
+      wait = TRUE,
+      stdout = stdout,
+      stderr = stderr
+    )
+    cons <- c(
+      readLines(stderr),
+      readLines(stdout)
+    )
+    has_no_error <- !any(stringr::str_detect(cons, "AN ERROR WAS FOUND"))
+    attr(has_no_error, "message") <- cons
+    return(has_no_error)
+  } else {
+    system2(
+      command = nmfe,
+      args = c(model_file, output_file),
+      wait = TRUE,
+      stdout = stdout,
+      stderr = stderr,
+    )
+  }
   cli::cli_process_done()
+}
+
+#' Get the location of NM-TRAN based on the location of nmfe
+#' It's usually up one folder from nmfe, then in tr/NMTRAN.exe
+get_nmtran_from_nmfe <- function(nmfe) {
+  nm_folder <- dirname(dirname(nmfe))
+  nmtran <- file.path(nm_folder, "tr", "NMTRAN.exe")
+  nmtran
 }
 
 #' Get output from NMFE

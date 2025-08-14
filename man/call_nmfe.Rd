@@ -10,7 +10,8 @@ call_nmfe(
   path,
   nmfe = "/opt/NONMEM/nm_current/run/nmfe75",
   console = FALSE,
-  verbose = TRUE
+  nmtran_only = FALSE,
+  verbose = FALSE
 )
 }
 \arguments{
