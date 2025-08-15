@@ -84,7 +84,7 @@ get_time_last_updated_folder <- function(folder) {
   ) |>
     unlist()
   if(length(dt) > 0) {
-    dt <- max(na.rm = TRUE) |>
+    dt <- max(dt, na.rm = TRUE) |>
       lubridate::as_datetime() |>
       lubridate::format_ISO8601()
     if(is.na(dt)) {

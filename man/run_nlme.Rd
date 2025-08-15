@@ -20,6 +20,7 @@ run_nlme(
   auto_stack_encounters = TRUE,
   clean = TRUE,
   as_job = FALSE,
+  check_only = FALSE,
   verbose = TRUE
 )
 }
@@ -79,6 +80,10 @@ not actual time since first overall dose.}
 \item{clean}{clean up run folder after NONMEM execution?}
 
 \item{as_job}{run as RStudio job?}
+
+\item{check_only}{if \code{TRUE}, will only check the model code (NM-TRAN in the case
+of NONMEM), but not run the model. Will return \code{TRUE} if model syntax is
+correct, and \code{FALSE} if not. Will also attach stdout as \code{message} attribute.}
 
 \item{verbose}{verbose output?}
 }
