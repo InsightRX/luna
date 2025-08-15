@@ -103,7 +103,10 @@ set_iiv_block <- function(
   for(par in corr_params) { # remainder of parameters
     iiv_ordered[[par]] <- iiv[[par]]
   }
-  pars_with_corr <- unique(unlist(stringr::str_split(corr_params, "~")))
+  pars_with_corr <- intersect(
+    names(iiv_ordered),
+    unique(unlist(stringr::str_split(corr_params, "~")))
+  )
 
   ## get omega lines, only the ones with correlations
   code <- stringr::str_split(model$code, "\\n")[[1]]
@@ -118,7 +121,7 @@ set_iiv_block <- function(
   om_block <- get_cov_matrix(iiv_ordered, nonmem = TRUE)
   omega <- c(
     glue::glue("$OMEGA BLOCK({length(om_block)})"),
-    om_block
+    paste(om_block, paste0("; IIV_", pars_with_corr))
   )
   new_code <- c(
     code[1:(min(omega_idx)-1)],

@@ -10,7 +10,7 @@ call_nmfe(
   path,
   nmfe = "/opt/NONMEM/nm_cxurrent/run/nmfe75",
   console = FALSE,
-  nmtran = FALSE,
+  check_only = FALSE,
   verbose = FALSE
 )
 }
@@ -25,7 +25,7 @@ call_nmfe(
 
 \item{console}{show output from nmfe in console? Default \code{FALSE}}
 
-\item{nmtran}{only run NM-TRAN, to check the model syntax}
+\item{check_only}{only run NM-TRAN, to check the model syntax}
 
 \item{verbose}{verbose output?}
 }
