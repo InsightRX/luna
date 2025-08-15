@@ -47,6 +47,7 @@
 <url><loc>https://insightrx.github.io/luna/reference/get_new_run_number.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_nmfe_location_for_run.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_nmfe_output.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/get_nmtran_from_nmfe.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_parameters_with_iiv.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_pharmpy_conf.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_pharmpy_runfolders.html</loc></url>
@@ -72,6 +73,7 @@
 <url><loc>https://insightrx.github.io/luna/reference/log_add.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/log_get_last_event.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/luna_cache_get.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/luna_check.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/luna_compare.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/luna_config.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/luna_dataset.html</loc></url>
