@@ -107,6 +107,7 @@ luna_list()
 
 ## Model run workflow
 luna_run()
+luna_check()
 luna_info()
 luna_compare()
 luna_help()
