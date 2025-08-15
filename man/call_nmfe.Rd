@@ -10,7 +10,7 @@ call_nmfe(
   path,
   nmfe = "/opt/NONMEM/nm_current/run/nmfe75",
   console = FALSE,
-  nmtran_only = FALSE,
+  nmtran = FALSE,
   verbose = FALSE
 )
 }
@@ -24,6 +24,8 @@ call_nmfe(
 \item{nmfe}{path to nmfe batch file to run NONMEM}
 
 \item{console}{show output from nmfe in console? Default \code{FALSE}}
+
+\item{nmtran}{only run NM-TRAN, to check the model syntax}
 
 \item{verbose}{verbose output?}
 }

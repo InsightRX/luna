@@ -141,7 +141,7 @@ run_nlme <- function(
       output_file = output_file,
       path = fit_folder,
       nmfe = nmfe,
-      nmtran_only = TRUE,
+      nmtran = TRUE,
       console = console,
       verbose = verbose
     )
@@ -338,6 +338,7 @@ change_nonmem_dataset <- function(
 #' @param path run folder path, e.g. "run1"
 #' @param nmfe path to nmfe batch file to run NONMEM
 #' @param console show output from nmfe in console? Default `FALSE`
+#' @param nmtran only run NM-TRAN, to check the model syntax
 #' @param verbose verbose output?
 #'
 #' @export
@@ -348,7 +349,7 @@ call_nmfe <- function(
   path,
   nmfe = "/opt/NONMEM/nm_current/run/nmfe75",
   console = FALSE,
-  nmtran_only = FALSE,
+  nmtran = FALSE,
   verbose = FALSE
 ) {
 
@@ -383,8 +384,11 @@ call_nmfe <- function(
     setwd(curr_dir)
   })
   setwd(path)
-  if(nmtran_only) {
+  if(nmtran) {
     nmtran <- get_nmtran_from_nmfe(nmfe)
+    if(!file.exists(nmtran)) {
+      cli::cli_abort("NM-TRAN executable could not be found, can't perform syntax check.")
+    }
     system2(
       command = nmtran,
       args = c("<", model_file),
