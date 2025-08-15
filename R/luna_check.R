@@ -55,7 +55,7 @@ luna_check <- function(
     path = folder,
     method = "nmfe",
     as_job = as_job,
-    check = TRUE, # !!
+    check_only = TRUE, # !! don't run the model, only check it using NM-TRAN
     console = FALSE,
     verbose = verbose,
     ...

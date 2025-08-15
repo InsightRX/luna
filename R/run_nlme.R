@@ -50,7 +50,7 @@
 #' not actual time since first overall dose.
 #' @param clean clean up run folder after NONMEM execution?
 #' @param as_job run as RStudio job?
-#' @param check if `TRUE`, will only check the model code (NM-TRAN in the case
+#' @param check_only if `TRUE`, will only check the model code (NM-TRAN in the case
 #' of NONMEM), but not run the model. Will return `TRUE` if model syntax is
 #' correct, and `FALSE` if not. Will also attach stdout as `message` attribute.
 #' @param verbose verbose output?
@@ -73,7 +73,7 @@ run_nlme <- function(
   auto_stack_encounters = TRUE,
   clean = TRUE,
   as_job = FALSE,
-  check = FALSE,
+  check_only = FALSE,
   verbose = TRUE
 ) {
 
@@ -135,7 +135,7 @@ run_nlme <- function(
   if(verbose) cli::cli_process_done()
 
   ## If only `check` requested:
-  if(check) {
+  if(check_only) {
     model_ok <- call_nmfe(
       model_file = model_file,
       output_file = output_file,
