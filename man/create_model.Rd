@@ -49,7 +49,8 @@ Will add using a logit function.}
 \item{iiv}{either \code{character} or a \code{list} object. If \code{character}, should be
 either "basic" (only CL and V parameters) or "all" (IIV on all parameters).
 If specified as a list object, it should contain the IIV magnitude (on SD
-scale) for parameters, e.g. \code{list(CL = 0.2, V = 0.3)}.}
+scale) for parameters and potential correlations specified using a tilde,
+e.g. \code{list("CL" = 0.2, "V" = 0.3, "CL~V" = 0.1)}.}
 
 \item{ruv}{one of \code{proportional}, \code{additive}, or \code{combined}.}
 

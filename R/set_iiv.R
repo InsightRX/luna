@@ -10,6 +10,7 @@
 #' `add`, `prop`, `exp` (default), `log`, or `re_log`.
 #'
 set_iiv <- function(mod, iiv, iiv_type) {
+
   if(inherits(iiv, "character")) {
     pars <- get_defined_pk_parameters(mod)
     if(length(iiv) == 1 && iiv == "all") {
@@ -25,6 +26,7 @@ set_iiv <- function(mod, iiv, iiv_type) {
       iiv <- iiv_list
     }
   }
+
   ## Make sure iiv_type is a list
   if(inherits(iiv_type, "character")) {
     iiv_type_list <- list()
@@ -34,10 +36,17 @@ set_iiv <- function(mod, iiv, iiv_type) {
   } else {
     iiv_type_list <- iiv_type
   }
+
   if(!is.null(iiv)) {
+    if(!inherits(iiv, "list")) {
+      stop("`iiv` parameter should be a `list` or a `character` object.")
+    }
+
     ## First remove all existing IIV
     current <- get_parameters_with_iiv(mod)
-    iiv_goal <- names(iiv)
+    iiv_goal <- names(iiv)[!stringr::str_detect(names(iiv), "~")]
+    iiv_corr <- names(iiv)[stringr::str_detect(names(iiv), "~")]
+    has_corr <- unique(unlist(stringr::str_split(iiv_corr, "~")))
     to_remove <- setdiff(current, iiv_goal)
     to_reset <- intersect(iiv_goal, current)
     to_add <- setdiff(iiv_goal, current)
@@ -45,8 +54,10 @@ set_iiv <- function(mod, iiv, iiv_type) {
       name = c(to_add, to_reset),
       reset = c(rep(FALSE, length(to_add)), rep(TRUE, length(to_reset)))
     ) |>
-      dplyr::arrange(reset) # make sure to first do the parmaeters that don't need a reset,
-    # to avoid creating DUMMYOMEGA
+      dplyr::mutate(correlation = name %in% has_corr) |>
+      dplyr::arrange(reset, correlation) # make sure to first do the parameters that don't need a reset, to avoid creating DUMMYOMEGA
+
+    ## Then, add univariate IIV (no BLOCKs yet)
     for(key in map$name) {
       if(map$reset[match(key, map$name)]) {
         mod <- pharmr::remove_iiv(mod, key)
@@ -62,15 +73,71 @@ set_iiv <- function(mod, iiv, iiv_type) {
         cli::cli_alert_warning(paste0("Parameter declaration for ", key, " not found, cannot add IIV for ", key, "."))
       }
     }
+
+    ## Then, if needed, change relevant $OMEGA to BLOCK
+    ## Currently, pharmpy/pharmr does not support setting covariances currently
+    ## so we'll write a custom function that just uses regex. It's a hacky solution
+    ## but expectation is that pharmr will support this in the future.
+    if(length(iiv_corr) > 0) {
+      mod <- set_iiv_block(mod, iiv)
+    }
+
   }
   mod
 }
 
+set_iiv_block <- function(
+  model,
+  iiv
+) {
+
+  ## make sure we have the IIV object in the same
+  ## order as the IIVs in the NONMEM model
+  pars <- get_parameters_with_iiv(model)
+  iiv_ordered <- list()
+  for(par in pars) {
+    iiv_ordered[[par]] <- iiv[[par]]
+    iiv[[par]] <- NULL
+  }
+  corr_params <- names(iiv)[grep("~", names(iiv))]
+  for(par in corr_params) { # remainder of parameters
+    iiv_ordered[[par]] <- iiv[[par]]
+  }
+  pars_with_corr <- intersect(
+    names(iiv_ordered),
+    unique(unlist(stringr::str_split(corr_params, "~")))
+  )
+
+  ## get omega lines, only the ones with correlations
+  code <- stringr::str_split(model$code, "\\n")[[1]]
+  omega_idx <- c()
+  for(par in pars_with_corr) {
+    idx <- grep(paste0("^\\$OMEGA .*? ; IIV_", par), code)
+    omega_idx <- c(omega_idx, idx)
+  }
+  omega_lines <- code[omega_idx]
+
+  ## Create the omega block
+  om_block <- get_cov_matrix(iiv_ordered, nonmem = TRUE)
+  omega <- c(
+    glue::glue("$OMEGA BLOCK({length(om_block)})"),
+    paste(om_block, paste0("; IIV_", pars_with_corr))
+  )
+  new_code <- c(
+    code[1:(min(omega_idx)-1)],
+    omega,
+    code[(max(omega_idx)+1):length(code)]
+  )
+  model <- pharmr::read_model_from_string(
+    paste0(new_code, collapse = "\n")
+  )
+  model
+}
 
 #' Get a character vector with all parameters on which IIV is present
 #'
 get_parameters_with_iiv <- function(mod) {
-  pars <- unlist(mod$random_variables$parameter_names)
+  pars <- mod$random_variables$variance_parameters
   idx <- grep("IIV_", pars)
   eta_pars <- c()
   if(length(idx) > 0) {
