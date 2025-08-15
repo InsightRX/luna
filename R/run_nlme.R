@@ -124,7 +124,7 @@ run_nlme <- function(
         datatype = "nonmem"
       )
   }
-  model <- clean_modelfit_data(model)
+  model <- clean_modelfit_data(model, verbose = verbose)
   data <- model$dataset
 
   ## Copy modelfile + dataset
@@ -347,7 +347,7 @@ call_nmfe <- function(
   model_file,
   output_file,
   path,
-  nmfe = "/opt/NONMEM/nm_current/run/nmfe75",
+  nmfe = "/opt/NONMEM/nm_cxurrent/run/nmfe75",
   console = FALSE,
   nmtran = FALSE,
   verbose = FALSE

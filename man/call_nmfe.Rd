@@ -8,7 +8,7 @@ call_nmfe(
   model_file,
   output_file,
   path,
-  nmfe = "/opt/NONMEM/nm_current/run/nmfe75",
+  nmfe = "/opt/NONMEM/nm_cxurrent/run/nmfe75",
   console = FALSE,
   nmtran = FALSE,
   verbose = FALSE
