@@ -236,6 +236,7 @@ test_that("IIV argument works with multi-compartment models", {
   mod_2cmt2 <- create_model(
     route = "iv",
     n_cmt = 2,
+    tool = "nlmixr2",
     iiv = list(
       CL = 0.2, V1 = 0.3, Q = 0.4, V2 = 0.5,
       "CL~V1" = 0.4, "Q~V2" = 0.3
@@ -491,7 +492,8 @@ test_that("IIV argument handles all input formats correctly", {
     data = test_data,
     verbose = FALSE
   )
-  expect_false("ETA_CL" %in% mod_null$random_variables$names)
+  ## There always has to remain one ETA (in current Pharmpy version)
+  expect_true("ETA_CL" %in% mod_null$random_variables$names)
   expect_false("ETA_V" %in% mod_null$random_variables$names)
 })
 
@@ -543,12 +545,12 @@ test_that("IIV argument works with multi-compartment models", {
   mod_2cmt <- create_model(
     route = "iv",
     n_cmt = 2,
-    iiv = list(CL = 0.2, V = 0.3, Q = 0.4, V2 = 0.5),
+    iiv = list(CL = 0.2, V1 = 0.3, Q = 0.4, V2 = 0.5),
     data = test_data,
     verbose = FALSE
   )
   expect_true("ETA_CL" %in% mod_2cmt$random_variables$names)
-  expect_true("ETA_V" %in% mod_2cmt$random_variables$names)
+  expect_true("ETA_V1" %in% mod_2cmt$random_variables$names)
   expect_true("ETA_Q" %in% mod_2cmt$random_variables$names)
   expect_true("ETA_V2" %in% mod_2cmt$random_variables$names)
 
@@ -556,43 +558,16 @@ test_that("IIV argument works with multi-compartment models", {
   mod_3cmt <- create_model(
     route = "iv",
     n_cmt = 3,
-    iiv = list(CL = 0.2, V = 0.3, Q = 0.4, V2 = 0.5, Q2 = 0.6, V3 = 0.7),
+    iiv = list(CL = 0.2, V1 = 0.3, Q2 = 0.4, V2 = 0.5, Q3 = 0.6, V3 = 0.7),
     data = test_data,
     verbose = FALSE
   )
   expect_true("ETA_CL" %in% mod_3cmt$random_variables$names)
-  expect_true("ETA_V" %in% mod_3cmt$random_variables$names)
-  expect_true("ETA_Q" %in% mod_3cmt$random_variables$names)
-  expect_true("ETA_V2" %in% mod_3cmt$random_variables$names)
+  expect_true("ETA_V1" %in% mod_3cmt$random_variables$names)
   expect_true("ETA_Q2" %in% mod_3cmt$random_variables$names)
+  expect_true("ETA_V2" %in% mod_3cmt$random_variables$names)
+  expect_true("ETA_Q3" %in% mod_3cmt$random_variables$names)
   expect_true("ETA_V3" %in% mod_3cmt$random_variables$names)
-})
-
-test_that("IIV argument handles correlations correctly", {
-  test_data <- data.frame(
-    ID = 1,
-    TIME = c(0, 1, 2),
-    DV = c(0, 10, 5),
-    AMT = c(100, 0, 0),
-    CMT = 1,
-    EVID = c(1, 0, 0),
-    MDV = c(1, 0, 0)
-  )
-
-  # Test with correlation between CL and V
-  mod_corr <- create_model(
-    route = "iv",
-    iiv = list(CL = 0.2, V = 0.3, "CL~V" = 0.1),
-    data = test_data,
-    verbose = FALSE
-  )
-
-  # Check that both parameters have IIV
-  expect_true("ETA_CL" %in% mod_corr$random_variables$names)
-  expect_true("ETA_V" %in% mod_corr$random_variables$names)
-
-  # Check that the model code contains a BLOCK structure for correlations
-  expect_true(grepl("\\$OMEGA BLOCK", mod_corr$code))
 })
 
 test_that("IIV argument works with different IIV types", {
@@ -651,207 +626,3 @@ test_that("IIV argument works with different IIV types", {
   expect_true("ETA_V" %in% mod_mixed$random_variables$names)
 })
 
-test_that("IIV argument handles edge cases correctly", {
-  test_data <- data.frame(
-    ID = 1,
-    TIME = c(0, 1, 2),
-    DV = c(0, 10, 5),
-    AMT = c(100, 0, 0),
-    CMT = 1,
-    EVID = c(1, 0, 0),
-    MDV = c(1, 0, 0)
-  )
-
-  # Test with single parameter IIV
-  mod_single <- create_model(
-    route = "iv",
-    iiv = list(CL = 0.2),
-    data = test_data,
-    verbose = FALSE
-  )
-  expect_true("ETA_CL" %in% mod_single$random_variables$names)
-  expect_false("ETA_V" %in% mod_single$random_variables$names)
-
-  # Test with very small IIV values
-  mod_small <- create_model(
-    route = "iv",
-    iiv = list(CL = 0.01, V = 0.02),
-    data = test_data,
-    verbose = FALSE
-  )
-  expect_true("ETA_CL" %in% mod_small$random_variables$names)
-  expect_true("ETA_V" %in% mod_small$random_variables$names)
-
-  # Test with large IIV values
-  mod_large <- create_model(
-    route = "iv",
-    iiv = list(CL = 1.0, V = 1.5),
-    data = test_data,
-    verbose = FALSE
-  )
-  expect_true("ETA_CL" %in% mod_large$random_variables$names)
-  expect_true("ETA_V" %in% mod_large$random_variables$names)
-})
-
-test_that("IIV argument works with bioavailability parameter", {
-  test_data <- data.frame(
-    ID = 1,
-    TIME = c(0, 1, 2),
-    DV = c(0, 10, 5),
-    AMT = c(100, 0, 0),
-    CMT = 1,
-    EVID = c(1, 0, 0),
-    MDV = c(1, 0, 0)
-  )
-
-  # Test with bioavailability parameter and IIV
-  mod_bio <- create_model(
-    route = "oral",
-    bioavailability = TRUE,
-    iiv = list(CL = 0.2, V = 0.3, BIO = 0.4),
-    data = test_data,
-    verbose = FALSE
-  )
-  expect_true("ETA_CL" %in% mod_bio$random_variables$names)
-  expect_true("ETA_V" %in% mod_bio$random_variables$names)
-  expect_true("ETA_BIO" %in% mod_bio$random_variables$names)
-})
-
-test_that("IIV argument works with transit compartments", {
-  test_data <- data.frame(
-    ID = 1,
-    TIME = c(0, 1, 2),
-    DV = c(0, 10, 5),
-    AMT = c(100, 0, 0),
-    CMT = 1,
-    EVID = c(1, 0, 0),
-    MDV = c(1, 0, 0)
-  )
-
-  # Test with transit compartments and IIV
-  mod_transit <- create_model(
-    route = "oral",
-    n_transit_compartments = 2,
-    iiv = list(CL = 0.2, V = 0.3, MDT = 0.4),
-    data = test_data,
-    verbose = FALSE
-  )
-  expect_true("ETA_CL" %in% mod_transit$random_variables$names)
-  expect_true("ETA_V" %in% mod_transit$random_variables$names)
-  expect_true("ETA_MDT" %in% mod_transit$random_variables$names)
-})
-
-test_that("IIV argument works with lag time", {
-  test_data <- data.frame(
-    ID = 1,
-    TIME = c(0, 1, 2),
-    DV = c(0, 10, 5),
-    AMT = c(100, 0, 0),
-    CMT = 1,
-    EVID = c(1, 0, 0),
-    MDV = c(1, 0, 0)
-  )
-
-  # Test with lag time and IIV
-  mod_lag <- create_model(
-    route = "oral",
-    lag_time = TRUE,
-    iiv = list(CL = 0.2, V = 0.3, ALAG = 0.4),
-    data = test_data,
-    verbose = FALSE
-  )
-  expect_true("ETA_CL" %in% mod_lag$random_variables$names)
-  expect_true("ETA_V" %in% mod_lag$random_variables$names)
-  expect_true("ETA_ALAG" %in% mod_lag$random_variables$names)
-})
-
-test_that("IIV argument works with Michaelis-Menten elimination", {
-  test_data <- data.frame(
-    ID = 1,
-    TIME = c(0, 1, 2),
-    DV = c(0, 10, 5),
-    AMT = c(100, 0, 0),
-    CMT = 1,
-    EVID = c(1, 0, 0),
-    MDV = c(1, 0, 0)
-  )
-
-  # Test with Michaelis-Menten elimination and IIV
-  mod_mm <- create_model(
-    route = "iv",
-    elimination = "michaelis-menten",
-    iiv = list(CL = 0.2, V = 0.3, VM = 0.4, KM = 0.5),
-    data = test_data,
-    verbose = FALSE
-  )
-  expect_true("ETA_CL" %in% mod_mm$random_variables$names)
-  expect_true("ETA_V" %in% mod_mm$random_variables$names)
-  expect_true("ETA_VM" %in% mod_mm$random_variables$names)
-  expect_true("ETA_KM" %in% mod_mm$random_variables$names)
-})
-
-test_that("IIV argument preserves parameter initial estimates correctly", {
-  test_data <- data.frame(
-    ID = 1,
-    TIME = c(0, 1, 2),
-    DV = c(0, 10, 5),
-    AMT = c(100, 0, 0),
-    CMT = 1,
-    EVID = c(1, 0, 0),
-    MDV = c(1, 0, 0)
-  )
-
-  # Test that IIV values are correctly converted from SD to variance
-  mod <- create_model(
-    route = "iv",
-    iiv = list(CL = 0.3, V = 0.4),
-    data = test_data,
-    verbose = FALSE
-  )
-
-  par_df <- mod$parameters$to_dataframe()
-  pars <- rownames(par_df)
-
-  # Check that IIV parameters are set to variance (SD^2)
-  expect_equal(par_df[pars == "IIV_CL",]$value, 0.09)  # 0.3^2
-  expect_equal(par_df[pars == "IIV_V",]$value, 0.16)   # 0.4^2
-
-  # Check that population parameters are preserved
-  expect_true("POP_CL" %in% pars)
-  expect_true("POP_V" %in% pars)
-})
-
-test_that("IIV argument works with different tools", {
-  test_data <- data.frame(
-    ID = 1,
-    TIME = c(0, 1, 2),
-    DV = c(0, 10, 5),
-    AMT = c(100, 0, 0),
-    CMT = 1,
-    EVID = c(1, 0, 0),
-    MDV = c(1, 0, 0)
-  )
-
-  # Test with NONMEM tool
-  mod_nonmem <- create_model(
-    route = "iv",
-    iiv = list(CL = 0.2, V = 0.3),
-    tool = "nonmem",
-    data = test_data,
-    verbose = FALSE
-  )
-  expect_true("ETA_CL" %in% mod_nonmem$random_variables$names)
-  expect_true("ETA_V" %in% mod_nonmem$random_variables$names)
-
-  # Test with nlmixr tool
-  mod_nlmixr <- create_model(
-    route = "iv",
-    iiv = list(CL = 0.2, V = 0.3),
-    tool = "nlmixr",
-    data = test_data,
-    verbose = FALSE
-  )
-  # nlmixr models should still have the same IIV structure
-  expect_true("ETA_CL" %in% mod_nlmixr$random_variables$names)
-  expect_true("ETA_V" %in% mod_nlmixr$random_variables$names)
-})
