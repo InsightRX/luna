@@ -10,7 +10,8 @@
 clean_modelfit_data <- function(
   model,
   try_make_numeric = TRUE,
-  data = NULL
+  data = NULL,
+  verbose = TRUE
 ) {
 
   tool <- ifelse(inherits(model, "pharmpy.model.external.nonmem.model.Model"), "nonmem", "nlmixr")
@@ -22,7 +23,8 @@ clean_modelfit_data <- function(
     for(key in seq(names(data))) {
       if(inherits(data[[key]], "character")) {
         if(try_make_numeric) {
-          cli::cli_alert_warning("Detected character column ({key}), trying to convert to numeric.")
+          if(verbose)
+            cli::cli_alert_warning("Detected character column ({key}), trying to convert to numeric.")
           suppressWarnings({
             data[[key]] <- as.numeric(data[[key]])
             if(any(is.na(data[[key]]))) {
@@ -30,7 +32,8 @@ clean_modelfit_data <- function(
             }
           })
         } else {
-          cli::cli_alert_warning("Detected character column ({key}), setting to 0.")
+          if(verbose)
+            cli::cli_alert_warning("Detected character column ({key}), setting to 0.")
           data[[key]] <- NULL
         }
       }

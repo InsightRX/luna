@@ -4,7 +4,12 @@
 \alias{clean_modelfit_data}
 \title{Clean / check the dataset before passing to model fitting tool}
 \usage{
-clean_modelfit_data(model, try_make_numeric = TRUE, data = NULL)
+clean_modelfit_data(
+  model,
+  try_make_numeric = TRUE,
+  data = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{try_make_numeric}{should function try to turn character columns

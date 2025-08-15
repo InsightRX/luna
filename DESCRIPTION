@@ -23,7 +23,8 @@ Imports:
     vpc,
     stats,
     job,
-    rstudioapi
+    rstudioapi,
+    altair
 Suggests: 
     httr,
     ellmer,
