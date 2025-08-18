@@ -44,7 +44,11 @@ add_default_output_tables <- function(
       ## Also ignore shortcut strings like "basic" or "all"
       cols <- pharmr::get_individual_parameters(model)
     } else {
-      cols <- iiv
+      rm_corr <- grep("\\~", names(iiv))
+      if(length(rm_corr) > 0) {
+        iiv <- iiv[-rm_corr]
+      }
+      cols <- names(iiv)
     }
     if(full_tables) {
       cols <- unique(c(cols, model$datainfo$names))
