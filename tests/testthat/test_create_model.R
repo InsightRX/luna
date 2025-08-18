@@ -244,11 +244,11 @@ test_that("IIV argument works with multi-compartment models", {
     data = test_data,
     verbose = FALSE
   )
-  expect_true(grepl("\\$OMEGA BLOCK\\(4\\)", mod_2cmt2$code))
-  expect_true(grepl("0.090 ; IIV_V1", mod_2cmt2$code))
-  expect_true(grepl("0.000  0.160 ; IIV_Q", mod_2cmt2$code))
-  expect_true(grepl("0.000  0.060  0.250 ; IIV_V2", mod_2cmt2$code))
-  expect_true(grepl("0.024  0.000  0.000  0.040 ; IIV_CL", mod_2cmt2$code))
+  expect_true(grepl("ETA_V1 \\+ ETA_Q \\+ ETA_V2 \\+ ETA_CL", mod_2cmt2$code))
+  expect_true(grepl("0.09,", mod_2cmt2$code))
+  expect_true(grepl("0.0, 0.16,", mod_2cmt2$code))
+  expect_true(grepl("0.0, 0.06, 0.25", mod_2cmt2$code))
+  expect_true(grepl("0.024, 0.0, 0.0, 0.04", mod_2cmt2$code))
 })
 
 test_that("IIV argument handles edge cases correctly", {
