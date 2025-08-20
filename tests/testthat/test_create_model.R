@@ -249,6 +249,18 @@ test_that("IIV argument works with multi-compartment models", {
   expect_true(grepl("0.0, 0.16,", mod_2cmt2$code))
   expect_true(grepl("0.0, 0.06, 0.25", mod_2cmt2$code))
   expect_true(grepl("0.024, 0.0, 0.0, 0.04", mod_2cmt2$code))
+
+  ## create_model works when `parameters` table is requested
+  mod_2cmt3 <- create_model(
+    route = "iv",
+    n_cmt = 2,
+    iiv = list(CL = 0.2, V1 = 0.3, Q = 0.4, V2 = 0.5, "CL~V2" = 0.4),
+    data = test_data,
+    tables = c("parameters"),
+    verbose = FALSE
+  )
+  expect_true(grepl("\\$OMEGA BLOCK\\(2\\)", mod_2cmt3$code))
+  expect_true(grepl("ID CL V1 Q V2", mod_2cmt3$code))
 })
 
 test_that("IIV argument handles edge cases correctly", {
