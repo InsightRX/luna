@@ -4,7 +4,7 @@
 \alias{update_parameters}
 \title{Update parameter estimates (and fix)}
 \usage{
-update_parameters(model, fit, fix = TRUE, verbose = TRUE)
+update_parameters(model, fit, fix = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{model}{pharmpy model object or NONMEM model code (character) or path
@@ -12,8 +12,7 @@ to NONMEM model file.}
 
 \item{fit}{pharmpy fit object}
 
-\item{fix}{fix the estimates? Currently this can only be \code{TRUE}, since this is the
-only option that Pharmpy/pharmr supports.}
+\item{fix}{fix the estimates?}
 
 \item{verbose}{verbose output?}
 }

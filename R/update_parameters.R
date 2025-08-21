@@ -3,15 +3,14 @@
 #' For example for using model in simulations.
 #'
 #' @inheritParams attach_fit_info
-#' @param fix fix the estimates? Currently this can only be `TRUE`, since this is the
-#' only option that Pharmpy/pharmr supports.
+#' @param fix fix the estimates?
 #'
 #' @export
 #'
 update_parameters <- function(
     model,
     fit,
-    fix = TRUE,
+    fix = FALSE,
     verbose = TRUE
 ) {
   final_model <- attr(fit, "model")
@@ -27,9 +26,16 @@ update_parameters <- function(
     params <- params[!is.nan(params)]
     cli::cli_alert_info("Only some parameters were estimated, updating only for {names(params)}.")
   }
-  model <- pharmr::fix_parameters_to(
-    model,
-    params
-  )
+  if(fix) {
+    model <- pharmr::fix_parameters_to(
+      model,
+      params
+    )
+  } else {
+    model <- pharmr::set_initial_estimates(
+      model = model,
+      inits = params
+    )
+  }
   model
 }
