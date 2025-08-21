@@ -20,6 +20,7 @@ run_nlme(
   auto_stack_encounters = TRUE,
   clean = TRUE,
   as_job = FALSE,
+  save_final = TRUE,
   check_only = FALSE,
   verbose = TRUE
 )
@@ -80,6 +81,9 @@ not actual time since first overall dose.}
 \item{clean}{clean up run folder after NONMEM execution?}
 
 \item{as_job}{run as RStudio job?}
+
+\item{save_final}{after running the model, should a file \code{final.mod} be created
+with the final estimates from the run.}
 
 \item{check_only}{if \code{TRUE}, will only check the model code (NM-TRAN in the case
 of NONMEM), but not run the model. Will return \code{TRUE} if model syntax is

@@ -13,6 +13,16 @@ attach_fit_info(
   verbose = TRUE
 )
 }
+\arguments{
+\item{fit}{pharmpy fit object}
+
+\item{model}{pharmpy model object or NONMEM model code (character) or path
+to NONMEM model file.}
+
+\item{output_file}{NONMEM output file, default is \code{run.lst}}
+
+\item{verbose}{verbose output?}
+}
 \description{
 Attach fit info and tables to a fit object, e.g. from model fit or
 Pharmpy grid search final results

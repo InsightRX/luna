@@ -50,6 +50,8 @@
 #' not actual time since first overall dose.
 #' @param clean clean up run folder after NONMEM execution?
 #' @param as_job run as RStudio job?
+#' @param save_final after running the model, should a file `final.mod` be created
+#' with the final estimates from the run.
 #' @param check_only if `TRUE`, will only check the model code (NM-TRAN in the case
 #' of NONMEM), but not run the model. Will return `TRUE` if model syntax is
 #' correct, and `FALSE` if not. Will also attach stdout as `message` attribute.
@@ -73,6 +75,7 @@ run_nlme <- function(
   auto_stack_encounters = TRUE,
   clean = TRUE,
   as_job = FALSE,
+  save_final = TRUE,
   check_only = FALSE,
   verbose = TRUE
 ) {
@@ -239,6 +242,24 @@ run_nlme <- function(
 
   ## Attach fit info / tables as attributes, also for simulation
   fit <- attach_fit_info(fit, model, fit_folder, output_file, verbose = verbose)
+
+  ## Create final.mod with updated estimates?
+  if(save_final) {
+    final_model <- update_parameters(model, fit)
+    if(!is.null(final_model)) {
+      if(verbose) {
+        cli::cli_alert_info("Saving model with updated estimates to final.mod")
+      }
+      attr(fit, "final_model") <- final_model
+      final_model_code <- final_model$code
+      final_model_code <- change_nonmem_dataset(final_model_code, dataset_path)
+      writeLines(final_model_code, file.path(fit_folder, "final.mod"))
+    } else {
+      if(verbose) {
+        cli::cli_alert_warning("Final parameter estimates not available, not saving final.mod")
+      }
+    }
+  }
 
   ## save fit object to file
   if(!is.null(save_fit)){

@@ -1,8 +1,11 @@
 #' Attach fit info and tables to a fit object, e.g. from model fit or
 #' Pharmpy grid search final results
-#' 
+#'
+#' @inheritParams run_nlme
+#' @inheritParams get_fit_info
+#'
 #' @export
-#' 
+#'
 attach_fit_info <- function(
   fit,
   model,
@@ -12,7 +15,7 @@ attach_fit_info <- function(
 ) {
   ## Attach model object (with dataset) to fit, for traceability or use in post-processing
   attr(fit, "model") <- model
-  
+
   ## Attach tables to model fit
   if(verbose) cli::cli_process_start("Importing generated tables")
   tables <- get_tables_from_fit(
@@ -21,7 +24,7 @@ attach_fit_info <- function(
   )
   attr(fit, "tables") <- tables
   if(verbose) cli::cli_process_done()
-  
+
   ## Generate a summary of fit info
   if(verbose) cli::cli_process_start("Summarizing fit results")
   fit_info <- get_fit_info(
@@ -31,6 +34,6 @@ attach_fit_info <- function(
   )
   attr(fit, "info") <- fit_info
   if(verbose) cli::cli_process_done()
-  
+
   fit
 }
