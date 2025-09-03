@@ -91,7 +91,8 @@ create_vpc_data <- function(
     model = eval_model,
     path = tmp_path,
     force = TRUE,
-    id = id
+    id = id,
+    save_final = FALSE
   )
   obs <- attr(eval_res, "tables")[[1]]
 
@@ -106,7 +107,8 @@ create_vpc_data <- function(
     model = sim_model,
     path = tmp_path,
     force = TRUE,
-    id = id
+    id = id,
+    save_final = FALSE
   )
   sim <- attr(sim_data, "tables")[[1]]
 
