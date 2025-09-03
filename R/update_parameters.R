@@ -10,8 +10,7 @@
 update_parameters <- function(
     model,
     fit,
-    fix = FALSE,
-    verbose = TRUE
+    fix = FALSE
 ) {
   final_model <- attr(fit, "model")
   params <- fit$parameter_estimates
