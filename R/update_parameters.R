@@ -7,6 +7,10 @@
 #'
 #' @export
 #'
+#'
+update_parameters <- function(
+    model,
+    fit,
     fix = FALSE,
     verbose = FALSE
 ) {
