@@ -4,7 +4,13 @@
 \alias{get_cov_matrix}
 \title{Create a covariance block matrix}
 \usage{
-get_cov_matrix(params, keep_all = FALSE, triangle = FALSE, nonmem = TRUE)
+get_cov_matrix(
+  params,
+  keep_all = FALSE,
+  triangle = FALSE,
+  nonmem = TRUE,
+  limit = 0.001
+)
 }
 \arguments{
 \item{params}{parameters, a vector of standard deviations and correlations,
@@ -15,6 +21,9 @@ even if they do not have a correlation with other parameters?}
 
 \item{triangle}{return the lower triangle as a vector instead of a
 matrix object?}
+
+\item{limit}{lower limit, to avoid becoming zero, which is not allowed by
+NONMEM (\verb{A COVARIANCE IS ZERO, BUT THE BLOCK IS NOT A BAND MATRIX.})}
 }
 \description{
 Create a covariance block matrix

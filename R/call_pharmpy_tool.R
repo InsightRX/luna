@@ -90,8 +90,9 @@ call_pharmpy_tool <- function(
     list(model = model),
     options
   )
-  if(tool %in% req_results)
+  if(tool %in% req_results) {
     args$results <- results
+  }
 
   ## make the call to the Pharmpy tool
   withr::with_dir(run_folder, {
@@ -103,6 +104,16 @@ call_pharmpy_tool <- function(
   })
 
   ## Post-processing, tool-specific
+  ## Save final model to file, and attach to output object
+  if(stringr::str_detect(tool, "(.*search|amd)")) {
+    final_model <- update_parameters(res$final_model, res$final_results)
+    final_model_code <- final_model$code
+    writeLines(
+      final_model_code,
+      file.path(run_folder, glue::glue("final_{tool}.mod"))
+    )
+    attr(res, "final_model") <- final_model
+  }
   if(tool == "simulation") {
     pharmpy_runfolders <- get_pharmpy_runfolders(
       id = id,

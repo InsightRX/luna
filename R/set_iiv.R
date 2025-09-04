@@ -118,7 +118,7 @@ set_iiv_block <- function(
   omega_lines <- code[omega_idx]
 
   ## Create the omega block
-  om_block <- get_cov_matrix(iiv_ordered, nonmem = TRUE)
+  om_block <- get_cov_matrix(iiv_ordered, nonmem = TRUE, limit = 0.001)
   omega <- c(
     glue::glue("$OMEGA BLOCK({length(om_block)})"),
     paste(om_block, paste0("; IIV_", pars_with_corr))

@@ -246,9 +246,9 @@ test_that("IIV argument works with multi-compartment models", {
   )
   expect_true(grepl("ETA_V1 \\+ ETA_Q \\+ ETA_V2 \\+ ETA_CL", mod_2cmt2$code))
   expect_true(grepl("0.09,", mod_2cmt2$code))
-  expect_true(grepl("0.0, 0.16,", mod_2cmt2$code))
-  expect_true(grepl("0.0, 0.06, 0.25", mod_2cmt2$code))
-  expect_true(grepl("0.024, 0.0, 0.0, 0.04", mod_2cmt2$code))
+  expect_true(grepl("0.001, 0.16,", mod_2cmt2$code))
+  expect_true(grepl("0.001, 0.06, 0.25", mod_2cmt2$code))
+  expect_true(grepl("0.024, 0.001, 0.001, 0.04", mod_2cmt2$code))
 
   ## create_model works when `parameters` table is requested
   mod_2cmt3 <- create_model(
