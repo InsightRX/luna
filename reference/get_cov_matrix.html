@@ -38,7 +38,13 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_cov_matrix</span><span class="op">(</span><span class="va">params</span>, keep_all <span class="op">=</span> <span class="cn">FALSE</span>, triangle <span class="op">=</span> <span class="cn">FALSE</span>, nonmem <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_cov_matrix</span><span class="op">(</span></span>
+<span>  <span class="va">params</span>,</span>
+<span>  keep_all <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  triangle <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  nonmem <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  limit <span class="op">=</span> <span class="fl">0.001</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -58,6 +64,11 @@ even if they do not have a correlation with other parameters?</p></dd>
 <dt id="arg-triangle">triangle<a class="anchor" aria-label="anchor" href="#arg-triangle"></a></dt>
 <dd><p>return the lower triangle as a vector instead of a
 matrix object?</p></dd>
+
+
+<dt id="arg-limit">limit<a class="anchor" aria-label="anchor" href="#arg-limit"></a></dt>
+<dd><p>lower limit, to avoid becoming zero, which is not allowed by
+NONMEM (<code>A COVARIANCE IS ZERO, BUT THE BLOCK IS NOT A BAND MATRIX.</code>)</p></dd>
 
 </dl></div>
 
