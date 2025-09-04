@@ -10,7 +10,7 @@ remove_tables_from_model <- function(
   tool <- get_tool_from_model(model)
   if(tool == "nonmem") {
     data <- model$dataset
-    filename <- file.path(tempdir(), "DUMMYPATH")
+    filename <- tempfile(pattern = "temp_dataset_", fileext = ".csv")
     code_without_tables <- remove_table_sections(model$code)
     write.csv(data, filename, quote=F, row.names=F) # Pharmpy pharmr::set_dataset is unstable, use this trick for now.
     model <- pharmr::read_model_from_string(
