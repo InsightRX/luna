@@ -7,10 +7,8 @@
 #'
 #' @export
 #'
-update_parameters <- function(
-    model,
-    fit,
-    fix = FALSE
+    fix = FALSE,
+    verbose = FALSE
 ) {
   final_model <- attr(fit, "model")
   params <- fit$parameter_estimates
