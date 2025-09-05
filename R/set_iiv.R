@@ -9,7 +9,7 @@
 #' @param iiv_type one of IIV types accepted by pharmr::add_iiv(), i.e.
 #' `add`, `prop`, `exp` (default), `log`, or `re_log`.
 #'
-set_iiv <- function(mod, iiv, iiv_type) {
+set_iiv <- function(mod, iiv, iiv_type = "exp") {
 
   if(inherits(iiv, "character")) {
     pars <- get_defined_pk_parameters(mod)
@@ -165,4 +165,35 @@ get_defined_pk_parameters <- function(
     }
   }
   pars
+}
+
+#' Function to set covariance between parameters in the omega block
+#'
+#' One caveat is that it will remove any existing covariances, since currently
+#' there is no feature in pharmr/pharmpy to extract the covariance info.
+#'
+#' @inheritParams set_iiv
+#' @param covariance character vector specifying the parameters and initial
+#' value for the correlation between the respective parameters, e.g.
+#' `c("CL~V" = 0.1, "Q~V2" = 0.2)`.
+#'
+#' @returns Pharmpy model object
+#'
+set_covariance <- function(model, covariance) {
+  omegas <- pharmr::get_omegas(model)
+  om_names <- omegas$names |>
+    stringr::str_replace_all("IIV_", "")
+  om_values <- omegas$inits |>
+    setNames(om_names)
+  for(key in names(covariance)) {
+    if(stringr::str_detect(key, "\\~")) {
+      om_values[[key]] <- covariance[[key]]
+    }
+  }
+  new_model <- set_iiv(
+    model,
+    iiv = om_values,
+    iiv_type = "exp"
+  )
+  new_model
 }
