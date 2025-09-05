@@ -9,7 +9,7 @@ create_vpc_data(
   fit = NULL,
   model = NULL,
   parameters = NULL,
-  keep_columns = c("GROUP"),
+  keep_columns = c(),
   n = 100,
   verbose = FALSE,
   id = NULL,
@@ -25,6 +25,9 @@ object}
 
 \item{parameters}{list of parameter estimates, e.g. \code{list(CL = 5, V = 50)}.
 Optional, can also supply a \code{fit} object.}
+
+\item{keep_columns}{character vector of column names in original dataset
+to keep in the output dataset}
 
 \item{n}{number of simulation iterations to generate}
 
