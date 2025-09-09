@@ -45,11 +45,13 @@ get_shrinkage_values <- function(
   }
   line <- txt[idx]
   ## Also check in next 2 lines for more values
-  if(gsub(" ", "", substr(txt[idx + 1], 1, 16)) == "") {
+  line1 <- gsub(" ", "", substr(txt[idx + 1], 1, 16))
+  line2 <- gsub(" ", "", substr(txt[idx + 2], 1, 16))
+  if(!is.na(line1) && line1 == "") {
     line <- paste0(line, txt[idx+1])
   }
-  if(gsub(" ", "", substr(txt[idx + 2], 1, 16)) == "") {
-    line <- paste0(line, txt[idx+1])
+  if(!is.na(line2) && line2 == "") {
+    line <- paste0(line, txt[idx+2])
   }
   spl <- line |>
     stringr::str_replace_all(type, "") |>
