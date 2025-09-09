@@ -40,13 +40,29 @@ get_fit_info <- function(fit, path = NULL, output_file = "run.lst") {
 #' @export
 print.pharmpy.workflows.results.ModelfitResults <- function(x, ...) {
 
+  ## Run description, notes, etc
+  run <- attr(x, "run")
+  if(!is.null(run)) {
+    data.frame(
+      "Run log" = c("Description", "Notes", "Tags"),
+      "Value" = c(
+        run$description,
+        ifelse0(run$notes, ""),
+        paste0(ifelse0(run$tags, ""), collapse = ", ")
+      )
+    ) |>
+      dplyr::filter(Value != "") |>
+      knitr::kable(row.names = FALSE, format = "simple") |>
+      print()
+  }
+
   ## General run info
   info_tab <- create_modelfit_info_table(x)
   print(knitr::kable(info_tab, row.names = FALSE, format = "simple"))
 
   ## Parameter estimates + uncertainty
   par_tab <- create_modelfit_parameter_table(x)
-  print(knitr::kable(par_tab, row.names = FALSE, format = "simple"))
+  print(knitr::kable(par_tab, row.names = FALSE))
 
 }
 
@@ -111,7 +127,9 @@ create_modelfit_parameter_table <- function(fit) {
   }
   data.frame(
     Parameter = names(x$parameter_estimates),
-    Estimate = as.numeric(x$parameter_estimates),
+    Estimate = as.numeric(
+      x$parameter_estimates
+    ),
     SD = stdevs
   ) |>
     dplyr::mutate(`RSE %` = dplyr::if_else(
@@ -120,5 +138,11 @@ create_modelfit_parameter_table <- function(fit) {
       NA
     )
   ) |>
-    dplyr::select(-SD)
+    dplyr::select(-SD) |>
+    dplyr::mutate(
+      Estimate = format(
+        signif(Estimate, 5),
+        trim = FALSE, drop0trailing = TRUE, scientific = FALSE
+      )
+    )
 }

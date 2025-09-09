@@ -5,10 +5,10 @@ test_that("get_shrinkage_values extracts correct values", {
     "ETASHRINKSD(%) 2.345E+01 3.456E+01",
     "More text"
   )
-  
+
   result <- get_shrinkage_values(test_txt, "ETASHRINKSD")
   expect_equal(result, c(23.45, 34.56))
-  
+
   # Test case with no matches
   test_txt_empty <- c(
     "Some other text",
@@ -16,7 +16,7 @@ test_that("get_shrinkage_values extracts correct values", {
   )
   result_empty <- get_shrinkage_values(test_txt_empty, "ETASHRINKSD")
   expect_equal(result_empty, NA)
-  
+
   # Test different shrinkage types
   test_txt_eps <- "EPSSHRINKSD(%) 1.234E+01 2.345E+01"
   result_eps <- get_shrinkage_values(test_txt_eps, "EPSSHRINKSD")
@@ -33,7 +33,7 @@ test_that("get_shrinkage_summary returns correct structure", {
   )
   temp_file <- tempfile(fileext = ".lst")
   writeLines(test_content, temp_file)
-  
+
   # Test without fit object
   result <- get_shrinkage_summary(path = temp_file)
   expect_type(result, "list")
@@ -41,11 +41,12 @@ test_that("get_shrinkage_summary returns correct structure", {
   expect_equal(result$eta, c(ETA_1 = 23.45, ETA_2 = 34.56))
   expect_equal(result$ebv, c(ETA_1 = 12.34, ETA_2 = 23.45))
   expect_equal(result$eps, c(34.56, 45.67))
-  
+
   # Test with NULL path
   null_result <- get_shrinkage_summary(path = NULL)
   expect_equal(null_result, list())
-  
+
   # Clean up
   unlink(temp_file)
-}) 
+})
+
