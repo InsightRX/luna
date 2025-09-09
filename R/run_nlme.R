@@ -90,11 +90,20 @@ run_nlme <- function(
     )
   }
 
+  ## Set up run folder
+  fit_folder <- create_run_folder(id, path, force, verbose)
+
   ## Set model name
   model <- pharmr::set_name(
     model = model,
     new_name = id
   )
+
+  ## Set up other files
+  dataset_path <- file.path(fit_folder, "data.csv")
+  model_file <- "run.mod"
+  output_file <- "run.lst"
+  model_path <- file.path(fit_folder, model_file)
 
   ## Add default tables, if requested
   if(!is.null(tables)) {
