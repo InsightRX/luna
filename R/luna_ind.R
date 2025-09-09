@@ -16,30 +16,31 @@
 #' @param page page number of plots to show
 #' @param scales passed to `facet_wrap()` function as the `scales`
 #' argument, can be "free", "free_x", or "free_y".
+#' @param subject_ids list of subject IDs to be plotted.
 #'
 #' @export
 #'
 luna_ind <- function(
-  id,
-  folder = NULL,
-  data = NULL,
-  theme = ggplot2::theme_classic,
-  smooth_method = "loess",
-  exponentiate = FALSE,
-  show = list(
-    dv = TRUE,
-    ipred = TRUE,
-    pred = TRUE,
-    doses = TRUE,
-    se = TRUE
-  ),
-  se_factor = 1,
-  ltbs = FALSE,
-  ncol = 3,
-  nrow = 3,
-  page = 1,
-  scales = NULL,
-  verbose = TRUE
+    id,
+    folder = NULL,
+    data = NULL,
+    theme = ggplot2::theme_classic,
+    smooth_method = "loess",
+    exponentiate = FALSE,
+    show = list(
+      dv = TRUE,
+      ipred = TRUE,
+      pred = TRUE,
+      doses = TRUE,
+      se = TRUE
+    ),
+    se_factor = 1,
+    ltbs = FALSE,
+    ncol = 3,
+    nrow = 3,
+    page = 1,
+    scales = NULL,
+    verbose = TRUE
 ) {
 
   ## determine what to show
@@ -105,7 +106,11 @@ luna_ind <- function(
 
   ## Pagination
   ids <- unique(tab$ID)
+  if (!is.null(subject_ids)){
+    ids <- subject_ids
+  }
   set_len <- ncol * nrow
+
   start_idx <- set_len * (page-1) + 1
   end_idx <- set_len * page
   max_pages <- floor(length(ids) / (ncol * nrow))
@@ -113,6 +118,7 @@ luna_ind <- function(
     cli::cli_abort("Sorry, only {max_pages} pages available.")
   }
   if(end_idx > length(ids)) {
+    cli::cli_alert_info("Only first {set_len} IDs will be shown.")
     end_idx <- length(ids)
   }
   if(verbose) {

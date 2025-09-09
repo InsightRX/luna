@@ -50,6 +50,8 @@ exponentiate DV, PRED, and IPRED.}
 
 \item{scales}{passed to \code{facet_wrap()} function as the \code{scales}
 argument, can be "free", "free_x", or "free_y".}
+
+\item{subject_ids}{list of subject IDs to be plotted.}
 }
 \description{
 Creates a ggplot2 plot with predictions and observations, split

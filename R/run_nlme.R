@@ -50,6 +50,11 @@
 #' not actual time since first overall dose.
 #' @param clean clean up run folder after NONMEM execution?
 #' @param as_job run as RStudio job?
+#' @param save_final after running the model, should a file `final.mod` be created
+#' with the final estimates from the run.
+#' @param check_only if `TRUE`, will only check the model code (NM-TRAN in the case
+#' of NONMEM), but not run the model. Will return `TRUE` if model syntax is
+#' correct, and `FALSE` if not. Will also attach stdout as `message` attribute.
 #' @param verbose verbose output?
 #'
 #' @export
@@ -70,6 +75,8 @@ run_nlme <- function(
   auto_stack_encounters = TRUE,
   clean = TRUE,
   as_job = FALSE,
+  save_final = TRUE,
+  check_only = FALSE,
   verbose = TRUE
 ) {
 
@@ -98,7 +105,6 @@ run_nlme <- function(
     )
   }
 
-  ## Add dataset (and potentially stack encounters)
   ## Make sure data is clean for modelfit
   obj <- prepare_run_folder(
     id = id,
@@ -111,6 +117,20 @@ run_nlme <- function(
     auto_stack_encounters = auto_stack_encounters,
     verbose = verbose
   )
+
+  ## If only `check` requested:
+  if(check_only) {
+    model_ok <- call_nmfe(
+      model_file = model_file,
+      output_file = output_file,
+      path = fit_folder,
+      nmfe = nmfe,
+      check_only = TRUE,
+      console = console,
+      verbose = verbose
+    )
+    return(model_ok)
+  }
 
   ## Run NONMEM and direct stdout/stderr
   if(method == "pharmpy") {
@@ -211,7 +231,25 @@ run_nlme <- function(
   }
 
   ## Attach fit info / tables as attributes, also for simulation
-  fit <- attach_fit_info(fit, obj$model, obj$fit_folder, obj$output_file)
+  fit <- attach_fit_info(fit, model, fit_folder, output_file, verbose = verbose)
+
+  ## Create final.mod with updated estimates?
+  if(save_final) {
+    final_model <- update_parameters(model, fit)
+    if(!is.null(final_model)) {
+      if(verbose) {
+        cli::cli_alert_info("Saving model with updated estimates to final.mod")
+      }
+      attr(fit, "final_model") <- final_model
+      final_model_code <- final_model$code
+      final_model_code <- change_nonmem_dataset(final_model_code, dataset_path)
+      writeLines(final_model_code, file.path(fit_folder, "final.mod"))
+    } else {
+      if(verbose) {
+        cli::cli_alert_warning("Final parameter estimates not available, not saving final.mod")
+      }
+    }
+  }
 
   ## save fit object to file
   if(!is.null(save_fit)){
@@ -311,6 +349,7 @@ change_nonmem_dataset <- function(
 #' @param path run folder path, e.g. "run1"
 #' @param nmfe path to nmfe batch file to run NONMEM
 #' @param console show output from nmfe in console? Default `FALSE`
+#' @param check_only only run NM-TRAN, to check the model syntax
 #' @param verbose verbose output?
 #'
 #' @export
@@ -319,15 +358,18 @@ call_nmfe <- function(
   model_file,
   output_file,
   path,
-  nmfe = "/opt/NONMEM/nm_current/run/nmfe75",
+  nmfe = "/opt/NONMEM/nm_cxurrent/run/nmfe75",
   console = FALSE,
-  verbose = TRUE
+  check_only = FALSE,
+  verbose = FALSE
 ) {
 
   if(! file.exists(nmfe)) {
     cli::cli_abort("NONMEM (nmfe) not found at {nmfe}")
   } else {
-    cli::cli_alert_success("NONMEM found at {nmfe}")
+    if(verbose) {
+      cli::cli_alert_success("NONMEM found at {nmfe}")
+    }
   }
 
   # Transform folder path to absolute path
@@ -353,14 +395,43 @@ call_nmfe <- function(
     setwd(curr_dir)
   })
   setwd(path)
-  system2(
-    command = nmfe,
-    args = c(model_file, output_file),
-    wait = TRUE,
-    stdout = stdout,
-    stderr = stderr,
-  )
+  if(check_only) {
+    nmtran <- get_nmtran_from_nmfe(nmfe)
+    if(!file.exists(nmtran)) {
+      cli::cli_abort("NM-TRAN executable could not be found, can't perform syntax check.")
+    }
+    system2(
+      command = nmtran,
+      args = c("<", model_file),
+      wait = TRUE,
+      stdout = stdout,
+      stderr = stderr
+    )
+    cons <- c(
+      readLines(stderr),
+      readLines(stdout)
+    )
+    has_no_error <- !any(stringr::str_detect(cons, "AN ERROR WAS FOUND"))
+    attr(has_no_error, "message") <- cons
+    return(has_no_error)
+  } else {
+    system2(
+      command = nmfe,
+      args = c(model_file, output_file),
+      wait = TRUE,
+      stdout = stdout,
+      stderr = stderr,
+    )
+  }
   cli::cli_process_done()
+}
+
+#' Get the location of NM-TRAN based on the location of nmfe
+#' It's usually up one folder from nmfe, then in tr/NMTRAN.exe
+get_nmtran_from_nmfe <- function(nmfe) {
+  nm_folder <- dirname(dirname(nmfe))
+  nmtran <- file.path(nm_folder, "tr", "NMTRAN.exe")
+  nmtran
 }
 
 #' Get output from NMFE

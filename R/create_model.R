@@ -16,7 +16,8 @@
 #' @param iiv either `character` or a `list` object. If `character`, should be
 #' either "basic" (only CL and V parameters) or "all" (IIV on all parameters).
 #' If specified as a list object, it should contain the IIV magnitude (on SD
-#' scale) for parameters, e.g. `list(CL = 0.2, V = 0.3)`.
+#' scale) for parameters and potential correlations specified using a tilde,
+#' e.g. `list("CL" = 0.2, "V" = 0.3, "CL~V" = 0.1)`.
 #' @param iiv_effect either `character` or `list`. If character, one of
 #' `c("exp", "add", "prop", "log", "re_log")`. If `list`, should specify for
 #' each parameter the effect type, e.g. `list(CL = "add", V = "exp")`. Default
@@ -245,6 +246,7 @@ create_model <- function(
     if(!is.null(tables)) {
       mod <- add_default_output_tables(
         model = mod,
+        iiv = iiv,
         tables = tables,
         full_tables = full_tables
       )

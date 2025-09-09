@@ -24,7 +24,8 @@ Imports:
     stats,
     job,
     diffr,
-    rstudioapi
+    rstudioapi,
+    altair
 Suggests: 
     httr,
     ellmer,

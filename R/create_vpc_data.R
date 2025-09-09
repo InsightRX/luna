@@ -8,6 +8,8 @@
 #' @param parameters list of parameter estimates, e.g. `list(CL = 5, V = 50)`.
 #' Optional, can also supply a `fit` object.
 #' @param n number of simulation iterations to generate
+#' @param keep_columns character vector of column names in original dataset
+#' to keep in the output dataset
 #' @param verbose verbose output?
 #'
 #' @export
@@ -16,7 +18,7 @@ create_vpc_data <- function(
   fit = NULL,
   model = NULL,
   parameters = NULL,
-  keep_columns = c("GROUP"),
+  keep_columns = c(),
   n = 100,
   verbose = FALSE,
   id = NULL,
@@ -62,11 +64,12 @@ create_vpc_data <- function(
   )
 
   ## Remove tables and covariance step, add back table with stuff that the VPC needs (ID TIME DV EVID MDV)
+  keep <- keep_columns[keep_columns %in% names(data)]
   sim_model <- sim_model |>
     pharmr::remove_parameter_uncertainty_step() |>
     remove_tables_from_model() |>
     add_table_to_model(
-      variables = c("ID", "TIME", "PRED", "DV", "EVID", "MDV"),
+      variables = c("ID", "TIME", "PRED", "DV", "EVID", "MDV", keep),
       firstonly = FALSE,
       file = "sdtab"
     )
@@ -91,7 +94,8 @@ create_vpc_data <- function(
     model = eval_model,
     path = tmp_path,
     force = TRUE,
-    id = id
+    id = id,
+    save_final = FALSE
   )
   obs <- attr(eval_res, "tables")[[1]]
 
@@ -106,7 +110,8 @@ create_vpc_data <- function(
     model = sim_model,
     path = tmp_path,
     force = TRUE,
-    id = id
+    id = id,
+    save_final = FALSE
   )
   sim <- attr(sim_data, "tables")[[1]]
 
