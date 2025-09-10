@@ -161,3 +161,45 @@ is_maxeval_zero <- function(model) {
   }
   (is.na(last_step$maximum_evaluations) || last_step$maximum_evaluations == 0) && (is.null(options$MAXEVAL) || isTRUE(options$MAXEVAL == "0"))
 }
+
+#' Get a binary value from config, based on path
+#'
+#' @param flag character vector indicating path to flag
+#' @param default default value for flag
+#' @param config list of config settings. If `NULL` will get it using
+#' `get_luna_config()`
+#'
+get_flag_from_config <- function(
+  flag = c("tools", "modelfit", "force"),
+  default = FALSE,
+  config = NULL
+) {
+  out <- default
+  if(is.null(config)) {
+    config <- get_luna_config()
+  }
+  out <- isTRUE(
+    purrr::pluck(config, !!!flag)
+  )
+  out
+}
+
+#' Replace elements in a list, based on elements in a second list
+#'
+#' @export
+#'
+replace_list_elements <- function (x, y) {
+  missing <- which(!names(y) %in% names(x))
+  if (length(missing) != 0) {
+    warning(paste("Nothing named: ", paste(names(y)[missing],
+                                           collapse = ", ", "found to replace")))
+    y <- y[-missing]
+  }
+  x[names(y)] <- lapply(
+    names(y),
+    function(el) {
+      x[[el]] <- y[[el]]
+    }
+  )
+  x
+}

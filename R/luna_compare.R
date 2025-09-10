@@ -19,7 +19,7 @@ luna_compare <- function(
     runs <- lapply(unlist(runs), function(x) x )
   }
   model_results <- lapply(runs, function(run) {
-    results <- luna_info(run, folder = folder, return_object = TRUE)
+    results <- luna_info(run, folder = folder)
     return(results)
   })
   names(model_results) <- runs
