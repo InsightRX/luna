@@ -4,7 +4,7 @@
 \alias{set_iiv}
 \title{Set inter-individual variability on parameters}
 \usage{
-set_iiv(mod, iiv, iiv_type)
+set_iiv(mod, iiv, iiv_type = "exp")
 }
 \arguments{
 \item{mod}{pharmpy model object}

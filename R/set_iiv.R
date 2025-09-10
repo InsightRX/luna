@@ -9,7 +9,7 @@
 #' @param iiv_type one of IIV types accepted by pharmr::add_iiv(), i.e.
 #' `add`, `prop`, `exp` (default), `log`, or `re_log`.
 #'
-set_iiv <- function(mod, iiv, iiv_type) {
+set_iiv <- function(mod, iiv, iiv_type = "exp") {
 
   if(inherits(iiv, "character")) {
     pars <- get_defined_pk_parameters(mod)
@@ -43,6 +43,8 @@ set_iiv <- function(mod, iiv, iiv_type) {
     }
 
     ## First remove all existing IIV
+    ## Then, add univariate IIV (no BLOCKs yet)
+    all_params <- get_defined_pk_parameters(mod)
     current <- get_parameters_with_iiv(mod)
     iiv_goal <- names(iiv)[!stringr::str_detect(names(iiv), "~")]
     iiv_corr <- names(iiv)[stringr::str_detect(names(iiv), "~")]
@@ -54,20 +56,31 @@ set_iiv <- function(mod, iiv, iiv_type) {
       name = c(to_add, to_reset),
       reset = c(rep(FALSE, length(to_add)), rep(TRUE, length(to_reset)))
     ) |>
+      dplyr::mutate(parameter = name) |>
       dplyr::mutate(correlation = name %in% has_corr) |>
       dplyr::arrange(reset, correlation) # make sure to first do the parameters that don't need a reset, to avoid creating DUMMYOMEGA
-
-    ## Then, add univariate IIV (no BLOCKs yet)
-    for(key in map$name) {
-      if(map$reset[match(key, map$name)]) {
-        mod <- pharmr::remove_iiv(mod, key)
+    for(i in seq_along(map$name)) {
+      key <- map$name[i]
+      if(key == "V" && (! "V" %in% all_params) && "V1" %in% all_params) {
+        map$parameter[i] <- "V1"
       }
-      if(length(mod$statements$find_assignment(key)) > 0) {
+      if(key == "Q" && (! "QP1" %in% all_params) && "QP1" %in% all_params) {
+        map$parameter[i] <- "QP1"
+      }
+      names(iiv)[key == names(iiv)] <- map$parameter[i]
+    }
+    for(i in seq_along(map$parameter)) {
+      key <- map$name[i]
+      par <- map$parameter[i]
+      if(map$reset[match(par, map$parameter)]) {
+        mod <- pharmr::remove_iiv(mod, par)
+      }
+      if(length(mod$statements$find_assignment(par)) > 0) {
         mod <- pharmr::add_iiv(
           model = mod,
-          list_of_parameters = key,
+          list_of_parameters = par,
           expression = iiv_type_list[[key]],
-          initial_estimate = signif(iiv[[key]]^2, 5)
+          initial_estimate = signif(iiv[[par]]^2, 5)
         )
       } else {
         cli::cli_alert_warning(paste0("Parameter declaration for ", key, " not found, cannot add IIV for ", key, "."))
@@ -118,7 +131,11 @@ set_iiv_block <- function(
   omega_lines <- code[omega_idx]
 
   ## Create the omega block
-  om_block <- get_cov_matrix(iiv_ordered, nonmem = TRUE, limit = 0.001)
+  om_block <- get_cov_matrix(
+    iiv_ordered,
+    nonmem = TRUE,
+    limit = 0.001
+  )
   omega <- c(
     glue::glue("$OMEGA BLOCK({length(om_block)})"),
     paste(om_block, paste0("; IIV_", pars_with_corr))
@@ -128,10 +145,13 @@ set_iiv_block <- function(
     omega,
     code[(max(omega_idx)+1):length(code)]
   )
-  model <- pharmr::read_model_from_string(
-    paste0(new_code, collapse = "\n")
+  temp <- list(
+    code = paste0(new_code, collapse = "\n"),
+    dataset = model$dataset,
+    datainfo = model$datainfo
   )
-  model
+  new_model <- create_pharmpy_model_from_list(temp)
+  new_model
 }
 
 #' Get a character vector with all parameters on which IIV is present
@@ -151,7 +171,7 @@ get_parameters_with_iiv <- function(mod) {
 #'
 get_defined_pk_parameters <- function(
     mod,
-    possible = c("CL", "V", "V2", "V3", "Q", "Q2", "Q3", "K10", "K12", "K21", "K13", "K31")
+    possible = c("CL", "V", "V1", "V2", "V3", "Q", "Q2", "Q3", "K10", "K12", "K21", "K13", "K31")
 ) {
   pars <- c()
   statements <- mod$statements$to_dict()$statements
@@ -165,4 +185,45 @@ get_defined_pk_parameters <- function(
     }
   }
   pars
+}
+
+translate_parameters <- function(par) {
+  map <- list(V = "V1", Q = "QP1")
+  unlist(map[par])
+}
+
+#' Function to set covariance between parameters in the omega block
+#'
+#' One caveat is that it will remove any existing covariances, since currently
+#' there is no feature in pharmr/pharmpy to extract the covariance info.
+#'
+#' @inheritParams set_iiv
+#' @param covariance character vector specifying the parameters and initial
+#' value for the correlation between the respective parameters, e.g.
+#' `c("CL~V" = 0.1, "Q~V2" = 0.2)`.
+#'
+#' @returns Pharmpy model object
+#'
+set_covariance <- function(model, covariance) {
+  omegas <- pharmr::get_omegas(model)
+  om_names <- omegas$names |>
+    stringr::str_replace_all("IIV_", "")
+  om_values <- lapply(omegas$inits, "sqrt") |>
+    setNames(om_names)
+  cov_terms <- c()
+  for(key in names(covariance)) {
+    if(stringr::str_detect(key, "\\~")) {
+      om_values[[key]] <- covariance[[key]]
+      cov_terms <- c(cov_terms, stringr::str_split(key, "\\~")[[1]])
+    }
+  }
+  if(! all(cov_terms %in% unique(c(om_names, translate_parameters(om_names))))) {
+    cli::cli_abort("Cannot add covariance: no IIV is present on one or more of the parameters between which covariance is requested.")
+  }
+  new_model <- set_iiv(
+    model,
+    iiv = om_values,
+    iiv_type = "exp"
+  )
+  new_model
 }
