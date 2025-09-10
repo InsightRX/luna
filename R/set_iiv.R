@@ -44,7 +44,7 @@ set_iiv <- function(mod, iiv, iiv_type = "exp") {
 
     ## First remove all existing IIV
     ## Then, add univariate IIV (no BLOCKs yet)
-    all_params <- pharmr::get_pk_parameters(mod)
+    all_params <- get_defined_pk_parameters(mod)
     current <- get_parameters_with_iiv(mod)
     iiv_goal <- names(iiv)[!stringr::str_detect(names(iiv), "~")]
     iiv_corr <- names(iiv)[stringr::str_detect(names(iiv), "~")]
@@ -61,10 +61,10 @@ set_iiv <- function(mod, iiv, iiv_type = "exp") {
       dplyr::arrange(reset, correlation) # make sure to first do the parameters that don't need a reset, to avoid creating DUMMYOMEGA
     for(i in seq_along(map$name)) {
       key <- map$name[i]
-      if(key == "V" && ! (key %in% names(all_params) && "V1" %in% names(all_params))) {
+      if(key == "V" && (! "V" %in% all_params) && "V1" %in% all_params) {
         map$parameter[i] <- "V1"
       }
-      if(key == "Q" && ! (key %in% names(all_params) && "QP1" %in% names(all_params))) {
+      if(key == "Q" && (! "QP1" %in% all_params) && "QP1" %in% all_params) {
         map$parameter[i] <- "QP1"
       }
       names(iiv)[key == names(iiv)] <- map$parameter[i]

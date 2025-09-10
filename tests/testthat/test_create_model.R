@@ -384,6 +384,43 @@ test_that("IIV argument preserves parameter initial estimates correctly", {
   expect_true("POP_V" %in% pars)
 })
 
+test_that("IIV covariance works", {
+  model_pk <- create_model(
+    route = "iv",
+    n_cmt = 2,
+    tool = "nonmem",
+    data = nm_dat,
+    estimation_method = "foce",
+    elimination = "linear",
+    iiv = list(CL = 0.2, V = 0.2),
+    iiv_type = "exp",
+    ruv = "additive",
+    uncertainty_method = "none",
+    name = "run1",
+    tables = c("fit"),
+    verbose = T
+  )
+
+  model_pk2 <- set_covariance(model_pk, list("CL~V1" = 0.32))
+  par_df <- model_pk2$parameters$to_dataframe()
+  pars <- rownames(par_df)
+  expect_true(all(c("IIV_CL", "IIV_V1") %in% pars))
+  expect_true(stringr::str_detect(model_pk2$code, "\\$OMEGA BLOCK\\(2\\)"))
+
+  model_pk3 <- set_iiv(model_pk, list("CL" = 0.1, "V1" = 0.1, "QP1" = 0.1))
+  par_df <- model_pk3$parameters$to_dataframe()
+  pars <- rownames(par_df)
+  expect_true(all(c("IIV_QP1", "IIV_CL", "IIV_V1") %in% pars))
+  expect_false(stringr::str_detect(model_pk3$code, "\\$OMEGA BLOCK\\(2\\)"))
+
+  model_pk4 <- set_covariance(model_pk3, list("QP1~V1" = 0.32))
+  par_df <- model_pk4$parameters$to_dataframe()
+  pars <- rownames(par_df)
+  expect_true(all(c("IIV_QP1", "IIV_CL", "IIV_V1") %in% pars))
+  expect_true(stringr::str_detect(model_pk2$code, "\\$OMEGA BLOCK\\(2\\)"))
+
+})
+
 test_that("IIV argument works with different tools", {
   test_data <- data.frame(
     ID = 1,
