@@ -389,7 +389,6 @@ test_that("IIV covariance works", {
     route = "iv",
     n_cmt = 2,
     tool = "nonmem",
-    data = nm_dat,
     estimation_method = "foce",
     elimination = "linear",
     iiv = list(CL = 0.2, V = 0.2),
