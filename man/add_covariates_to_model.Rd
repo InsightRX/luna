@@ -7,14 +7,11 @@
 add_covariates_to_model(model, covariates, data = NULL)
 }
 \arguments{
-\item{model}{pharmpy model object}
-
 \item{covariates}{list of parameter-covariate effects, e.g.
 \verb{list(CL = list(WT = "pow", CRCL = "lin"), V = list(WT = "pow")}
 Values in list need to match one of the effects allowed by pharmpy.}
 
-\item{data}{dataset (data.frame). If supplied, will check if the covariate
-is actually available, and throw a warning (and skip) if not.}
+\item{data}{data.frame as input to NONMEM / nlmixr.}
 }
 \description{
 Wrapper function to add covariates to a pharmpy model

@@ -54,6 +54,10 @@ e.g. \code{list("CL" = 0.2, "V" = 0.3, "CL~V" = 0.1)}.}
 
 \item{ruv}{one of \code{proportional}, \code{additive}, or \code{combined}.}
 
+\item{covariates}{list of parameter-covariate effects, e.g.
+\verb{list(CL = list(WT = "pow", CRCL = "lin"), V = list(WT = "pow")}
+Values in list need to match one of the effects allowed by pharmpy.}
+
 \item{data}{data.frame as input to NONMEM / nlmixr.}
 
 \item{name}{name of model}

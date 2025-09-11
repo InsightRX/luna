@@ -204,6 +204,7 @@ translate_parameters <- function(par) {
 #'
 #' @returns Pharmpy model object
 #'
+#' @export
 set_covariance <- function(model, covariance) {
   omegas <- pharmr::get_omegas(model)
   om_names <- omegas$names |>

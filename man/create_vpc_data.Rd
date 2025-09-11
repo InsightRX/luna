@@ -20,8 +20,8 @@ create_vpc_data(
 \item{fit}{fit object from \code{pharmr::run_modelfit()}. Optional, can supply a
 \code{model} and \code{parameters} argument}
 
-\item{model}{pharmpy model object. Optional, can only supply just a \code{fit}
-object}
+\item{model}{pharmpy model object. Optional, can also only supply just a
+\code{fit} object}
 
 \item{parameters}{list of parameter estimates, e.g. \code{list(CL = 5, V = 50)}.
 Optional, can also supply a \code{fit} object.}
