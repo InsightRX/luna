@@ -240,7 +240,13 @@ run_nlme <- function(
   }
 
   ## Attach fit info / tables as attributes, also for simulation
-  fit <- attach_fit_info(fit, model, fit_folder, output_file, verbose = verbose)
+  fit <- attach_fit_info(
+    fit,
+    model = obj$model,
+    fit_folder,
+    output_file,
+    verbose = verbose
+  )
 
   ## Create final.mod with updated estimates?
   if(save_final) {
