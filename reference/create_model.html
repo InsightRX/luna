@@ -111,6 +111,12 @@ e.g. <code>list("CL" = 0.2, "V" = 0.3, "CL~V" = 0.1)</code>.</p></dd>
 <dd><p>one of <code>proportional</code>, <code>additive</code>, or <code>combined</code>.</p></dd>
 
 
+<dt id="arg-covariates">covariates<a class="anchor" aria-label="anchor" href="#arg-covariates"></a></dt>
+<dd><p>list of parameter-covariate effects, e.g.
+<code>list(CL = list(WT = "pow", CRCL = "lin"), V = list(WT = "pow")</code>
+Values in list need to match one of the effects allowed by pharmpy.</p></dd>
+
+
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>data.frame as input to NONMEM / nlmixr.</p></dd>
 

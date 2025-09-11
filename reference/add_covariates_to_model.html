@@ -45,19 +45,14 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
-<dd><p>pharmpy model object</p></dd>
-
-
-<dt id="arg-covariates">covariates<a class="anchor" aria-label="anchor" href="#arg-covariates"></a></dt>
+<dl><dt id="arg-covariates">covariates<a class="anchor" aria-label="anchor" href="#arg-covariates"></a></dt>
 <dd><p>list of parameter-covariate effects, e.g.
 <code>list(CL = list(WT = "pow", CRCL = "lin"), V = list(WT = "pow")</code>
 Values in list need to match one of the effects allowed by pharmpy.</p></dd>
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>dataset (data.frame). If supplied, will check if the covariate
-is actually available, and throw a warning (and skip) if not.</p></dd>
+<dd><p>data.frame as input to NONMEM / nlmixr.</p></dd>
 
 </dl></div>
 
