@@ -3,8 +3,8 @@
 #'
 #' @param fit fit object from `pharmr::run_modelfit()`. Optional, can supply a
 #' `model` and `parameters` argument
-#' @param model pharmpy model object. Optional, can only supply just a `fit`
-#' object
+#' @param model pharmpy model object. Optional, can also only supply just a
+#' `fit` object
 #' @param parameters list of parameter estimates, e.g. `list(CL = 5, V = 50)`.
 #' Optional, can also supply a `fit` object.
 #' @param n number of simulation iterations to generate
@@ -27,10 +27,16 @@ create_vpc_data <- function(
 
   ## Make a copy of the model for simulations, and update initial estimates
   tool <- get_tool_from_model(model)
+  if(is.null(model)) {
+    model <- attr(fit, "model")
+    if(is.null(model)) {
+      cli::cli_abort("Either a `fit` object with a model attached, or a `model` argument is required.")
+    }
+  }
+  data <- model$dataset
   if(tool != "nonmem") {
     warning("Currently, simulation is not supported by pharmpy for nlmixr-type models. Trying to convert to NONMEM model.")
     ## dataset sometimes gets altered by pharmpy (CMT), make sure this doesn't happen
-    data <- model$dataset
     model <- pharmr::convert_model(
       model,
       to_format = "nonmem"
@@ -64,7 +70,8 @@ create_vpc_data <- function(
   )
 
   ## Remove tables and covariance step, add back table with stuff that the VPC needs (ID TIME DV EVID MDV)
-  keep <- keep_columns[keep_columns %in% names(data)]
+  keep <- unique(c("ENC_TIME", keep_columns))
+  keep <- keep[keep %in% names(data)]
   sim_model <- sim_model |>
     pharmr::remove_parameter_uncertainty_step() |>
     remove_tables_from_model() |>

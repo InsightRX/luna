@@ -23,6 +23,9 @@
 #' each parameter the effect type, e.g. `list(CL = "add", V = "exp")`. Default
 #' is `"exp"` for all.
 #' @param ruv one of `proportional`, `additive`, or `combined`.
+#' @param covariates list of parameter-covariate effects, e.g.
+#' `list(CL = list(WT = "pow", CRCL = "lin"), V = list(WT = "pow")`
+#' Values in list need to match one of the effects allowed by pharmpy.
 #' @param estimation_method estimation method.
 #' @param estimation_options options for estimation method, specified as list,
 #'  e.g. `NITER` or `ISAMPLE`.
