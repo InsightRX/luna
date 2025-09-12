@@ -4,10 +4,13 @@
 \alias{remove_tables_from_model}
 \title{Remove all $TABLE records from a model}
 \usage{
-remove_tables_from_model(model)
+remove_tables_from_model(model, file = NULL)
 }
 \arguments{
 \item{model}{pharmpy model object}
+
+\item{file}{remove only a specific table defined as FILE=\if{html}{\out{<file>}}. \code{file} can
+also specify only the start of a filename, e.g. \code{patab}}
 }
 \description{
 Remove all $TABLE records from a model
