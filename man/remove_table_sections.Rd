@@ -4,7 +4,7 @@
 \alias{remove_table_sections}
 \title{Function to remove all $TABLE sections}
 \usage{
-remove_table_sections(text)
+remove_table_sections(text, file = NULL)
 }
 \description{
 Function to remove all $TABLE sections
