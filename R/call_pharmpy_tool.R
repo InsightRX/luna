@@ -8,7 +8,9 @@
 #' @param verbose verbose output?
 #' @param clear if one or more run folders exists for the tool,
 #' do we want to remove them first?
-#' @param ... passed onto tool
+#' @param options list of arguments pass on to `tool` as argument. Documentation
+#' for available arguments for each Pharmpy tool can be found here:
+#' https://pharmpy.github.io/latest/mfl.html.
 #'
 #' @return fit object
 #'
@@ -23,8 +25,7 @@ call_pharmpy_tool <- function(
   clean = TRUE,
   verbose = TRUE,
   force = FALSE,
-  options = list(),
-  ...
+  options = list()
 ) {
 
   if(is.null(tool)) {
