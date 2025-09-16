@@ -36,6 +36,9 @@
 #' @param save_summary save fit summary and parameter estimates to file?
 #' Default is `TRUE`. Will use current folder, and save as
 #' `fit_summary_<id>.txt` and `fit_parameters_<id>.csv`.
+#' @param estimation_method Optional. Character vector of estimation method(s)
+#' to apply to model. Will remove all existing estimation steps in the model
+#' and update with methods specified in argument.
 #' @param auto_stack_encounters only invoked if `data` argument supplied, not if
 #' a pharmpy model object is supplied without `data`.
 #' Detects if TIME within an individual is
@@ -72,6 +75,7 @@ run_nlme <- function(
   console = FALSE,
   save_fit = TRUE,
   save_summary = TRUE,
+  estimation_method = NULL,
   auto_stack_encounters = TRUE,
   clean = TRUE,
   as_job = FALSE,
@@ -104,6 +108,15 @@ run_nlme <- function(
   model_file <- "run.mod"
   output_file <- "run.lst"
   model_path <- file.path(fit_folder, model_file)
+
+  ## Change estimation method, if requested
+  if(!is.null(estimation_method)) {
+    model <- update_estimation_method(
+      model,
+      estimation_method,
+      verbose = verbose
+    )
+  }
 
   ## Add default tables, if requested
   if(!is.null(tables)) {

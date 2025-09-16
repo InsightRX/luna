@@ -17,6 +17,7 @@ run_nlme(
   console = FALSE,
   save_fit = TRUE,
   save_summary = TRUE,
+  estimation_method = NULL,
   auto_stack_encounters = TRUE,
   clean = TRUE,
   as_job = FALSE,
@@ -64,6 +65,10 @@ also specify filename (rds) to save to.}
 \item{save_summary}{save fit summary and parameter estimates to file?
 Default is \code{TRUE}. Will use current folder, and save as
 \verb{fit_summary_<id>.txt} and \verb{fit_parameters_<id>.csv}.}
+
+\item{estimation_method}{Optional. Character vector of estimation method(s)
+to apply to model. Will remove all existing estimation steps in the model
+and update with methods specified in argument.}
 
 \item{auto_stack_encounters}{only invoked if \code{data} argument supplied, not if
 a pharmpy model object is supplied without \code{data}.
