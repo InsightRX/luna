@@ -4,7 +4,7 @@
 \alias{update_estimation_method}
 \title{Wrapper around pharmr's functions to set/add estimation methods}
 \usage{
-update_estimation_method(model, estimation_method)
+update_estimation_method(model, estimation_method, verbose = TRUE)
 }
 \arguments{
 \item{model}{pharmpy model object or NONMEM model code (character) or path
@@ -13,6 +13,8 @@ to NONMEM model file.}
 \item{estimation_method}{Optional. Character vector of estimation method(s)
 to apply to model. Will remove all existing estimation steps in the model
 and update with methods specified in argument.}
+
+\item{verbose}{verbose output?}
 }
 \description{
 The current pharmpy functionatliy is not stable, hence the need for this
