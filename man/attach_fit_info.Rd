@@ -10,6 +10,7 @@ attach_fit_info(
   model,
   fit_folder,
   output_file = file.path(fit_folder, "model.lst"),
+  is_sim_model = FALSE,
   verbose = TRUE
 )
 }

@@ -11,6 +11,7 @@ attach_fit_info <- function(
   model,
   fit_folder,
   output_file = file.path(fit_folder, "model.lst"),
+  is_sim_model = FALSE,
   verbose = TRUE
 ) {
   ## Attach model object (with dataset) to fit, for traceability or use in post-processing
@@ -25,14 +26,17 @@ attach_fit_info <- function(
   attr(fit, "tables") <- tables
   if(verbose) cli::cli_process_done()
 
-  ## Generate a summary of fit info
-  if(verbose) cli::cli_process_start("Summarizing fit results")
-  fit_info <- get_fit_info(
-    fit,
-    path = fit_folder,
-    output_file = output_file
-  )
-  attr(fit, "info") <- fit_info
+  if(!is_sim_model) {
+    ## Generate a summary of fit info
+    if(verbose) cli::cli_process_start("Summarizing fit results")
+    fit_info <- get_fit_info(
+      fit,
+      path = fit_folder,
+      output_file = output_file
+    )
+    attr(fit, "info") <- fit_info
+  }
+
   if(verbose) cli::cli_process_done()
 
   fit

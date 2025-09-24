@@ -19,7 +19,9 @@ run_sim(
   tool = c("auto", "nonmem", "nlmixr2"),
   n_subjects = NULL,
   n_iterations = 1,
-  include_in_output = NULL,
+  variables = c("ID", "TIME", "DV", "EVID", "IPRED", "PRED"),
+  file = "simtab",
+  seed = 12345,
   verbose = TRUE
 )
 }
@@ -50,9 +52,9 @@ and \code{covariates} in the input dataset can be overriden by these respective
 arguments, see documentation for these arguments.}
 
 \item{regimen}{if specified, will replace the regimens for each subject with
-a custom regimen, specified using arguments \code{dose}, \code{interval}, and \code{route}
-(and \code{t_inf} / \code{rate} for infusions).
-E.g. \code{regimen = list(dose = 500, interval = 12, route = "oral")}.}
+a custom regimen, specified using arguments \code{dose}, \code{interval}, \code{n}, and
+\code{route} (and \code{t_inf} / \code{rate} for infusions).
+E.g. \code{regimen = list(dose = 500, interval = 12, n = 5, route = "oral")}.}
 
 \item{covariates}{if specified, will replace subjects with subjects specified
 in a data.frame. In the data.frame, the column names should correspond

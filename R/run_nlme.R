@@ -258,54 +258,57 @@ run_nlme <- function(
     model = obj$model,
     fit_folder,
     output_file,
+    is_sim_model = is_sim_model,
     verbose = verbose
   )
 
-  ## Create final.mod with updated estimates?
-  if(save_final) {
-    final_model <- update_parameters(model, fit)
-    if(!is.null(final_model)) {
-      if(verbose) {
-        cli::cli_alert_info("Saving model with updated estimates to final.mod")
-      }
-      attr(fit, "final_model") <- final_model
-      final_model_code <- final_model$code
-      final_model_code <- change_nonmem_dataset(final_model_code, dataset_path)
-      writeLines(final_model_code, file.path(fit_folder, "final.mod"))
-    } else {
-      if(verbose) {
-        cli::cli_alert_warning("Final parameter estimates not available, not saving final.mod")
-      }
-    }
-  }
-
-  ## save fit object to file
-  if(!is.null(save_fit)){
-    if(inherits(save_fit, "character")) {
-      saveRDS(fit, save_fit)
-    } else if(inherits(save_fit, "logical")) {
-      if(save_fit) {
-        saveRDS(fit, paste0(id, ".rds"))
+  if(!is_sim_model) {
+    ## Create final.mod with updated estimates?
+    if(save_final) {
+      final_model <- update_parameters(model, fit)
+      if(!is.null(final_model)) {
+        if(verbose) {
+          cli::cli_alert_info("Saving model with updated estimates to final.mod")
+        }
+        attr(fit, "final_model") <- final_model
+        final_model_code <- final_model$code
+        final_model_code <- change_nonmem_dataset(final_model_code, dataset_path)
+        writeLines(final_model_code, file.path(fit_folder, "final.mod"))
+      } else {
+        if(verbose) {
+          cli::cli_alert_warning("Final parameter estimates not available, not saving final.mod")
+        }
       }
     }
-  }
 
-  ## save fit summary (fit info and parameter estimates) as JSON
-  if(save_summary) {
-    if(verbose) cli::cli_process_start("Saving fit results to file")
-    fit_summ <- create_modelfit_info_table(fit)
-    txt_summ <- knitr::kable(fit_summ, row.names = FALSE, format = "simple")
-    writeLines(
-      txt_summ,
-      paste0(id, "_fit_summary.txt")
-    )
-    par_est <- create_modelfit_parameter_table(fit)
-    write.csv(
-      par_est,
-      paste0(id, "_fit_parameters.csv"),
-      quote=F, row.names=F
-    )
-    if(verbose) cli::cli_process_done()
+    ## save fit object to file
+    if(!is.null(save_fit)){
+      if(inherits(save_fit, "character")) {
+        saveRDS(fit, save_fit)
+      } else if(inherits(save_fit, "logical")) {
+        if(save_fit) {
+          saveRDS(fit, paste0(id, ".rds"))
+        }
+      }
+    }
+
+    ## save fit summary (fit info and parameter estimates) as JSON
+    if(save_summary) {
+      if(verbose) cli::cli_process_start("Saving fit results to file")
+      fit_summ <- create_modelfit_info_table(fit)
+      txt_summ <- knitr::kable(fit_summ, row.names = FALSE, format = "simple")
+      writeLines(
+        txt_summ,
+        paste0(id, "_fit_summary.txt")
+      )
+      par_est <- create_modelfit_parameter_table(fit)
+      write.csv(
+        par_est,
+        paste0(id, "_fit_parameters.csv"),
+        quote=F, row.names=F
+      )
+      if(verbose) cli::cli_process_done()
+    }
   }
 
   time_end <- Sys.time()
