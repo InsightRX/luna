@@ -24,6 +24,8 @@
 #' @param n_iterations number of iterations of the entire simulation to
 #' perform. The dataset for the simulation will stay the same between each
 #' iterations.
+#' @param add_pk_variables calculate basic PK variables that can be extracted
+#' in post-processing, such as CMAX_OBS, TMAX_OBS, AUC_SS.ß
 #'
 #' @returns data.frame with simulation results
 #'
@@ -51,6 +53,7 @@ run_sim <- function(
     n_subjects = NULL,
     n_iterations = 1,
     variables = c("ID", "TIME", "DV", "EVID", "IPRED", "PRED"),
+    add_pk_variables = TRUE,
     file = "simtab",
     seed = 12345,
     verbose = TRUE
@@ -61,7 +64,11 @@ run_sim <- function(
     cli::cli_abort("For simulations we need either a `fit` object, or a `model` file (with updated estimates)")
   }
   if(is.null(model)) {
-    model <- attr(fit, "final_model")
+    if(!is.null(attr(fit, "final_model"))) {
+      model <- attr(fit, "final_model")
+    } else {
+      cli::cli_abort("No proper model object available. Need either a `model` object or a `fit` object with a model attached.")
+    }
   }
   tool <- match.arg(tool)
   if(tool == "auto") {
@@ -172,7 +179,8 @@ run_sim <- function(
     pharmr::set_dataset(sim_data)
 
   ## Add tables
-  parameter_names <- pharmr::get_pk_parameters(sim_model)
+  if(verbose) cli::cli_alert_info("Updating table record")
+  parameter_names <- get_defined_pk_parameters(sim_model)
   variables <- unique(c(variables, parameter_names, names(covariates)))
   sim_model <- sim_model |>
     remove_tables_from_model() |>
@@ -187,9 +195,44 @@ run_sim <- function(
     verbose = FALSE
   )
 
+  ## post-processing
+  if(add_pk_variables) {
+    attr(results, "tables")[[file]] <- calc_pk_variables(
+      data = attr(results, "tables")[[file]],
+      regimen = regimen
+    )
+  }
+
   ## grab table, return
   if(verbose) cli::cli_alert_info("Exporting simulation results")
   attr(results, "tables")
+}
+
+#' Calculate some basic PK variables from simulated or observed data
+#'
+#' @param data data.frame in NONMEM format
+#' @inheritParams run_sim
+#'
+#' @returns data.frame
+calc_pk_variables <- function(
+    data,
+    regimen = NULL,
+    dictionary = NULL
+) {
+
+  ## Find cmax/tmax for each ID
+  data <- data |>
+    dplyr::group_by(.data$ID) |>
+    dplyr::mutate(CMAX_OBS = max(.data$DV)) |>
+    dplyr::mutate(TMAX_OBS = TIME[match(CMAX_OBS[1], DV)][1])
+
+  ## Add AUC_SS as CL/dose, if we're simulating a specific regimen
+  if(!is.null(regimen) && "CL" %in% names(data)) {
+    data <- data |>
+      dplyr::mutate(AUC_SS = regimen$dose / .data$CL)
+  }
+
+  data
 }
 
 #' Create dosing records, given a specified regimen
