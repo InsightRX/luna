@@ -25,7 +25,7 @@
 #' perform. The dataset for the simulation will stay the same between each
 #' iterations.
 #' @param add_pk_variables calculate basic PK variables that can be extracted
-#' in post-processing, such as CMAX_OBS, TMAX_OBS, AUC_SS.ß
+#' in post-processing, such as CMAX_OBS, TMAX_OBS, AUC_SS.
 #'
 #' @returns data.frame with simulation results
 #'
@@ -42,7 +42,6 @@ run_sim <- function(
       DV = "DV",
       EVID = "EVID",
       AMT = "AMT",
-      RATE = "RATE",
       CMT = "CMT",
       MDV = "MDV"
     ),
@@ -92,6 +91,15 @@ run_sim <- function(
       cli::cli_warn('With `method="full"`, arguments `regimen`, `covariates`, and `n_subjects` are ignored.')
     }
     sim_data <- input_data
+    if(!is.null(dictionary)) {
+      sim_data <- sim_data |>
+        dplyr::rename(
+          !!!rlang::set_names(
+            dictionary,
+            names(dictionary)
+          )
+        )
+    }
   } else if (method == "sample") { ## sampling
     if(is.null(n_subjects)) {
       cli::cli_abort("For sampling new datasets, need `n_subjects` argument.")
