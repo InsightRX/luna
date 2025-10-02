@@ -179,7 +179,7 @@ run_sim <- function(
   }
 
   ## Set simulation, and set sim dataset:
-  if(verbose) cli::cli_alert_info("Changing model to simution model")
+  if(verbose) cli::cli_alert_info("Changing model to simulation model")
   sim_model <- model |>
     pharmr::set_simulation(seed = 12345) |>
     pharmr::set_dataset(sim_data)

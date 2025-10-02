@@ -1,6 +1,6 @@
 #' Wrapper around pharmr's functions to set/add estimation methods
 #'
-#' The current pharmpy functionatliy is not stable, hence the need for this
+#' The current pharmpy functionality is not stable, hence the need for this
 #' wrapper.
 #'
 #' @inheritParams run_nlme
@@ -33,7 +33,7 @@ update_estimation_method <- function(
       cli::cli_alert_info("Setting estimation method to {estimation_method}")
     }
   }
-  n_remove <- length(existing_steps) - nrow(existing_steps)
+  n_remove <- nrow(model$execution_steps$to_dataframe()) - n_existing
   if(n_remove > 1) {
     for(i in 1:n_remove) {
       model <- pharmr::remove_estimation_step(model, i)

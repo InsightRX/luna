@@ -17,6 +17,6 @@ and update with methods specified in argument.}
 \item{verbose}{verbose output?}
 }
 \description{
-The current pharmpy functionatliy is not stable, hence the need for this
+The current pharmpy functionality is not stable, hence the need for this
 wrapper.
 }
