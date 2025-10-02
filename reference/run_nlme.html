@@ -60,6 +60,7 @@ inspection of intermediate model fit.</p>
 <span>  console <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  save_fit <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  save_summary <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  estimation_method <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  auto_stack_encounters <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  clean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  as_job <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -134,6 +135,12 @@ also specify filename (rds) to save to.</p></dd>
 <dd><p>save fit summary and parameter estimates to file?
 Default is <code>TRUE</code>. Will use current folder, and save as
 <code>fit_summary_&lt;id&gt;.txt</code> and <code>fit_parameters_&lt;id&gt;.csv</code>.</p></dd>
+
+
+<dt id="arg-estimation-method">estimation_method<a class="anchor" aria-label="anchor" href="#arg-estimation-method"></a></dt>
+<dd><p>Optional. Character vector of estimation method(s)
+to apply to model. Will remove all existing estimation steps in the model
+and update with methods specified in argument.</p></dd>
 
 
 <dt id="arg-auto-stack-encounters">auto_stack_encounters<a class="anchor" aria-label="anchor" href="#arg-auto-stack-encounters"></a></dt>

@@ -8,6 +8,7 @@
 <url><loc>https://insightrx.github.io/luna/reference/add_table_to_model.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/attach_fit_info.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/calc_condition_number.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/calc_pk_variables.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/call_nmfe.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/call_pharmpy_fit.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/call_pharmpy_tool.html</loc></url>
@@ -21,10 +22,12 @@
 <url><loc>https://insightrx.github.io/luna/reference/compare_nlme_fit.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/create_cache.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/create_covariate_search_space.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/create_dosing_records.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/create_model.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/create_model_nlmixr.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/create_modelfit_info_table.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/create_modelfit_parameter_table.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/create_obs_records.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/create_pharmpy_model_from_list.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/create_pkmodel_search_space.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/create_run_folder.html</loc></url>
@@ -54,6 +57,7 @@
 <url><loc>https://insightrx.github.io/luna/reference/get_parameters_with_iiv.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_pharmpy_conf.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_pharmpy_runfolders.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/get_random_id.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_route_from_data.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_shrinkage_summary.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_shrinkage_values.html</loc></url>
@@ -114,12 +118,14 @@
 <url><loc>https://insightrx.github.io/luna/reference/read_ini.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/read_table_nm.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/read_yaml_safe.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/remove_data_section.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/remove_table_from_model.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/remove_table_sections.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/remove_tables_from_model.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/replace_list_elements.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/run_nlme.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/run_psn.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/run_sim.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/runs_as_table.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/save_model_code.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/save_project.html</loc></url>
@@ -129,6 +135,7 @@
 <url><loc>https://insightrx.github.io/luna/reference/stack_encounters.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/truncate_columns.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/update_cache.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/update_estimation_method.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/update_parameters.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/update_pk_tables.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/validate_id.html</loc></url>
