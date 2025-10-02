@@ -2,13 +2,6 @@
 #'
 #' @inheritParams run_nlme
 #'
-#' @param method either `full` or `sample`, meaning either use the input dataset
-#' used to fit the model as-is, or sample subjects from the input dataset. When
-#' sampling, the `n_subjects` argument determines the number of subjects to
-#' sample, wihch can be either lower or higher than the actual number in the
-#' input dataset. Sampling will be done with replacement. Both the `regimen`
-#' and `covariates` in the input dataset can be overriden by these respective
-#' arguments, see documentation for these arguments.
 #' @param regimen if specified, will replace the regimens for each subject with
 #' a custom regimen, specified using arguments `dose`, `interval`, `n`, and
 #' `route` (and `t_inf` / `rate` for infusions).
@@ -20,7 +13,7 @@
 #' it will be assumed covariates are not changing over time).
 #' @param t_obs a vector of observations times. If specified, will override
 #' the observations in each subject in the input dataset.
-#' @param n_subjects number of subjects to simulate
+#' @param n_subjects number of subjects to simulate, when using sampled data
 #' @param n_iterations number of iterations of the entire simulation to
 #' perform. The dataset for the simulation will stay the same between each
 #' iterations.
@@ -34,7 +27,7 @@ run_sim <- function(
     fit = NULL,
     data = NULL,
     model = NULL,
-    id = "sim1",
+    id = get_random_id("sim_"),
     force = FALSE,
     t_obs = NULL,
     dictionary = list(
@@ -45,7 +38,6 @@ run_sim <- function(
       CMT = "CMT",
       MDV = "MDV"
     ),
-    method = c("full", "sample"),
     regimen = NULL,
     covariates = NULL,
     tool = c("auto", "nonmem", "nlmixr2"),
@@ -53,7 +45,7 @@ run_sim <- function(
     n_iterations = 1,
     variables = c("ID", "TIME", "DV", "EVID", "IPRED", "PRED"),
     add_pk_variables = TRUE,
-    file = "simtab",
+    output_file = "simtab",
     seed = 12345,
     verbose = TRUE
 ) {
@@ -78,18 +70,15 @@ run_sim <- function(
   if(tool != "nonmem") {
     cli::cli_abort("Sorry, currently only supporting NONMEM simulations.")
   }
-  method <- match.arg(method)
-  if(method == "sample" && (is.null(n_subjects) || n_subjects == 0)) {
-    cli::cli_alert_abort("Sampling method requested, but no `n_subjects` specified.")
-  }
 
   ## Prepare data
-  input_data <- model$dataset
-  if(method == "full") {
+  if(is.null(data)) {
+    input_data <- model$dataset
+  } else {
+    input_data <- data
+  }
+  if(is.null(covariates)) { # use original dataset
     if(verbose) cli::cli_alert_info("Using input dataset for simulation")
-    if(!is.null(covariates) || !is.null(regimen) || !is.null(n_subjects)) {
-      cli::cli_warn('With `method="full"`, arguments `regimen`, `covariates`, and `n_subjects` are ignored.')
-    }
     sim_data <- input_data
     if(!is.null(dictionary)) {
       sim_data <- sim_data |>
@@ -100,7 +89,17 @@ run_sim <- function(
           )
         )
     }
-  } else if (method == "sample") { ## sampling
+    if(!is.null(n_subjects)) {
+      idx <- unique(sim_data$ID)
+      sel_subjects <- sample(idx, n_subjects, replace = TRUE)
+      sim_data <- lapply(seq_along(sel_subjects), function(i, subjects, data) {
+        data |>
+          dplyr::filter(ID == subjects[i]) |>
+          dplyr::mutate(ID = i)
+      }, sel_subjects, sim_data) |>
+        dplyr::bind_rows()
+    }
+  } else { ## use provided sampled covariates in `data`
     if(is.null(n_subjects)) {
       cli::cli_abort("For sampling new datasets, need `n_subjects` argument.")
     }
@@ -110,29 +109,9 @@ run_sim <- function(
     sim_data <- lapply(seq_along(random_sample), function(i) {
       input_data |>
         dplyr::filter(ID == random_sample[i]) |>
-        dplyr::mutate(OLDID = random_sample[i]) |>
         dplyr::mutate(ID = i)
     }) %>%
       dplyr::bind_rows()
-    if(!is.null(regimen)) {
-      if(verbose) cli::cli_alert_info("Creating new regimens for subjects in simulation")
-      doses <- create_dosing_records(
-        regimen,
-        sim_data,
-        n_subjects,
-        dictionary
-      )
-      ## remove old doses and add new
-      sim_data <- sim_data |>
-        dplyr::filter(EVID != 1) |>
-        dplyr::bind_rows(doses) |>
-        dplyr::arrange(ID, TIME, EVID) |>
-        dplyr::group_by(ID) |>
-        tidyr::fill(
-          dplyr::everything(),
-          .direction = "downup"
-        )
-    }
     if(!is.null(covariates)) {
       if(verbose) cli::cli_alert_info("Updating covariates for subjects in simulation")
       covs_reqd <- unlist(lapply(
@@ -150,7 +129,7 @@ run_sim <- function(
         covariates$TIME <- 0
       }
       new_covariates <- names(covariates)
-      new_covariates <- new_covariates[! new_covariates %in% c("ID", "TIME")]
+      new_covariates <- new_covariates[(! new_covariates %in% c("ID", "TIME")) & new_covariates %in% names(sim_data)]
       sim_data <- sim_data |>
         dplyr::select(- new_covariates) |> ## remove existing covariates
         dplyr::left_join(
@@ -159,6 +138,25 @@ run_sim <- function(
         ) |>
         tidyr::fill(new_covariates, .direction = "downup")
     }
+  }
+  if(!is.null(regimen)) {
+    if(verbose) cli::cli_alert_info("Creating new regimens for subjects in simulation")
+    doses <- create_dosing_records(
+      regimen,
+      sim_data,
+      n_subjects,
+      dictionary
+    )
+    ## remove old doses and add new
+    sim_data <- sim_data |>
+      dplyr::filter(EVID != 1) |>
+      dplyr::bind_rows(doses) |>
+      dplyr::arrange(ID, TIME, EVID) |>
+      dplyr::group_by(ID) |>
+      tidyr::fill(
+        dplyr::everything(),
+        .direction = "downup"
+      )
   }
   if(!is.null(t_obs)) {
     if(verbose) cli::cli_alert_info("Creating new observation records for subjects in simulation")
@@ -192,7 +190,7 @@ run_sim <- function(
   variables <- unique(c(variables, parameter_names, names(covariates)))
   sim_model <- sim_model |>
     remove_tables_from_model() |>
-    add_table_to_model(variables, file = file)
+    add_table_to_model(variables, file = output_file)
 
   ## Run simulation
   if(verbose) cli::cli_alert_info("Running simulation")
@@ -205,8 +203,8 @@ run_sim <- function(
 
   ## post-processing
   if(add_pk_variables) {
-    attr(results, "tables")[[file]] <- calc_pk_variables(
-      data = attr(results, "tables")[[file]],
+    attr(results, "tables")[[output_file]] <- calc_pk_variables(
+      data = attr(results, "tables")[[output_file]],
       regimen = regimen
     )
   }
@@ -229,15 +227,17 @@ calc_pk_variables <- function(
 ) {
 
   ## Find cmax/tmax for each ID
-  data <- data |>
-    dplyr::group_by(.data$ID) |>
-    dplyr::mutate(CMAX_OBS = max(.data$DV)) |>
-    dplyr::mutate(TMAX_OBS = TIME[match(CMAX_OBS[1], DV)][1])
-
-  ## Add AUC_SS as CL/dose, if we're simulating a specific regimen
-  if(!is.null(regimen) && "CL" %in% names(data)) {
+  if(!is.null(data)) {
     data <- data |>
-      dplyr::mutate(AUC_SS = regimen$dose / .data$CL)
+      dplyr::group_by(.data$ID) |>
+      dplyr::mutate(CMAX_OBS = max(.data$DV)) |>
+      dplyr::mutate(TMAX_OBS = TIME[match(CMAX_OBS[1], DV)][1])
+
+    ## Add AUC_SS as CL/dose, if we're simulating a specific regimen
+    if(!is.null(regimen) && "CL" %in% names(data)) {
+      data <- data |>
+        dplyr::mutate(AUC_SS = regimen$dose / .data$CL)
+    }
   }
 
   data

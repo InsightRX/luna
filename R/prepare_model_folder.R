@@ -6,8 +6,6 @@ prepare_run_folder <- function(
   path,
   force = FALSE,
   data = NULL,
-  model_path,
-  dataset_path,
   auto_stack_encounters = FALSE,
   verbose = TRUE
 ) {
@@ -15,7 +13,7 @@ prepare_run_folder <- function(
   ## Create the folder
   fit_folder <- create_run_folder(
     id = id,
-    path ,
+    path,
     force = force,
     verbose
   )
@@ -59,6 +57,7 @@ prepare_run_folder <- function(
     model = model,
     model_file = model_file,
     output_file = output_file,
-    fit_folder = fit_folder
+    fit_folder = fit_folder,
+    dataset_path = dataset_path
   )
 }

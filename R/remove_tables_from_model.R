@@ -13,9 +13,18 @@ remove_tables_from_model <- function(
   tool <- get_tool_from_model(model)
   if(tool == "nonmem") {
 
-    data <- model$dataset
-    code_without_tables <- remove_table_sections(model$code, file = file)
+    ## if there's no tables to begin with, then just return unchanged
+    existing_tables <- get_tables_in_model_code(model$code)
+    if(length(existing_tables) == 0) {
+      return(model)
+    }
 
+    ## workaround for dataset needed to circumvent issues re-reading the model file
+    data <- model$dataset
+    temp_csv <- paste0(tempfile(), ".csv")
+    write.csv(data, temp_csv, quote=F, row.names=F)
+    model <- pharmr::set_dataset(model, temp_csv)
+    code_without_tables <- remove_table_sections(model$code, file = file)
     model <- pharmr::read_model_from_string(
       code = code_without_tables
     )
@@ -28,6 +37,16 @@ remove_tables_from_model <- function(
     ## Removing tables can only be done for NONMEM datasets
   }
   return(model)
+}
+
+#' Remove $DATA from a NONMEM model
+#'
+#' @param text model code
+#' @returns character string
+remove_data_section <- function(text) {
+  pattern <- "\\$DATA[^$]+"
+  result <- gsub(pattern, "", text, perl = TRUE)
+  result
 }
 
 #' Function to remove all $TABLE sections

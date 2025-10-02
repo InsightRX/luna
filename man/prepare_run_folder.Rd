@@ -10,8 +10,6 @@ prepare_run_folder(
   path,
   force = FALSE,
   data = NULL,
-  model_path,
-  dataset_path,
   auto_stack_encounters = FALSE,
   verbose = TRUE
 )

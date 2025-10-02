@@ -94,20 +94,11 @@ run_nlme <- function(
     )
   }
 
-  ## Set up run folder
-  fit_folder <- create_run_folder(id, path, force, verbose)
-
   ## Set model name
   model <- pharmr::set_name(
     model = model,
     new_name = id
   )
-
-  ## Set up other files
-  dataset_path <- file.path(fit_folder, "data.csv")
-  model_file <- "run.mod"
-  output_file <- "run.lst"
-  model_path <- file.path(fit_folder, model_file)
 
   ## Change estimation method, if requested
   if(!is.null(estimation_method)) {
@@ -134,8 +125,6 @@ run_nlme <- function(
     path = path,
     data = data,
     force = force,
-    model_path = model_path,
-    dataset_path = dataset_path,
     auto_stack_encounters = auto_stack_encounters,
     verbose = verbose
   )
@@ -143,9 +132,9 @@ run_nlme <- function(
   ## If only `check` requested:
   if(check_only) {
     model_ok <- call_nmfe(
-      model_file = model_file,
-      output_file = output_file,
-      path = fit_folder,
+      model_file = obj$model_file,
+      output_file = obj$output_file,
+      path = obj$fit_folder,
       nmfe = nmfe,
       check_only = TRUE,
       console = console,
@@ -256,8 +245,8 @@ run_nlme <- function(
   fit <- attach_fit_info(
     fit,
     model = obj$model,
-    fit_folder,
-    output_file,
+    obj$fit_folder,
+    obj$output_file,
     is_sim_model = is_sim_model,
     verbose = verbose
   )
@@ -272,8 +261,8 @@ run_nlme <- function(
         }
         attr(fit, "final_model") <- final_model
         final_model_code <- final_model$code
-        final_model_code <- change_nonmem_dataset(final_model_code, dataset_path)
-        writeLines(final_model_code, file.path(fit_folder, "final.mod"))
+        final_model_code <- change_nonmem_dataset(final_model_code, obj$dataset_path)
+        writeLines(final_model_code, file.path(obj$fit_folder, "final.mod"))
       } else {
         if(verbose) {
           cli::cli_alert_warning("Final parameter estimates not available, not saving final.mod")

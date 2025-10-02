@@ -8,19 +8,19 @@ run_sim(
   fit = NULL,
   data = NULL,
   model = NULL,
-  id = "sim1",
+  id = get_random_id("sim_"),
   force = FALSE,
   t_obs = NULL,
-  dictionary = list(ID = "ID", DV = "DV", EVID = "EVID", AMT = "AMT", RATE = "RATE", CMT
-    = "CMT", MDV = "MDV"),
-  method = c("full", "sample"),
+  dictionary = list(ID = "ID", DV = "DV", EVID = "EVID", AMT = "AMT", CMT = "CMT", MDV =
+    "MDV"),
   regimen = NULL,
   covariates = NULL,
   tool = c("auto", "nonmem", "nlmixr2"),
   n_subjects = NULL,
   n_iterations = 1,
   variables = c("ID", "TIME", "DV", "EVID", "IPRED", "PRED"),
-  file = "simtab",
+  add_pk_variables = TRUE,
+  output_file = "simtab",
   seed = 12345,
   verbose = TRUE
 )
@@ -43,14 +43,6 @@ removed before rerunning NONMEM? Default \code{FALSE}.}
 \item{t_obs}{a vector of observations times. If specified, will override
 the observations in each subject in the input dataset.}
 
-\item{method}{either \code{full} or \code{sample}, meaning either use the input dataset
-used to fit the model as-is, or sample subjects from the input dataset. When
-sampling, the \code{n_subjects} argument determines the number of subjects to
-sample, wihch can be either lower or higher than the actual number in the
-input dataset. Sampling will be done with replacement. Both the \code{regimen}
-and \code{covariates} in the input dataset can be overriden by these respective
-arguments, see documentation for these arguments.}
-
 \item{regimen}{if specified, will replace the regimens for each subject with
 a custom regimen, specified using arguments \code{dose}, \code{interval}, \code{n}, and
 \code{route} (and \code{t_inf} / \code{rate} for infusions).
@@ -62,11 +54,14 @@ exactly to any covariates included in the model. An \code{ID} column is required
 and for time-varying covariates, a \code{TIME} column is also required (otherwise
 it will be assumed covariates are not changing over time).}
 
-\item{n_subjects}{number of subjects to simulate}
+\item{n_subjects}{number of subjects to simulate, when using sampled data}
 
 \item{n_iterations}{number of iterations of the entire simulation to
 perform. The dataset for the simulation will stay the same between each
 iterations.}
+
+\item{add_pk_variables}{calculate basic PK variables that can be extracted
+in post-processing, such as CMAX_OBS, TMAX_OBS, AUC_SS.}
 
 \item{verbose}{verbose output?}
 }
