@@ -1,12 +1,12 @@
 #' Add new $TABLE record to output variables
-#' 
+#'
 #' @param model pharmpy model object
 #' @param variables character vector with variable names
 #' @param firstonly add `FIRSTONLY` parameter to $TABLE record
 #' @param file path to file, e.g. `sdtab`
-#' 
+#'
 #' @export
-#' 
+#'
 add_table_to_model <- function(
     model,
     variables,
@@ -30,7 +30,7 @@ add_table_to_model <- function(
       paste0(c(" ", variables), collapse = " "),
       ifelse(firstonly, "\n  FIRSTONLY", ""),
       "\n  NOAPPEND NOPRINT",
-      "\n  FILE=", file, 
+      "\n  FILE=", file,
       "\n\n"
     )
     model <- pharmr::read_model_from_string(

@@ -36,6 +36,9 @@
 #' @param save_summary save fit summary and parameter estimates to file?
 #' Default is `TRUE`. Will use current folder, and save as
 #' `fit_summary_<id>.txt` and `fit_parameters_<id>.csv`.
+#' @param estimation_method Optional. Character vector of estimation method(s)
+#' to apply to model. Will remove all existing estimation steps in the model
+#' and update with methods specified in argument.
 #' @param auto_stack_encounters only invoked if `data` argument supplied, not if
 #' a pharmpy model object is supplied without `data`.
 #' Detects if TIME within an individual is
@@ -72,6 +75,7 @@ run_nlme <- function(
   console = FALSE,
   save_fit = TRUE,
   save_summary = TRUE,
+  estimation_method = NULL,
   auto_stack_encounters = TRUE,
   clean = TRUE,
   as_job = FALSE,
@@ -90,20 +94,20 @@ run_nlme <- function(
     )
   }
 
-  ## Set up run folder
-  fit_folder <- create_run_folder(id, path, force, verbose)
-
   ## Set model name
   model <- pharmr::set_name(
     model = model,
     new_name = id
   )
 
-  ## Set up other files
-  dataset_path <- file.path(fit_folder, "data.csv")
-  model_file <- "run.mod"
-  output_file <- "run.lst"
-  model_path <- file.path(fit_folder, model_file)
+  ## Change estimation method, if requested
+  if(!is.null(estimation_method)) {
+    model <- update_estimation_method(
+      model,
+      estimation_method,
+      verbose = verbose
+    )
+  }
 
   ## Add default tables, if requested
   if(!is.null(tables)) {
@@ -121,8 +125,6 @@ run_nlme <- function(
     path = path,
     data = data,
     force = force,
-    model_path = model_path,
-    dataset_path = dataset_path,
     auto_stack_encounters = auto_stack_encounters,
     verbose = verbose
   )
@@ -130,9 +132,9 @@ run_nlme <- function(
   ## If only `check` requested:
   if(check_only) {
     model_ok <- call_nmfe(
-      model_file = model_file,
-      output_file = output_file,
-      path = fit_folder,
+      model_file = obj$model_file,
+      output_file = obj$output_file,
+      path = obj$fit_folder,
       nmfe = nmfe,
       check_only = TRUE,
       console = console,
@@ -243,56 +245,59 @@ run_nlme <- function(
   fit <- attach_fit_info(
     fit,
     model = obj$model,
-    fit_folder,
-    output_file,
+    obj$fit_folder,
+    obj$output_file,
+    is_sim_model = is_sim_model,
     verbose = verbose
   )
 
-  ## Create final.mod with updated estimates?
-  if(save_final) {
-    final_model <- update_parameters(model, fit)
-    if(!is.null(final_model)) {
-      if(verbose) {
-        cli::cli_alert_info("Saving model with updated estimates to final.mod")
-      }
-      attr(fit, "final_model") <- final_model
-      final_model_code <- final_model$code
-      final_model_code <- change_nonmem_dataset(final_model_code, dataset_path)
-      writeLines(final_model_code, file.path(fit_folder, "final.mod"))
-    } else {
-      if(verbose) {
-        cli::cli_alert_warning("Final parameter estimates not available, not saving final.mod")
-      }
-    }
-  }
-
-  ## save fit object to file
-  if(!is.null(save_fit)){
-    if(inherits(save_fit, "character")) {
-      saveRDS(fit, save_fit)
-    } else if(inherits(save_fit, "logical")) {
-      if(save_fit) {
-        saveRDS(fit, paste0(id, ".rds"))
+  if(!is_sim_model) {
+    ## Create final.mod with updated estimates?
+    if(save_final) {
+      final_model <- update_parameters(model, fit)
+      if(!is.null(final_model)) {
+        if(verbose) {
+          cli::cli_alert_info("Saving model with updated estimates to final.mod")
+        }
+        attr(fit, "final_model") <- final_model
+        final_model_code <- final_model$code
+        final_model_code <- change_nonmem_dataset(final_model_code, obj$dataset_path)
+        writeLines(final_model_code, file.path(obj$fit_folder, "final.mod"))
+      } else {
+        if(verbose) {
+          cli::cli_alert_warning("Final parameter estimates not available, not saving final.mod")
+        }
       }
     }
-  }
 
-  ## save fit summary (fit info and parameter estimates) as JSON
-  if(save_summary) {
-    if(verbose) cli::cli_process_start("Saving fit results to file")
-    fit_summ <- create_modelfit_info_table(fit)
-    txt_summ <- knitr::kable(fit_summ, row.names = FALSE, format = "simple")
-    writeLines(
-      txt_summ,
-      paste0(id, "_fit_summary.txt")
-    )
-    par_est <- create_modelfit_parameter_table(fit)
-    write.csv(
-      par_est,
-      paste0(id, "_fit_parameters.csv"),
-      quote=F, row.names=F
-    )
-    if(verbose) cli::cli_process_done()
+    ## save fit object to file
+    if(!is.null(save_fit)){
+      if(inherits(save_fit, "character")) {
+        saveRDS(fit, save_fit)
+      } else if(inherits(save_fit, "logical")) {
+        if(save_fit) {
+          saveRDS(fit, paste0(id, ".rds"))
+        }
+      }
+    }
+
+    ## save fit summary (fit info and parameter estimates) as JSON
+    if(save_summary) {
+      if(verbose) cli::cli_process_start("Saving fit results to file")
+      fit_summ <- create_modelfit_info_table(fit)
+      txt_summ <- knitr::kable(fit_summ, row.names = FALSE, format = "simple")
+      writeLines(
+        txt_summ,
+        paste0(id, "_fit_summary.txt")
+      )
+      par_est <- create_modelfit_parameter_table(fit)
+      write.csv(
+        par_est,
+        paste0(id, "_fit_parameters.csv"),
+        quote=F, row.names=F
+      )
+      if(verbose) cli::cli_process_done()
+    }
   }
 
   time_end <- Sys.time()

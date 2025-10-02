@@ -31,7 +31,7 @@ add_default_output_tables <- function(
   ## by default will remove existing tables
   ## If these are not removed, and patab and sdtab are already present,
   ## will not override them
-  if(remove_existing) {
+  if(remove_existing & length(existing_tables) > 0) {
     model <- remove_tables_from_model(model)
     existing_tables <- c()
   }
