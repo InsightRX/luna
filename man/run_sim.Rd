@@ -54,7 +54,8 @@ exactly to any covariates included in the model. An \code{ID} column is required
 and for time-varying covariates, a \code{TIME} column is also required (otherwise
 it will be assumed covariates are not changing over time).}
 
-\item{n_subjects}{number of subjects to simulate, when using sampled data}
+\item{n_subjects}{number of subjects to simulate, when using sampled data
+(i.e. requires \code{covariates} argument)}
 
 \item{n_iterations}{number of iterations of the entire simulation to
 perform. The dataset for the simulation will stay the same between each
