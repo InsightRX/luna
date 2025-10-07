@@ -14,6 +14,7 @@
 #' @param t_obs a vector of observations times. If specified, will override
 #' the observations in each subject in the input dataset.
 #' @param n_subjects number of subjects to simulate, when using sampled data
+#' (i.e. requires `covariates` argument)
 #' @param n_iterations number of iterations of the entire simulation to
 #' perform. The dataset for the simulation will stay the same between each
 #' iterations.
@@ -90,14 +91,7 @@ run_sim <- function(
         )
     }
     if(!is.null(n_subjects)) {
-      idx <- unique(sim_data$ID)
-      sel_subjects <- sample(idx, n_subjects, replace = TRUE)
-      sim_data <- lapply(seq_along(sel_subjects), function(i, subjects, data) {
-        data |>
-          dplyr::filter(ID == subjects[i]) |>
-          dplyr::mutate(ID = i)
-      }, sel_subjects, sim_data) |>
-        dplyr::bind_rows()
+      cli::cli_warn("`n_subjects` can only be used in when sampling `covariates`, and will be ignored for this simulation.")
     }
   } else { ## use provided sampled covariates in `data`
     if(is.null(n_subjects)) {
