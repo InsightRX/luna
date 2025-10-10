@@ -254,7 +254,7 @@ run_nlme <- function(
   if(!is_sim_model) {
     ## Create final.mod with updated estimates?
     if(save_final) {
-      final_model <- update_parameters(model, fit)
+      final_model <- update_parameters(obj$model, fit)
       if(!is.null(final_model)) {
         if(verbose) {
           cli::cli_alert_info("Saving model with updated estimates to final.mod")
