@@ -91,8 +91,9 @@ run_sim <- function(
         )
     }
     if(!is.null(n_subjects)) {
-      cli::cli_warn("`n_subjects` can only be used in when sampling `covariates`, and will be ignored for this simulation.")
+      cli::cli_warn("`n_subjects` argument can only be used when sampling `covariates`, and will ignored for this simulation.")
     }
+    n_subjects <- length(unique(sim_data[[dictionary$ID]]))
   } else { ## use provided sampled covariates in `data`
     if(is.null(n_subjects)) {
       cli::cli_abort("For sampling new datasets, need `n_subjects` argument.")
