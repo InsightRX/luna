@@ -26,6 +26,9 @@
 #' @param covariates list of parameter-covariate effects, e.g.
 #' `list(CL = list(WT = "pow", CRCL = "lin"), V = list(WT = "pow")`
 #' Values in list need to match one of the effects allowed by pharmpy.
+#' @param scale_observations scale observations by factor, e.g. due to unit
+#' differences between dose and concentration. E.g. `scale_observations = 1000`
+#' will add `S1 = V/1000` (for a 1-compartment model) to NONMEM code.
 #' @param estimation_method estimation method.
 #' @param estimation_options options for estimation method, specified as list,
 #'  e.g. `NITER` or `ISAMPLE`.
@@ -78,6 +81,7 @@ create_model <- function(
     iiv_type = "exp",
     ruv = c("additive", "proportional", "combined", "ltbs"),
     covariates = NULL,
+    scale_observations = NULL,
     data = NULL,
     name = NULL,
     estimation_method = c("foce", "saem"),
@@ -157,6 +161,20 @@ create_model <- function(
     if(verbose) cli::cli_alert_info("Adding Michaelis-Menten elimination")
     mod <- mod |>
       pharmr::set_michaelis_menten_elimination()
+  }
+
+  ## Set scaling
+  if(!is.null(scale_observations)) {
+    obs_compartment <- get_obs_compartment(model)
+    volume_par <- pharmr::get_central_volume_and_clearance(model)[[1]]
+    mod <- mod |>
+      set_compartment_scale(
+        compartment = obs_compartment,
+        expression = list(
+          variable = volume_par,
+          scale = scale_observations
+        )
+      )
   }
 
   ## set parameter estimates to reasonable values based on data
