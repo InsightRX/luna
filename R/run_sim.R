@@ -221,12 +221,25 @@ calc_pk_variables <- function(
     dictionary = NULL
 ) {
 
-  ## Find cmax/tmax for each ID
   if(!is.null(data)) {
+    ## Find cmax/tmax for each ID
     data <- data |>
       dplyr::group_by(.data$ID) |>
       dplyr::mutate(CMAX_OBS = max(.data$DV)) |>
       dplyr::mutate(TMAX_OBS = TIME[match(CMAX_OBS[1], DV)][1])
+
+    ## Find Cmin for each ID, for last interval
+    cmin_data <- data |>
+      dplyr::group_by(.data$ID) |>
+      dplyr::mutate(.dose_id = cumsum(EVID == 1)) |>
+      dplyr::mutate(.dose_cmin = max(c(1, max(.dose_id)-1))) |> # last full interval (before last dose)
+      dplyr::filter(.dose_id == .dose_cmin & EVID == 0) |>
+      dplyr::summarise(CMIN_OBS = min(DV))
+    data <- dplyr::left_join(
+      data,
+      cmin_data,
+      by = "ID"
+    )
 
     ## Add AUC_SS as CL/dose, if we're simulating a specific regimen
     if(!is.null(regimen) && "CL" %in% names(data)) {
