@@ -163,35 +163,6 @@ create_model <- function(
       pharmr::set_michaelis_menten_elimination()
   }
 
-  ## Set scaling
-  if(!is.null(scale_observations)) {
-    obs_compartment <- get_obs_compartment(model)
-    volume_par <- pharmr::get_central_volume_and_clearance(model)[[1]]
-    mod <- mod |>
-      set_compartment_scale(
-        compartment = obs_compartment,
-        expression = list(
-          variable = volume_par,
-          scale = scale_observations
-        )
-      )
-  }
-
-  ## set parameter estimates to reasonable values based on data
-  if(!is.null(data) && auto_init) {
-    if(verbose) cli::cli_alert_info("Setting initial estimates")
-    inits <- get_initial_estimates_from_data(data, n_cmt = n_cmt)
-    if(length(inits) == 0) {
-      cli::cli_alert_warning("Could not compute initil estimates.")
-    } else {
-      inits <- stats::setNames(inits, paste0("POP_", names(inits)))
-      mod <- pharmr::set_initial_estimates(
-        model = mod,
-        inits = inits
-      )
-    }
-  }
-
   ## Add individual variability
   if(verbose) cli::cli_alert_info("Setting IIV")
   mod <- set_iiv(mod, iiv, iiv_type)
@@ -210,6 +181,39 @@ create_model <- function(
     )
   } else {
     if(verbose) cli::cli_alert_warning("Skipping covariates")
+  }
+
+  ## Set scaling
+  if(!is.null(scale_observations)) {
+    obs_compartment <- get_obs_compartment(mod)
+    volume_par <- pharmr::get_central_volume_and_clearance(mod)[[1]]
+    mod <- mod |>
+      set_compartment_scale(
+        compartment = obs_compartment,
+        expression = list(
+          variable = volume_par,
+          scale = scale_observations
+        )
+      )
+  }
+
+  ## set parameter estimates to reasonable values based on data
+  if(!is.null(data) && auto_init) {
+    if(verbose) cli::cli_alert_info("Setting initial estimates")
+    inits <- get_initial_estimates_from_data(
+      data,
+      n_cmt = n_cmt,
+      scale_observations = scale_observations
+    )
+    if(length(inits) == 0) {
+      cli::cli_alert_warning("Could not compute initil estimates.")
+    } else {
+      inits <- stats::setNames(inits, paste0("POP_", names(inits)))
+      mod <- pharmr::set_initial_estimates(
+        model = mod,
+        inits = inits
+      )
+    }
   }
 
   ## Convert to nlmixr2?

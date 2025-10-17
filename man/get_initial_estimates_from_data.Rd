@@ -12,7 +12,7 @@ twice the size of CL and V, which is often a good starting point.
 In most scenarios this is sufficiently close to the final estimates that
 estimation methods will be able to find the global minimum.}
 \usage{
-get_initial_estimates_from_data(data, n_cmt = 1)
+get_initial_estimates_from_data(data, n_cmt = 1, scale_observations = NULL)
 }
 \arguments{
 \item{data}{NONMEM-style dataset}
