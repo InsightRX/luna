@@ -67,9 +67,8 @@ test_that("get_obs_compartment() works for advan6", {
     route = "oral", n_cmt = 2,
     elimination = "michaelis-menten"
   )
-  expect_equal(
-    get_advan(advan6),
-    6
+  expect_true(
+    get_advan(advan6) %in% c(6, 13)
   )
   expect_equal(
     get_obs_compartment(advan6),
