@@ -14,7 +14,8 @@
 #' @export
 get_initial_estimates_from_data <- function(
   data,
-  n_cmt = 1
+  n_cmt = 1,
+  scale_observations = NULL
 ) {
 
   ## TODO: an extension could be to automatically add
@@ -39,6 +40,12 @@ get_initial_estimates_from_data <- function(
   if(n_cmt == 3) {
     est$QP2 <- est$CL
     est$VP2 <- est$V * 3
+  }
+  if(is.null(scale_observations)) {
+    scale_observations <- 1
+  }
+  for(i in seq_along(est)) {
+    est[[i]] <- signif(est[[i]] * scale_observations, 3)
   }
 
   est

@@ -674,3 +674,55 @@ test_that("IIV argument works with different IIV types", {
   expect_true("ETA_V" %in% mod_mixed$random_variables$names)
 })
 
+test_that("create_model with scaling works", {
+  # Create minimal test dataset
+  test_data <- data.frame(
+    ID = 1,
+    TIME = c(0, 1, 2),
+    DV = c(0, 15, 9),  # mg/L
+    AMT = c(1, 0, 0),  # 1 g
+    CMT = 1,
+    EVID = c(1, 0, 0),
+    MDV = c(1, 0, 0),
+    BW = 70
+  )
+
+  # Test basic oral model creation, when no IIV on V
+  mod_scale1 <- create_model(
+    route = "oral",
+    data = test_data,
+    scale_observations = 1000,
+    verbose = FALSE
+  )
+  expect_true(stringr::str_detect(mod_scale1$code, "S2 = V/1000"))
+  expect_true(stringr::str_detect(mod_scale1$code, "\\$THETA  \\(0, 34.1\\)"))
+  expect_true(stringr::str_detect(mod_scale1$code, "\\$THETA  \\(0, 66.7\\)"))
+
+  # Test 1-cmt oral model creation, with IIV on V
+  mod_scale2 <- create_model(
+    route = "oral",
+    data = test_data,
+    n_cmt = 1,
+    iiv = list(CL = .2, V = .3),
+    scale_observations = 1000,
+    verbose = FALSE
+  )
+  expect_true(stringr::str_detect(mod_scale2$code, "S2 = V/1000"))
+  expect_true(stringr::str_detect(mod_scale2$code, "\\$THETA  \\(0, 34.1\\)"))
+  expect_true(stringr::str_detect(mod_scale2$code, "\\$THETA  \\(0, 66.7\\)"))
+
+  # Test 2-cmt oral model creation, with IIV on V
+  mod_scale3 <- create_model(
+    route = "oral",
+    data = test_data,
+    n_cmt = 2,
+    iiv = list(CL = .2, V2 = .3),
+    scale_observations = 1000,
+    verbose = FALSE
+  )
+  expect_true(stringr::str_detect(mod_scale3$code, "S2 = V2/1000"))
+  expect_true(stringr::str_detect(mod_scale3$code, "\\$THETA  \\(0, 34.1\\)"))
+  expect_true(stringr::str_detect(mod_scale3$code, "\\$THETA  \\(0, 66.7\\)"))
+  expect_true(stringr::str_detect(mod_scale3$code, "\\$THETA  \\(0,133.0\\)"))
+
+})

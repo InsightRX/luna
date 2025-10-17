@@ -15,6 +15,7 @@ create_model(
   iiv_type = "exp",
   ruv = c("additive", "proportional", "combined", "ltbs"),
   covariates = NULL,
+  scale_observations = NULL,
   data = NULL,
   name = NULL,
   estimation_method = c("foce", "saem"),
@@ -57,6 +58,10 @@ e.g. \code{list("CL" = 0.2, "V" = 0.3, "CL~V" = 0.1)}.}
 \item{covariates}{list of parameter-covariate effects, e.g.
 \verb{list(CL = list(WT = "pow", CRCL = "lin"), V = list(WT = "pow")}
 Values in list need to match one of the effects allowed by pharmpy.}
+
+\item{scale_observations}{scale observations by factor, e.g. due to unit
+differences between dose and concentration. E.g. \code{scale_observations = 1000}
+will add \code{S1 = V/1000} (for a 1-compartment model) to NONMEM code.}
 
 \item{data}{data.frame as input to NONMEM / nlmixr.}
 
