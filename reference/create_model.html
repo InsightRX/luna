@@ -52,6 +52,7 @@ functionality in pharmr/Pharmpy.</p>
 <span>  iiv_type <span class="op">=</span> <span class="st">"exp"</span>,</span>
 <span>  ruv <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"additive"</span>, <span class="st">"proportional"</span>, <span class="st">"combined"</span>, <span class="st">"ltbs"</span><span class="op">)</span>,</span>
 <span>  covariates <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  scale_observations <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  data <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  estimation_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"foce"</span>, <span class="st">"saem"</span><span class="op">)</span>,</span>
@@ -115,6 +116,12 @@ e.g. <code>list("CL" = 0.2, "V" = 0.3, "CL~V" = 0.1)</code>.</p></dd>
 <dd><p>list of parameter-covariate effects, e.g.
 <code>list(CL = list(WT = "pow", CRCL = "lin"), V = list(WT = "pow")</code>
 Values in list need to match one of the effects allowed by pharmpy.</p></dd>
+
+
+<dt id="arg-scale-observations">scale_observations<a class="anchor" aria-label="anchor" href="#arg-scale-observations"></a></dt>
+<dd><p>scale observations by factor, e.g. due to unit
+differences between dose and concentration. E.g. <code>scale_observations = 1000</code>
+will add <code>S1 = V/1000</code> (for a 1-compartment model) to NONMEM code.</p></dd>
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>

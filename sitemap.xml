@@ -39,7 +39,9 @@
 <url><loc>https://insightrx.github.io/luna/reference/fit_model.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/fit_model_nlmixr.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/fit_model_nonmem.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/get_advan.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_all_results.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/get_compartment_scale.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_condition_number_for_fit.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_cov_matrix.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_defined_pk_parameters.html</loc></url>
@@ -54,6 +56,8 @@
 <url><loc>https://insightrx.github.io/luna/reference/get_nmfe_location_for_run.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_nmfe_output.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_nmtran_from_nmfe.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/get_obs_compartment.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/get_ode_size.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_parameters_with_iiv.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_pharmpy_conf.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/get_pharmpy_runfolders.html</loc></url>
@@ -129,6 +133,7 @@
 <url><loc>https://insightrx.github.io/luna/reference/runs_as_table.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/save_model_code.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/save_project.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/set_compartment_scale.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/set_covariance.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/set_iiv.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/set_residual_error.html</loc></url>
