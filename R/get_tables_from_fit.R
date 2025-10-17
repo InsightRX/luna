@@ -33,6 +33,11 @@ get_tables_from_folder <- function(
             tables[[tabnam]] <- read_table_nm(file = file.path(path, tabnam))
           )
         )
+        if(stringr::str_detect(tabnam, "^patab") && "ID" %in% names(tables[[tabnam]])) {
+          tables[[tabnam]] <- tables[[tabnam]] |> # apply FIRSTONLY on patab files
+            dplyr::group_by(.data$ID) |>
+            dplyr::slice(1)
+        }
       }
     }
   }
