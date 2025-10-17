@@ -66,7 +66,6 @@ get_obs_compartment <- function(model) {
         return(comp)
       }
     }
-    browser()
   }
 }
 
