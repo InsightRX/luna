@@ -56,7 +56,7 @@ add_default_output_tables <- function(
     model <- add_table_to_model(
       model = model,
       variables = c("ID", cols),
-      firstonly = TRUE,
+      firstonly = FALSE, # currently not supported by Pharmpy
       file = "patab"
     )
   }
