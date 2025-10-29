@@ -154,11 +154,13 @@ run_sim <- function(
   }
   if(!is.null(regimen_df)) {
     if(verbose) cli::cli_alert_info("Creating new regimens for subjects in simulation")
+    advan <- get_advan(model)
     doses <- create_dosing_records(
       regimen_df,
       sim_data,
       n_subjects,
-      dictionary
+      dictionary,
+      advan
     )
     ## remove old doses and add new
     sim_data <- sim_data |>
@@ -204,9 +206,6 @@ run_sim <- function(
     sim_data_regimen <- sim_data |>
       dplyr::filter(.regimen == reg_label) |>
       dplyr::select(-.regimen)
-
-    ## TODO: handle RATE appropriately
-    ## TODO: make sure CMT is properly set for iv/oral/etc
 
     ## Set simulation, and set sim dataset:
     if(verbose) cli::cli_alert_info("Changing model to simulation model")
@@ -311,69 +310,32 @@ calc_pk_variables <- function(
   data
 }
 
-create_dosing_records <- function(x, ...) {
-  UseMethod("create_dosing_records")
-}
-
-create_dosing_records.default <- function(x, ...) {
-  stop("`regimen` needs to be either a list or a data.frame")
-}
-
-#' Create dosing records, given a specified regimen as a simple list
-#'
-create_dosing_records.list <- function(
-    regimen,
-    data,
-    n_subjects,
-    dictionary
-) {
-  required <- c("dose", "interval", "n", "route")
-  if(! all(required %in% names(regimen))) {
-    cli::cli_abort("Regimen needs to be specified using required variables: {required}")
-  }
-  ## create a template row
-  cmt <- data |>
-    dplyr::filter(ID == 1 & EVID == 1) |>
-    dplyr::slice(1) |>
-    dplyr::pull(CMT)
-  if(is.null(cmt)) cmt <- 1
-  dose <- data.frame(
-    ID = 1,
-    TIME = seq(0, (regimen$n-1) * regimen$interval, by = regimen$interval),
-    AMT = regimen$dose[1],
-    EVID = 1,
-    MDV = 1,
-    DV = 0,
-    CMT = cmt,
-    .regimen = "regimen 1"
-  )
-  if(is.null(regimen$t_inf)) {
-    dose$RATE <- 0
-  } else {
-    dose$RATE <- regimen$dose / regimen$t_inf
-  }
-  dose_df <- lapply(1:n_subjects, function(i) {
-    dose |>
-      dplyr::mutate(ID = i)
-  }) |>
-    dplyr::bind_rows()
-  dose_df
-}
-
 #' Create dosing records, given a specified regimen as a data frame with
 #' potentially multiple regimens and varying dosing times / doses
 #'
-create_dosing_records.data.frame <- function(
+create_dosing_records <- function(
     regimen,
     data,
     n_subjects,
-    dictionary
+    dictionary,
+    advan = NULL
 ) {
   if(!is.null(regimen$regimen)) {
     unq_reg <- unique(regimen$regimen)
   } else {
     regimen$regimen <- "regimen 1"
     unq_reg <- "regimen 1"
+  }
+  ## logic for picking dosing compartments
+  cmt_oral <- 1
+  cmt_iv <- 2
+  if(!is.null(advan)) {
+    if(advan %in% c(1, 3, 11)) {
+      cmt_iv <- 1
+      if(any(regimen$route) %in% c("oral", "im", "sc")) {
+        cli::cli_abort("The model structure does not support oral, im, or sc dosing, only iv.")
+      }
+    }
   }
   dose <- data.frame(
     ID = 1,
@@ -387,7 +349,12 @@ create_dosing_records.data.frame <- function(
   )
   if(is.null(regimen$t_inf)) regimen$t_inf <- 0
   dose <- dose |>
-    dplyr::mutate(RATE = dplyr::if_else(regimen$t_inf == 0, 0, dose$AMT / regimen$t_inf))
+    dplyr::mutate(RATE = dplyr::if_else(regimen$t_inf == 0, 0, dose$AMT / regimen$t_inf)) |>
+    dplyr::mutate(CMT = dplyr::case_when(
+      regimen$route %in% c("oral", "sc", "im") ~ cmt_oral, # logic for picking dosing cmt
+      regimen$route %in% c("iv", "bolus", "infusion") ~ cmt_iv,
+      .default = 1
+    ))
   dose_df <- lapply(1:n_subjects, function(i) {
     dose |>
       dplyr::mutate(ID = i)
@@ -395,7 +362,6 @@ create_dosing_records.data.frame <- function(
     dplyr::bind_rows()
   dose_df
 }
-
 
 #' Create observation records, given a specified t_obs vector
 #'
