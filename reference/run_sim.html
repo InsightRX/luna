@@ -93,9 +93,15 @@ the observations in each subject in the input dataset.</p></dd>
 
 <dt id="arg-regimen">regimen<a class="anchor" aria-label="anchor" href="#arg-regimen"></a></dt>
 <dd><p>if specified, will replace the regimens for each subject with
-a custom regimen, specified using arguments <code>dose</code>, <code>interval</code>, <code>n</code>, and
+a custom regimen. Can be specified in two ways. The simplest way is to just
+specify a list with elements <code>dose</code>, <code>interval</code>, <code>n</code>, and
 <code>route</code> (and <code>t_inf</code> / <code>rate</code> for infusions).
-E.g. <code>regimen = list(dose = 500, interval = 12, n = 5, route = "oral")</code>.</p></dd>
+E.g. <code>regimen = list(dose = 500, interval = 12, n = 5, route = "oral")</code>.
+Alternatively, regimens can be specified as a data.frame. The data.frame
+specified all dosing times (<code>dose</code>, <code>time</code> columns) and <code>route</code> and <code>t_inf</code> /
+<code>rate</code>. The data.frame may also optionally contain a <code>regimen</code> column that
+specifies a name for the regimen. This can be used to simulate multiple
+regimens.</p></dd>
 
 
 <dt id="arg-covariates">covariates<a class="anchor" aria-label="anchor" href="#arg-covariates"></a></dt>

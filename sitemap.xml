@@ -19,6 +19,7 @@
 <url><loc>https://insightrx.github.io/luna/reference/clean_nonmem_folder.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/clean_pharmpy_runfolders.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/combine_info_columns.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/combine_regimens.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/compare_nlme_fit.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/create_cache.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/create_covariate_search_space.html</loc></url>
@@ -30,6 +31,7 @@
 <url><loc>https://insightrx.github.io/luna/reference/create_obs_records.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/create_pharmpy_model_from_list.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/create_pkmodel_search_space.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/create_regimen.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/create_run_folder.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/create_vpc_data.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/detect_nmfe_version.html</loc></url>
