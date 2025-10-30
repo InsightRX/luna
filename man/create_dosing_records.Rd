@@ -2,10 +2,12 @@
 % Please edit documentation in R/run_sim.R
 \name{create_dosing_records}
 \alias{create_dosing_records}
-\title{Create dosing records, given a specified regimen}
+\title{Create dosing records, given a specified regimen as a data frame with
+potentially multiple regimens and varying dosing times / doses}
 \usage{
 create_dosing_records(regimen, data, n_subjects, dictionary)
 }
 \description{
-Create dosing records, given a specified regimen
+Create dosing records, given a specified regimen as a data frame with
+potentially multiple regimens and varying dosing times / doses
 }

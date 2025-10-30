@@ -3,9 +3,15 @@
 #' @inheritParams run_nlme
 #'
 #' @param regimen if specified, will replace the regimens for each subject with
-#' a custom regimen, specified using arguments `dose`, `interval`, `n`, and
+#' a custom regimen. Can be specified in two ways. The simplest way is to just
+#' specify a list with elements `dose`, `interval`, `n`, and
 #' `route` (and `t_inf` / `rate` for infusions).
 #' E.g. `regimen = list(dose = 500, interval = 12, n = 5, route = "oral")`.
+#' Alternatively, regimens can be specified as a data.frame. The data.frame
+#' specified all dosing times (`dose`, `time` columns) and `route` and `t_inf` /
+#' `rate`. The data.frame may also optionally contain a `regimen` column that
+#' specifies a name for the regimen. This can be used to simulate multiple
+#' regimens.
 #' @param covariates if specified, will replace subjects with subjects specified
 #' in a data.frame. In the data.frame, the column names should correspond
 #' exactly to any covariates included in the model. An `ID` column is required,
@@ -71,6 +77,18 @@ run_sim <- function(
   if(tool != "nonmem") {
     cli::cli_abort("Sorry, currently only supporting NONMEM simulations.")
   }
+  ## make sure we have regimen as a data.frame
+  regimen_df <- NULL
+  if(!is.null(regimen)) {
+    if(inherits(regimen, "data.frame")) {
+      regimen_df <- regimen
+    } else if (inherits(regimen, "list")) {
+      regimen_df <- do.call(create_regimen, args = regimen) |>
+        dplyr::mutate(regimen = "regimen 1")
+    } else {
+      cli::cli_abort("`regimen` needs to be either a data.frame or a list, or NULL.")
+    }
+  }
 
   ## Prepare data
   if(is.null(data)) {
@@ -134,24 +152,28 @@ run_sim <- function(
         tidyr::fill(new_covariates, .direction = "downup")
     }
   }
-  if(!is.null(regimen)) {
+  if(!is.null(regimen_df)) {
     if(verbose) cli::cli_alert_info("Creating new regimens for subjects in simulation")
+    advan <- get_advan(model)
     doses <- create_dosing_records(
-      regimen,
+      regimen_df,
       sim_data,
       n_subjects,
-      dictionary
+      dictionary,
+      advan
     )
     ## remove old doses and add new
     sim_data <- sim_data |>
       dplyr::filter(EVID != 1) |>
       dplyr::bind_rows(doses) |>
-      dplyr::arrange(ID, TIME, EVID) |>
+      dplyr::arrange(.regimen, ID, TIME, EVID) |>
       dplyr::group_by(ID) |>
       tidyr::fill(
         dplyr::everything(),
         .direction = "downup"
       )
+  } else {
+    sim_data[[".regimen"]] <- "original regimens"
   }
   if(!is.null(t_obs)) {
     if(verbose) cli::cli_alert_info("Creating new observation records for subjects in simulation")
@@ -165,7 +187,7 @@ run_sim <- function(
     sim_data <- sim_data |>
       dplyr::filter(EVID != 0) |>
       dplyr::bind_rows(obs) |>
-      dplyr::arrange(ID, TIME, EVID) |>
+      dplyr::arrange(.regimen, ID, TIME, EVID) |>
       dplyr::group_by(ID) |>
       tidyr::fill(
         dplyr::everything(),
@@ -173,40 +195,72 @@ run_sim <- function(
       )
   }
 
-  ## Set simulation, and set sim dataset:
-  if(verbose) cli::cli_alert_info("Changing model to simulation model")
-  sim_model <- model |>
-    pharmr::set_simulation(seed = 12345) |>
-    pharmr::set_dataset(sim_data)
+  ## get unique regimens / datasets to simulate
+  unique_regimens <- unique(sim_data[[".regimen"]])
+  comb <- list()
 
-  ## Add tables
-  if(verbose) cli::cli_alert_info("Updating table record")
-  parameter_names <- get_defined_pk_parameters(sim_model)
-  variables <- unique(c(variables, parameter_names, names(covariates)))
-  sim_model <- sim_model |>
-    remove_tables_from_model() |>
-    add_table_to_model(variables, file = output_file)
+  ## Loop over regimens to simulate
+  for(reg_label in unique_regimens) {
 
-  ## Run simulation
-  if(verbose) cli::cli_alert_info("Running simulation")
-  results <- run_nlme(
-    model = sim_model,
-    id = id,
-    force = force,
-    verbose = FALSE
-  )
+    ## grab data for regimen
+    sim_data_regimen <- sim_data |>
+      dplyr::filter(.regimen == reg_label) |>
+      dplyr::select(-.regimen)
 
-  ## post-processing
-  if(add_pk_variables) {
-    attr(results, "tables")[[output_file]] <- calc_pk_variables(
-      data = attr(results, "tables")[[output_file]],
-      regimen = regimen
+    ## Set simulation, and set sim dataset:
+    if(verbose) cli::cli_alert_info("Changing model to simulation model")
+    sim_model <- model |>
+      pharmr::set_simulation(seed = 12345) |>
+      pharmr::set_dataset(sim_data_regimen)
+
+    ## Add tables
+    if(verbose) cli::cli_alert_info("Updating table record")
+    parameter_names <- get_defined_pk_parameters(sim_model)
+    variables <- unique(c(variables, parameter_names, names(covariates)))
+    sim_model <- sim_model |>
+      remove_tables_from_model() |>
+      add_table_to_model(variables, file = output_file)
+
+    ## Run simulation
+    if(verbose) cli::cli_alert_info("Running simulation ({reg_label})")
+    results <- run_nlme(
+      model = sim_model,
+      id = id,
+      force = TRUE,
+      verbose = FALSE
     )
+
+    ## post-processing
+    if(add_pk_variables) {
+      attr(results, "tables")[[output_file]] <- calc_pk_variables(
+        data = attr(results, "tables")[[output_file]],
+        regimen = regimen_df |>
+          dplyr::filter(regimen == reg_label)
+      )
+    }
+
+    ## grab table, return
+    if(verbose) cli::cli_alert_info("Exporting simulation results ({reg_label})")
+    comb[[reg_label]] <- attr(results, "tables")
+
   }
 
-  ## grab table, return
-  if(verbose) cli::cli_alert_info("Exporting simulation results")
-  attr(results, "tables")
+  ## combine back down to single data.frame again
+  out <- lapply(unique_regimens, function(reg_label) {
+    if(!is.null(comb[[reg_label]]$simtab)) {
+      return(
+        comb[[reg_label]]$simtab |>
+          dplyr::mutate(regimen_label = reg_label)
+      )
+    } else {
+      cli::cli_warn("Simulation for {reg_label} did not output any results.")
+      return(data.frame())
+    }
+  }) |>
+    dplyr::bind_rows()
+
+  if(verbose) cli::cli_alert_success("Done")
+  out
 }
 
 #' Calculate some basic PK variables from simulated or observed data
@@ -229,10 +283,15 @@ calc_pk_variables <- function(
       dplyr::mutate(TMAX_OBS = TIME[match(CMAX_OBS[1], DV)][1])
 
     ## Find Cmin for each ID, for last interval
-    cmin_data <- data |>
+    tmp_data <- data |>
       dplyr::group_by(.data$ID) |>
-      dplyr::mutate(.dose_id = cumsum(EVID == 1)) |>
-      dplyr::mutate(.dose_cmin = max(c(1, max(.dose_id)-1))) |> # last full interval (before last dose)
+      dplyr::mutate(.dose_id = cumsum(EVID == 1))
+    last_obs_dose_id <- tmp_data |>
+      dplyr::filter(EVID == 0) |>
+      dplyr::pull(.dose_id) |>
+      tail(1)
+    cmin_data <- tmp_data |>
+      dplyr::mutate(.dose_cmin = max(c(1, last_obs_dose_id))) |> # last full interval (before last dose)
       dplyr::filter(.dose_id == .dose_cmin & EVID == 0) |>
       dplyr::summarise(CMIN_OBS = min(DV))
     data <- dplyr::left_join(
@@ -244,45 +303,58 @@ calc_pk_variables <- function(
     ## Add AUC_SS as CL/dose, if we're simulating a specific regimen
     if(!is.null(regimen) && "CL" %in% names(data)) {
       data <- data |>
-        dplyr::mutate(AUC_SS = regimen$dose / .data$CL)
+        dplyr::mutate(AUC_SS = tail(regimen$dose, 1) / .data$CL)
     }
   }
 
   data
 }
 
-#' Create dosing records, given a specified regimen
+#' Create dosing records, given a specified regimen as a data frame with
+#' potentially multiple regimens and varying dosing times / doses
 #'
 create_dosing_records <- function(
     regimen,
     data,
     n_subjects,
-    dictionary
+    dictionary,
+    advan = NULL
 ) {
-  required <- c("dose", "interval", "n", "route")
-  if(! all(required %in% names(regimen))) {
-    cli::cli_abort("Regimen needs to be specified using required variables: {required}")
+  if(!is.null(regimen$regimen)) {
+    unq_reg <- unique(regimen$regimen)
+  } else {
+    regimen$regimen <- "regimen 1"
+    unq_reg <- "regimen 1"
   }
-  ## create a template row
-  cmt <- data |>
-    dplyr::filter(ID == 1 & EVID == 1) |>
-    dplyr::slice(1) |>
-    dplyr::pull(CMT)
-  if(is.null(cmt)) cmt <- 1
-  dose <- data.frame(
-    ID = 1,
-    TIME = seq(0, (regimen$n-1) * regimen$interval, by = regimen$interval),
-    AMT = regimen$dose[1],
-    EVID = 1,
-    MDV = 1,
-    DV = 0,
-    CMT = cmt
-  )
-  if(regimen$route %in% c("iv", "sc")) {
-    if(!is.null(regimen$t_inf)) {
-      dose$RATE <- dose$AMT / regimen$t_inf
+  ## logic for picking dosing compartments
+  cmt_oral <- 1
+  cmt_iv <- 2
+  if(!is.null(advan)) {
+    if(advan %in% c(1, 3, 11)) {
+      cmt_iv <- 1
+      if(any(regimen$route) %in% c("oral", "im", "sc")) {
+        cli::cli_abort("The model structure does not support oral, im, or sc dosing, only iv.")
+      }
     }
   }
+  dose <- data.frame(
+    ID = 1,
+    TIME = regimen$time,
+    AMT = regimen$dose,
+    EVID = 1,
+    MDV = 1,
+    DV = 1,
+    CMT = 1,
+    .regimen = regimen$regimen
+  )
+  if(is.null(regimen$t_inf)) regimen$t_inf <- 0
+  dose <- dose |>
+    dplyr::mutate(RATE = dplyr::if_else(regimen$t_inf == 0, 0, dose$AMT / regimen$t_inf)) |>
+    dplyr::mutate(CMT = dplyr::case_when(
+      regimen$route %in% c("oral", "sc", "im") ~ cmt_oral, # logic for picking dosing cmt
+      regimen$route %in% c("iv", "bolus", "infusion") ~ cmt_iv,
+      .default = 1
+    ))
   dose_df <- lapply(1:n_subjects, function(i) {
     dose |>
       dplyr::mutate(ID = i)
@@ -299,6 +371,7 @@ create_obs_records <- function(
     n_subjects,
     dictionary
 ) {
+  unq_reg <- unique(data[[".regimen"]])
   ## create a template row
   cmt <- data |>
     dplyr::filter(ID == 1 & EVID == 0) |>
@@ -312,11 +385,19 @@ create_obs_records <- function(
     EVID = 0,
     MDV = 0,
     DV = 0,
-    CMT = cmt
+    CMT = cmt,
+    RATE = 0
   )
+  ## extend single sampling design to multiple subjects
   obs_df <- lapply(1:n_subjects, function(i) {
     obs |>
       dplyr::mutate(ID = i)
+  }) |>
+    dplyr::bind_rows()
+  ## extend to multiple regimens, if needed
+  obs_df <- lapply(1:length(unq_reg), function(i) {
+    obs_df |>
+      dplyr::mutate(.regimen = unq_reg[i])
   }) |>
     dplyr::bind_rows()
   obs_df

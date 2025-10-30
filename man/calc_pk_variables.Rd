@@ -10,9 +10,15 @@ calc_pk_variables(data, regimen = NULL, dictionary = NULL)
 \item{data}{data.frame in NONMEM format}
 
 \item{regimen}{if specified, will replace the regimens for each subject with
-a custom regimen, specified using arguments \code{dose}, \code{interval}, \code{n}, and
+a custom regimen. Can be specified in two ways. The simplest way is to just
+specify a list with elements \code{dose}, \code{interval}, \code{n}, and
 \code{route} (and \code{t_inf} / \code{rate} for infusions).
-E.g. \code{regimen = list(dose = 500, interval = 12, n = 5, route = "oral")}.}
+E.g. \code{regimen = list(dose = 500, interval = 12, n = 5, route = "oral")}.
+Alternatively, regimens can be specified as a data.frame. The data.frame
+specified all dosing times (\code{dose}, \code{time} columns) and \code{route} and \code{t_inf} /
+\code{rate}. The data.frame may also optionally contain a \code{regimen} column that
+specifies a name for the regimen. This can be used to simulate multiple
+regimens.}
 }
 \value{
 data.frame
