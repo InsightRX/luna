@@ -21,6 +21,8 @@ create_model(
   estimation_method = c("foce", "saem"),
   estimation_options = list(),
   uncertainty_method = c("sandwich", "smat", "rmat", "efim", "none"),
+  blq_method = NULL,
+  lloq = NULL,
   tool = c("nonmem", "nlmixr", "nlmixr2"),
   tables = c("fit"),
   full_tables = FALSE,
@@ -74,6 +76,14 @@ e.g. \code{NITER} or \code{ISAMPLE}.}
 
 \item{uncertainty_method}{Compute uncertainty for parameter estimations.
 One of \code{sandwich} (default), \code{smat}, \code{fmat}, \code{efim}.}
+
+\item{blq_method}{method for handling data below the limit of quantification.
+Available options are \code{m1}, \code{m3}, \code{m4}, \code{m5}, \code{m6}, \code{m7}, as described
+by Beal et al. Default is no handling of BLQ data (\code{NULL}).}
+
+\item{lloq}{(optional) a numeric value specifying the limit of
+quantification for observations. Will be disregarded if an \code{LLOQ} column is
+in the dataset.}
 
 \item{tool}{output model type, either \code{nonmem} or \code{nlmixr}}
 
