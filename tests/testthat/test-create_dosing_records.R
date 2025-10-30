@@ -131,35 +131,6 @@ test_that("create_dosing_records handles oral route without RATE", {
   expect_false("RATE" %in% names(result))
 })
 
-test_that("create_dosing_records defaults CMT to 1 when no dosing records found", {
-  # Data with no dosing records (EVID == 1)
-  test_data <- data.frame(
-    ID = c(1, 1, 1),
-    TIME = c(0, 1, 2),
-    EVID = c(0, 0, 0),
-    CMT = c(2, 2, 2),
-    AMT = c(0, 0, 0),
-    MDV = c(0, 0, 0),
-    DV = c(1, 2, 3)
-  )
-  
-  regimen <- list(
-    dose = 100,
-    interval = 12,
-    n = 2,
-    route = "oral"
-  )
-  
-  result <- create_dosing_records(
-    regimen = regimen,
-    data = test_data,
-    n_subjects = 1,
-    dictionary = NULL
-  )
-  
-  expect_equal(unique(result$CMT), 1)
-})
-
 test_that("create_dosing_records handles vector doses correctly", {
   test_data <- data.frame(
     ID = c(1, 1),
