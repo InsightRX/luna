@@ -1,10 +1,10 @@
 #' Create a single regimen
-#' 
+#'
 #' The resulting data.frame can be passed to `luna::run_sim()` as the `regimen`
 #' argument.
-#' 
+#'
 #' @examples
-#' 
+#'
 #' \dontrun{
 #' reg1 <- create_regimen(
 #'   dose = 500,
@@ -14,7 +14,8 @@
 #' )
 #' luna::run_sim(..., regimen = reg1)
 #' }
-#' 
+#'
+#' @export
 create_regimen <- function(
     dose,
     interval = 24,
@@ -44,17 +45,17 @@ create_regimen <- function(
 
 #' Combine several regimens into a single data.frame, which can be passed into
 #' `luna::run_sim()` as `regimen` argument.
-#' 
+#'
 #' @details
 #' This allows both for combination of two or more phases, e.g. loading doses
 #' and maintenance phase in a single regimen. It also allows for specification
-#' of multiple separate regimens to simulate, e.g. a high-dose regimen and a 
+#' of multiple separate regimens to simulate, e.g. a high-dose regimen and a
 #' low-dose regimen.
-#' 
+#'
 #' @param ... each argument is a named regimen, that in itself is specified as
 #' a list containing multiple regimens, each created using `create_regimen()`.
 #' See examples.
-#' 
+#'
 #' @examples
 #' \dontrun{
 #' regimens <- combine_regimens(
@@ -83,6 +84,8 @@ create_regimen <- function(
 #'  )
 #' )
 #' }
+#'
+#' @export
 combine_regimens <- function(...) {
   regs <- list(...)
   regimen_names <- names(regs)

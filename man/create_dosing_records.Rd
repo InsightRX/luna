@@ -5,7 +5,7 @@
 \title{Create dosing records, given a specified regimen as a data frame with
 potentially multiple regimens and varying dosing times / doses}
 \usage{
-create_dosing_records(regimen, data, n_subjects, dictionary)
+create_dosing_records(regimen, data, n_subjects, dictionary, advan = NULL)
 }
 \description{
 Create dosing records, given a specified regimen as a data frame with
