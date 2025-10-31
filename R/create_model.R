@@ -34,6 +34,12 @@
 #'  e.g. `NITER` or `ISAMPLE`.
 #' @param uncertainty_method Compute uncertainty for parameter estimations.
 #' One of `sandwich` (default), `smat`, `fmat`, `efim`.
+#' @param blq_method method for handling data below the limit of quantification.
+#' Available options are `m1`, `m3`, `m4`, `m5`, `m6`, `m7`, as described
+#' by Beal et al. Default is no handling of BLQ data (`NULL`).
+#' @param lloq (optional) a numeric value specifying the limit of 
+#' quantification for observations. Will be disregarded if an `LLOQ` column is 
+#' in the dataset.
 #' @param auto_init automatically update initial estimates to reasonable values
 #' based on a crude assessment of the PK data. Default is `TRUE`.
 #' @param auto_stack_encounters detects if TIME within an individual is
@@ -87,6 +93,8 @@ create_model <- function(
     estimation_method = c("foce", "saem"),
     estimation_options = list(),
     uncertainty_method = c("sandwich", "smat", "rmat", "efim", "none"),
+    blq_method = NULL,
+    lloq = NULL,
     tool = c("nonmem", "nlmixr", "nlmixr2"),
     tables = c("fit"),
     full_tables = FALSE,
@@ -205,8 +213,8 @@ create_model <- function(
       n_cmt = n_cmt,
       scale_observations = scale_observations
     )
-    if(length(inits) == 0) {
-      cli::cli_alert_warning("Could not compute initil estimates.")
+    if(length(inits) == 0 || any(is.na(inits)) || any(inits == Inf)) {
+      cli::cli_alert_warning("Could not compute initial estimates automatically, please check manually.")
     } else {
       inits <- stats::setNames(inits, paste0("POP_", names(inits)))
       mod <- pharmr::set_initial_estimates(
@@ -293,6 +301,23 @@ create_model <- function(
         path_or_df = data,
         datatype = "nonmem"
       )
+  }
+
+  ## Handle BLQ
+  if(!is.null(blq_method)) {
+    blq_method <- tolower(blq_method)
+    allowed_blq <- paste0("m", 1:7)
+    if(! blq_method %in% allowed_blq) {
+      cli::cli_abort("`blq_method` should be one of {allowed_blq}, or `NULL`.")
+    }
+    if(!is.null(lloq) && "LLOQ" %in% names(data)) {
+      lloq <- NULL
+      cli::cli_alert_info("`lloq` argument cannot be used when `LLOQ` column exists in dataset. Ignoring argument.")
+    }
+    if(is.null(lloq) && ! "LLOQ" %in% names(data) && blq_method %in% c("m2", "m3", "m4", "m5", "m6")) {
+      cli::cli_abort("For {blq_method}-method, need either `lloq` argument or a LLOQ column in the dataset.")
+    } 
+    mod <- pharmr::transform_blq(mod, method = blq_method, lloq = lloq)
   }
 
   ## Set name?
