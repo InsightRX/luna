@@ -83,7 +83,7 @@ get_initial_estimates_from_individual_data <- function(data, ...) {
 
   ## get peak value. This leads to estimate for V
   tmp <- dat |>
-    dplyr::filter(dosenr == dose_nr & MDV == 0) |>
+    dplyr::filter(dosenr == dose_nr & MDV == 0 & DV != 0) |>
     dplyr::slice(unique(c(which.max(DV), which.min(DV))))
   dose <- dat |>
     dplyr::filter(dosenr == dose_nr & EVID == 1) |>
