@@ -58,6 +58,8 @@ functionality in pharmr/Pharmpy.</p>
 <span>  estimation_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"foce"</span>, <span class="st">"saem"</span><span class="op">)</span>,</span>
 <span>  estimation_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  uncertainty_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sandwich"</span>, <span class="st">"smat"</span>, <span class="st">"rmat"</span>, <span class="st">"efim"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>  blq_method <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  lloq <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tool <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nonmem"</span>, <span class="st">"nlmixr"</span>, <span class="st">"nlmixr2"</span><span class="op">)</span>,</span>
 <span>  tables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fit"</span><span class="op">)</span>,</span>
 <span>  full_tables <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -144,6 +146,18 @@ e.g. <code>NITER</code> or <code>ISAMPLE</code>.</p></dd>
 <dt id="arg-uncertainty-method">uncertainty_method<a class="anchor" aria-label="anchor" href="#arg-uncertainty-method"></a></dt>
 <dd><p>Compute uncertainty for parameter estimations.
 One of <code>sandwich</code> (default), <code>smat</code>, <code>fmat</code>, <code>efim</code>.</p></dd>
+
+
+<dt id="arg-blq-method">blq_method<a class="anchor" aria-label="anchor" href="#arg-blq-method"></a></dt>
+<dd><p>method for handling data below the limit of quantification.
+Available options are <code>m1</code>, <code>m3</code>, <code>m4</code>, <code>m5</code>, <code>m6</code>, <code>m7</code>, as described
+by Beal et al. Default is no handling of BLQ data (<code>NULL</code>).</p></dd>
+
+
+<dt id="arg-lloq">lloq<a class="anchor" aria-label="anchor" href="#arg-lloq"></a></dt>
+<dd><p>(optional) a numeric value specifying the limit of
+quantification for observations. Will be disregarded if an <code>LLOQ</code> column is
+in the dataset.</p></dd>
 
 
 <dt id="arg-tool">tool<a class="anchor" aria-label="anchor" href="#arg-tool"></a></dt>
