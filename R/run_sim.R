@@ -339,17 +339,21 @@ create_dosing_records <- function(
   }
   dose <- data.frame(
     ID = 1,
-    TIME = regimen$time,
+    TIME = seq(0, (regimen$n-1) * regimen$interval, by = regimen$interval),
     AMT = regimen$dose,
     EVID = 1,
     MDV = 1,
-    DV = 1,
+    DV = 0,
     CMT = 1,
     .regimen = regimen$regimen
   )
   if(is.null(regimen$t_inf)) regimen$t_inf <- 0
+  if(regimen$t_inf == 0) {
+    dose$RATE <- dose$AMT / regimen$t_inf
+  } else {
+    dose$RATE <- dose$AMT / regimen$t_inf
+  }
   dose <- dose |>
-    dplyr::mutate(RATE = dplyr::if_else(regimen$t_inf == 0, 0, dose$AMT / regimen$t_inf)) |>
     dplyr::mutate(CMT = dplyr::case_when(
       regimen$route %in% c("oral", "sc", "im") ~ cmt_oral, # logic for picking dosing cmt
       regimen$route %in% c("iv", "bolus", "infusion") ~ cmt_iv,

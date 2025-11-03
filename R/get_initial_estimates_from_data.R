@@ -83,14 +83,14 @@ get_initial_estimates_from_individual_data <- function(data, ...) {
 
   ## get peak value. This leads to estimate for V
   tmp <- dat |>
-    dplyr::filter(dosenr == dose_nr & MDV == 0) |>
+    dplyr::filter(dosenr == dose_nr & MDV == 0 & DV != 0) |>
     dplyr::slice(unique(c(which.max(DV), which.min(DV))))
   dose <- dat |>
     dplyr::filter(dosenr == dose_nr & EVID == 1) |>
     dplyr::pull(AMT)
   est <- c()
   est$V <- dose / max(tmp$DV)
-  if(nrow(tmp) > 1) { # two datapoints at least
+  if(inherits(tmp$TIME, "numeric") && nrow(tmp) > 1) { # two datapoints at least
     KEL <- (log(max(tmp$DV)) - log(min(tmp$DV))) / abs(diff(tmp$TIME))
     est$CL <- KEL * est$V
   } else { # more crude estimation
