@@ -90,7 +90,7 @@ get_initial_estimates_from_individual_data <- function(data, ...) {
     dplyr::pull(AMT)
   est <- c()
   est$V <- dose / max(tmp$DV)
-  if(nrow(tmp) > 1) { # two datapoints at least
+  if(inherits(tmp$TIME, "numeric") && nrow(tmp) > 1) { # two datapoints at least
     KEL <- (log(max(tmp$DV)) - log(min(tmp$DV))) / abs(diff(tmp$TIME))
     est$CL <- KEL * est$V
   } else { # more crude estimation
