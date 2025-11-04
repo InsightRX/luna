@@ -232,11 +232,18 @@ run_sim <- function(
 
     ## post-processing
     if(add_pk_variables) {
-      attr(results, "tables")[[output_file]] <- calc_pk_variables(
-        data = attr(results, "tables")[[output_file]],
-        regimen = regimen_df |>
-          dplyr::filter(regimen == reg_label)
-      )
+      if(!is.null(regimen_df)) { # regimen needed for calculation of AUCss
+        attr(results, "tables")[[output_file]] <- calc_pk_variables(
+          data = attr(results, "tables")[[output_file]],
+          regimen = regimen_df |>
+            dplyr::filter(regimen == reg_label)
+        )
+      } else {
+        attr(results, "tables")[[output_file]] <- calc_pk_variables(
+          data = attr(results, "tables")[[output_file]],
+          regimen = NULL
+        )
+      }
     }
 
     ## grab table, return
