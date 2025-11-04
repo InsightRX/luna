@@ -22,19 +22,24 @@ clean_modelfit_data <- function(
   if(any(lapply(data, class) != "character")) {
     for(key in seq(names(data))) {
       if(inherits(data[[key]], "character")) {
-        if(try_make_numeric) {
-          if(verbose)
-            cli::cli_alert_warning("Detected character column ({key}), trying to convert to numeric.")
-          suppressWarnings({
-            data[[key]] <- as.numeric(data[[key]])
-            if(any(is.na(data[[key]]))) {
-              data[[key]][is.na(data[[key]])] <- 0
-            }
-          })
+        if(key %in% c("TIME", "DATE") && all(c("TIME", "DATE") %in% names(data)) {
+          ## exception for TIME and DATE columns if they appear together,
+          ## don't convert to numeric
         } else {
-          if(verbose)
-            cli::cli_alert_warning("Detected character column ({key}), setting to 0.")
-          data[[key]] <- NULL
+          if(try_make_numeric) {
+            if(verbose)
+              cli::cli_alert_warning("Detected character column ({key}), trying to convert to numeric.")
+            suppressWarnings({
+              data[[key]] <- as.numeric(data[[key]])
+              if(any(is.na(data[[key]]))) {
+                data[[key]][is.na(data[[key]])] <- 0
+              }
+            })
+          } else {
+            if(verbose)
+              cli::cli_alert_warning("Detected character column ({key}), setting to 0.")
+            data[[key]] <- NULL
+          }
         }
       }
     }
@@ -46,7 +51,7 @@ clean_modelfit_data <- function(
 
     ## Save dataset
     dataset_file <- tempfile(pattern = "data", fileext = ".csv")
-    write.csv(data, dataset_file, quote=F, row.names=F)
+    write.csv(data, dataset_file, quote = F, row.names = F)
 
     ## Update dataset in model
     model <- pharmr::set_dataset(
