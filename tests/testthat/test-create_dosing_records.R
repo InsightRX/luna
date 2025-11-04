@@ -11,9 +11,9 @@ test_that("create_dosing_records creates correct basic dosing schedule", {
   )
   
   regimen <- list(
-    dose = 500,
+    dose = c(500),
     interval = 12,
-    n = 3,
+    time = c(0, 12, 24),
     route = "oral"
   )
   
@@ -54,7 +54,7 @@ test_that("create_dosing_records handles IV route with infusion time", {
   regimen <- list(
     dose = 1000,
     interval = 24,
-    n = 2,
+    time = c(0, 24),
     route = "iv",
     t_inf = 2
   )
@@ -86,7 +86,7 @@ test_that("create_dosing_records handles SC route with infusion time", {
   regimen <- list(
     dose = 500,
     interval = 12,
-    n = 2,
+    time = c(0, 12),
     route = "sc",
     t_inf = 0.5
   )
@@ -116,7 +116,7 @@ test_that("create_dosing_records handles vector doses correctly", {
   regimen <- list(
     dose = c(500, 750), # Vector of doses - should use first element
     interval = 12,
-    n = 2,
+    time = c(0, 12),
     route = "oral"
   )
   
@@ -141,41 +141,19 @@ test_that("create_dosing_records fails with missing required arguments", {
   # Missing 'dose'
   regimen_no_dose <- list(
     interval = 12,
-    n = 3,
+    time = c(0, 12, 24),
     route = "oral"
   )
   
   expect_error(
     create_dosing_records(regimen_no_dose, test_data, 1, NULL)
   )
-  
-  # Missing 'interval'
-  regimen_no_interval <- list(
-    dose = 500,
-    n = 3,
-    route = "oral"
-  )
-  
-  expect_error(
-    create_dosing_records(regimen_no_interval, test_data, 1, NULL)
-  )
-  
-  # Missing 'n'
-  regimen_no_n <- list(
-    dose = 500,
-    interval = 12,
-    route = "oral"
-  )
-  
-  expect_error(
-    create_dosing_records(regimen_no_n, test_data, 1, NULL)
-  )
-  
+    
   # Missing 'route'
   regimen_no_route <- list(
     dose = 500,
     interval = 12,
-    n = 3
+    time = c(0, 12, 24)
   )
   
   expect_error(
@@ -197,7 +175,7 @@ test_that("create_dosing_records handles single dose correctly", {
   regimen <- list(
     dose = 1000,
     interval = 24,
-    n = 1, # Single dose
+    time = 0,
     route = "iv"
   )
   
@@ -227,7 +205,7 @@ test_that("create_dosing_records handles multiple subjects correctly", {
   regimen <- list(
     dose = 250,
     interval = 6,
-    n = 4,
+    time = c(0, 6, 12, 18),
     route = "oral"
   )
   
