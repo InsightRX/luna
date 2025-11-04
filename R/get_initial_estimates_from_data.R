@@ -55,12 +55,14 @@ get_initial_estimates_from_data <- function(
 #'
 get_initial_estimates_from_individual_data <- function(data, ...) {
 
-  dat <- data |>
-   dplyr::mutate(
-     dosenr = cumsum(EVID),
-     DV = as.numeric(DV),
-     TIME = as.numeric(TIME)
-    )
+  suppressWarnings(
+    dat <- data |>
+      dplyr::mutate(
+        dosenr = cumsum(EVID),
+        DV = as.numeric(DV),
+        TIME = as.numeric(TIME)
+      )
+  )
 
   ## Get first dose number for which more than two samples are available.
   dose_nr <- dat |>

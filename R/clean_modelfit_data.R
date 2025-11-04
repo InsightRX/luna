@@ -22,7 +22,7 @@ clean_modelfit_data <- function(
   if(any(lapply(data, class) != "character")) {
     for(key in seq(names(data))) {
       if(inherits(data[[key]], "character")) {
-        if(key %in% c("TIME", "DATE") && all(c("TIME", "DATE") %in% names(data)) {
+        if(key %in% c("TIME", "DATE") && all(c("TIME", "DATE") %in% names(data))) {
           ## exception for TIME and DATE columns if they appear together,
           ## don't convert to numeric
         } else {

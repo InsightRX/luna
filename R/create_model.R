@@ -294,13 +294,18 @@ create_model <- function(
         verbose = verbose
       )
     }
-    if(verbose) cli::cli_alert_info("Updating model dataset with provided dataset")
+    if(verbose) cli::cli_alert_info("Updating model dataset with provided dataset.")
     mod <- mod |>
       pharmr::unload_dataset() |>
       pharmr::set_dataset(
         path_or_df = data,
         datatype = "nonmem"
       )
+    if(verbose) cli::cli_alert_info("Checking and cleaning dataset.")
+    mod <- clean_modelfit_data(
+      model = mod,
+      try_make_numeric = TRUE
+    )
   }
 
   ## Handle BLQ
