@@ -1,6 +1,8 @@
+$SIZES PD=100
+
 $PROBLEM Base linear model with oral input
 
-$INPUT ID TIME DV MDV EVID SS II AMT 
+$INPUT ID TIME DV MDV EVID SS II AMT
 
 $DATA nm_data.csv IGNORE=@
 
