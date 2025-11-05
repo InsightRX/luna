@@ -37,8 +37,8 @@
 #' @param blq_method method for handling data below the limit of quantification.
 #' Available options are `m1`, `m3`, `m4`, `m5`, `m6`, `m7`, as described
 #' by Beal et al. Default is no handling of BLQ data (`NULL`).
-#' @param lloq (optional) a numeric value specifying the limit of 
-#' quantification for observations. Will be disregarded if an `LLOQ` column is 
+#' @param lloq (optional) a numeric value specifying the limit of
+#' quantification for observations. Will be disregarded if an `LLOQ` column is
 #' in the dataset.
 #' @param auto_init automatically update initial estimates to reasonable values
 #' based on a crude assessment of the PK data. Default is `TRUE`.
@@ -294,13 +294,18 @@ create_model <- function(
         verbose = verbose
       )
     }
-    if(verbose) cli::cli_alert_info("Updating model dataset with provided dataset")
+    if(verbose) cli::cli_alert_info("Updating model dataset with provided dataset.")
     mod <- mod |>
       pharmr::unload_dataset() |>
       pharmr::set_dataset(
         path_or_df = data,
         datatype = "nonmem"
       )
+    if(verbose) cli::cli_alert_info("Checking and cleaning dataset.")
+    mod <- clean_modelfit_data(
+      model = mod,
+      try_make_numeric = TRUE
+    )
   }
 
   ## Handle BLQ
@@ -316,7 +321,7 @@ create_model <- function(
     }
     if(is.null(lloq) && ! "LLOQ" %in% names(data) && blq_method %in% c("m2", "m3", "m4", "m5", "m6")) {
       cli::cli_abort("For {blq_method}-method, need either `lloq` argument or a LLOQ column in the dataset.")
-    } 
+    }
     mod <- pharmr::transform_blq(mod, method = blq_method, lloq = lloq)
   }
 

@@ -55,12 +55,18 @@ get_initial_estimates_from_data <- function(
 #'
 get_initial_estimates_from_individual_data <- function(data, ...) {
 
-  dat <- data |>
-   dplyr::mutate(dosenr = cumsum(EVID))
+  suppressWarnings(
+    dat <- data |>
+      dplyr::mutate(
+        dosenr = cumsum(EVID),
+        DV = as.numeric(DV),
+        TIME = as.numeric(TIME)
+      )
+  )
 
   ## Get first dose number for which more than two samples are available.
   dose_nr <- dat |>
-    dplyr::filter(MDV == 0) |>
+    dplyr::filter(EVID == 0) |>
     dplyr::group_by(dosenr) |>
     dplyr::summarise(n_obs = length(TIME)) |>
     dplyr::filter(n_obs >= 2) |>
@@ -70,7 +76,7 @@ get_initial_estimates_from_individual_data <- function(data, ...) {
   if(length(dose_nr) == 0) {
     ## take first observation for which at least one obs is available
     dose_nr <- dat |>
-      dplyr::filter(MDV == 0) |>
+      dplyr::filter(EVID == 0) |>
       dplyr::group_by(dosenr) |>
       dplyr::summarise(n_obs = length(TIME)) |>
       dplyr::filter(n_obs == 1) |>
@@ -83,7 +89,7 @@ get_initial_estimates_from_individual_data <- function(data, ...) {
 
   ## get peak value. This leads to estimate for V
   tmp <- dat |>
-    dplyr::filter(dosenr == dose_nr & MDV == 0 & DV != 0) |>
+    dplyr::filter(dosenr == dose_nr & EVID == 0 & DV != 0) |>
     dplyr::slice(unique(c(which.max(DV), which.min(DV))))
   dose <- dat |>
     dplyr::filter(dosenr == dose_nr & EVID == 1) |>
