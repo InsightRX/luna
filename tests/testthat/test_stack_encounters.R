@@ -109,3 +109,26 @@ test_that("stack_encounters handles multiple subjects correctly", {
   expect_equal(result$ID, c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2))  # Additional rows for EVID=3 events
 })
 
+test_that("stack_encounter() doesn't error when DV is character", {
+  dat <- structure(
+    list(
+      ID = c(10011001, 10011001, 10011001, 10011001, 10011001),
+      DV = c("<0.05", NA, "<0.05", "<0.05", "<0.05"),
+      TIME = c(0, 0, 0.5, 1, 1.5),
+      EVID = c(0, 1, 0, 0, 0),
+      AMT = c(NA, 100, NA, NA, NA),
+      GROUP = c("A", "A", "A", "A", "A"),
+      AGE = c(60.0027684797834, 60.0027684797834, 60.0027684797834, 60.0027684797834, 60.0027684797834),
+      WEIGHT = c(54.1672683117584, 54.1672683117584, 54.1672683117584, 54.1672683117584, 54.1672683117584)
+    ),
+    row.names = c(NA, -5L), class = c("tbl_df", "tbl", "data.frame")
+  )
+  nm_dat <- stack_encounters(
+    data = dat,
+    verbose = TRUE
+  )
+  expect_equal(
+    names(nm_dat),
+    c("ID", "DV", "TIME", "EVID", "AMT", "GROUP", "AGE", "WEIGHT", "ENC_TIME")
+  )
+})
