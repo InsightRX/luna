@@ -89,19 +89,24 @@ get_initial_estimates_from_individual_data <- function(data, ...) {
 
   ## get peak value. This leads to estimate for V
   tmp <- dat |>
-    dplyr::filter(dosenr == dose_nr & EVID == 0 & DV != 0) |>
+    dplyr::filter(dosenr == dose_nr & EVID == 0 & !is.na(DV) & DV != 0) |>
     dplyr::slice(unique(c(which.max(DV), which.min(DV))))
   dose <- dat |>
     dplyr::filter(dosenr == dose_nr & EVID == 1) |>
     dplyr::pull(AMT)
   est <- c()
-  est$V <- dose / max(tmp$DV)
   if(inherits(tmp$TIME, "numeric") && nrow(tmp) > 1) { # two datapoints at least
     KEL <- (log(max(tmp$DV)) - log(min(tmp$DV))) / abs(diff(tmp$TIME))
+    est$V <- dose / max(tmp$DV, na.rm=TRUE)
     est$CL <- KEL * est$V
   } else { # more crude estimation
-    est$V <- dose / (max(tmp$DV) * 5)
-    est$CL <- est$V / 10
+    if(length(tmp$DV) > 0) {
+      est$V <- dose / (max(tmp$DV, na.rm=TRUE) * 5)
+      est$CL <- est$V / 10
+    } else { # for placebo patients, DV may all be zero or NA so we should not attempt to ballpark V or CL
+      est$V <- NA
+      est$CL <- NA
+    }
   }
 
   unlist(est)

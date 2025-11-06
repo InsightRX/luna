@@ -20,7 +20,7 @@ clean_modelfit_data <- function(
     data <- model$dataset
   }
   if(any(lapply(data, class) != "character")) {
-    for(key in seq(names(data))) {
+    for(key in names(data)) {
       if(inherits(data[[key]], "character")) {
         if(key %in% c("TIME", "DATE") && all(c("TIME", "DATE") %in% names(data))) {
           ## exception for TIME and DATE columns if they appear together,
@@ -31,9 +31,6 @@ clean_modelfit_data <- function(
               cli::cli_alert_warning("Detected character column ({key}), trying to convert to numeric.")
             suppressWarnings({
               data[[key]] <- as.numeric(data[[key]])
-              if(any(is.na(data[[key]]))) {
-                data[[key]][is.na(data[[key]])] <- 0
-              }
             })
           } else {
             if(verbose)
@@ -41,6 +38,10 @@ clean_modelfit_data <- function(
             data[[key]] <- NULL
           }
         }
+      }
+      # make sure all NAs are set to 0
+      if(any(is.na(data[[key]]))) {
+        data[[key]][is.na(data[[key]])] <- 0
       }
     }
 
