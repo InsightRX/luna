@@ -315,11 +315,11 @@ create_model <- function(
     if(! blq_method %in% allowed_blq) {
       cli::cli_abort("`blq_method` should be one of {allowed_blq}, or `NULL`.")
     }
-    if(!is.null(lloq) && "LLOQ" %in% names(data)) {
+    if(!is.null(lloq) && "LLOQ" %in% names(mod$dataset)) {
       lloq <- NULL
       cli::cli_alert_info("`lloq` argument cannot be used when `LLOQ` column exists in dataset. Ignoring argument.")
     }
-    if(is.null(lloq) && ! "LLOQ" %in% names(data) && blq_method %in% c("m2", "m3", "m4", "m5", "m6")) {
+    if(is.null(lloq) && ! "LLOQ" %in% names(mod$dataset) && blq_method %in% c("m2", "m3", "m4", "m5", "m6")) {
       cli::cli_abort("For {blq_method}-method, need either `lloq` argument or a LLOQ column in the dataset.")
     }
     mod <- pharmr::transform_blq(mod, method = blq_method, lloq = lloq)
