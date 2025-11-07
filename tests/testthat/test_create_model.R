@@ -726,3 +726,26 @@ test_that("create_model with scaling works", {
   expect_true(stringr::str_detect(mod_scale3$code, "\\$THETA  \\(0,133.0\\)"))
 
 })
+
+test_that("create_model BLQ with LLOQ coded in DV works", {
+  # Create minimal test dataset
+  test_data <- data.frame(
+    ID = 1,
+    TIME = c(0, 1, 2),
+    DV = c(0, 10, "<3"),
+    AMT = c(100, 0, 0),
+    CMT = 1,
+    EVID = c(1, 0, 0),
+    MDV = c(1, 0, 0),
+    BW = 70
+  )
+
+  # Test basic oral model creation
+  mod_oral <- create_model(
+    route = "oral",
+    data = test_data,
+    verbose = FALSE
+  )
+  expect_s3_class(mod_oral, "pharmpy.model.external.nonmem.model.Model")
+  expect_equal(mod_oral$dataset$LLOQ, c(0, 0, 3))
+})
