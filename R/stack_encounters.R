@@ -42,6 +42,11 @@ stack_encounters <- function(
       evid3_events <- tmp |>
         dplyr::filter(is_decreasing) |>
         dplyr::mutate(TIME_COLUMN = enct_start_time, EVID = 3, MDV = 1, DV = 0, AMT = 0, idx = idx - 0.5) # make sure to squeeze in, and not make other changes to dataset order
+      for(key in names(tmp)) { # revert back auto-converted columns to character
+        if(inherits(tmp[[key]], "character")) {
+          class(evid3_events[[key]]) <- "character"
+        }
+      }
       comb <- dplyr::bind_rows(
         tmp |>
           dplyr::mutate(TIME_COLUMN = TIME_COLUMN + ifelse(is.na(enct_start_time), 0, enct_start_time)),
