@@ -37,8 +37,8 @@ clean_modelfit_data <- function(
                   cli::cli_alert_warning("Detected `<` in DV column, adding LLOQ column to handle BLOQ data.")
                 data <- data |>
                   dplyr::mutate(DV = as.numeric(stringr::str_replace_all(DV, "\\<", ""))) |>
-                  dplyr::mutate(LLOQ = if_else(idx, DV, 0)) |>
-                  dplyr::mutate(DV = if_else(idx, 0, DV))
+                  dplyr::mutate(LLOQ = dplyr::if_else(idx, DV, 0)) |>
+                  dplyr::mutate(DV = dplyr::if_else(idx, 0, DV))
               }
               tmp_dv <- as.numeric(data$DV)
             } else {
