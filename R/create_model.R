@@ -384,7 +384,10 @@ set_residual_error <- function(mod, ruv) {
   } else if (ruv == "combined") {
     mod <- pharmr::set_combined_error_model(mod)
   } else if (ruv == "ltbs") {
-    mod <- pharmr::set_proportional_error_model(mod, data_trans="log(Y)")
+    # Pharmpy: first need to make additive, then set to proportional + log-transf.
+    mod <- mod |>
+      pharmr::set_additive_error_model() |>
+      pharmr::set_proportional_error_model(data_trans="log(Y)")
   } else {
     cli::cli_abort("Requested error model structure not recognized.")
   }

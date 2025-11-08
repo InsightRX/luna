@@ -61,6 +61,20 @@ clean_modelfit_data <- function(
       }
     }
 
+    ## Check if model is using log-transform-both-sides
+    ## If so, check if we need to use LNDV instead of DV
+    ltbs <- is_ltbs_model(model)
+    if(ltbs) {
+      if("LNDV" %in% names(data)) {
+        cli::cli_alert_info("Log-transform both sides error model, and detected LNDV column in dataset. Setting LNDV column as dependent variable instead of current `DV` column (will be retained as `ODV`).")
+        data <- data |>
+          mutate(ODV = DV) |>
+          mutate(DV = LNDV)
+      } else {
+        cli::cli_alert_warning("Log-transform both sides error model, but no `LNDV` column. Assuming `DV` is log-transformed.")
+      }
+    }
+
     if(tool != "nonmem") { ## nlmixr2 requires lower-case `cmt`
       data <- data |>
         dplyr::rename(cmt = CMT)
@@ -75,7 +89,8 @@ clean_modelfit_data <- function(
       model,
       path_or_df = dataset_file,
       datatype = "nonmem"
-    )
+    ) |>
+      pharmr::load_dataset()
   }
   model
 }
