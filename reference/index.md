@@ -1,0 +1,487 @@
+# Package index
+
+## All functions
+
+- [`add_covariates_to_model()`](https://insightrx.github.io/luna/reference/add_covariates_to_model.md)
+  : Wrapper function to add covariates to a pharmpy model
+
+- [`add_default_output_tables()`](https://insightrx.github.io/luna/reference/add_default_output_tables.md)
+  : Add one or more default output tables to a model, if they don't
+  already exist in the model.
+
+- [`add_table_to_model()`](https://insightrx.github.io/luna/reference/add_table_to_model.md)
+  : Add new \$TABLE record to output variables
+
+- [`attach_fit_info()`](https://insightrx.github.io/luna/reference/attach_fit_info.md)
+  : Attach fit info and tables to a fit object, e.g. from model fit or
+  Pharmpy grid search final results
+
+- [`calc_condition_number()`](https://insightrx.github.io/luna/reference/calc_condition_number.md)
+  : Calculate the condition number given a matrix
+
+- [`calc_pk_variables()`](https://insightrx.github.io/luna/reference/calc_pk_variables.md)
+  : Calculate some basic PK variables from simulated or observed data
+
+- [`call_nmfe()`](https://insightrx.github.io/luna/reference/call_nmfe.md)
+  : Call nmfe
+
+- [`call_pharmpy_fit()`](https://insightrx.github.io/luna/reference/call_pharmpy_fit.md)
+  : Run model with pharmpy
+
+- [`call_pharmpy_tool()`](https://insightrx.github.io/luna/reference/call_pharmpy_tool.md)
+  :
+
+  Generic function for running a pharmpy tool, like bootstrap, or
+  modelsearch. A separate function is available for `fit()`
+
+- [`call_psn()`](https://insightrx.github.io/luna/reference/call_psn.md)
+  : Call PsN
+
+- [`change_nonmem_dataset()`](https://insightrx.github.io/luna/reference/change_nonmem_dataset.md)
+  : Change \$DATA in NONMEM model code
+
+- [`check_llm_key()`](https://insightrx.github.io/luna/reference/check_llm_key.md)
+  : Check presence of LLM API key
+
+- [`clean_modelfit_data()`](https://insightrx.github.io/luna/reference/clean_modelfit_data.md)
+  : Clean / check the dataset before passing to model fitting tool
+
+- [`clean_nonmem_folder()`](https://insightrx.github.io/luna/reference/clean_nonmem_folder.md)
+  : Remove temporary files from NONMEM run
+
+- [`clean_pharmpy_runfolders()`](https://insightrx.github.io/luna/reference/clean_pharmpy_runfolders.md)
+  : Clean pharmpy run folders like modelfit1 etc
+
+- [`combine_info_columns()`](https://insightrx.github.io/luna/reference/combine_info_columns.md)
+  : Combine columns with run info into a data.frame and make sure that
+  rows match (e.g. parameters)
+
+- [`combine_regimens()`](https://insightrx.github.io/luna/reference/combine_regimens.md)
+  :
+
+  Combine several regimens into a single data.frame, which can be passed
+  into
+  [`luna::run_sim()`](https://insightrx.github.io/luna/reference/run_sim.md)
+  as `regimen` argument.
+
+- [`compare_nlme_fit()`](https://insightrx.github.io/luna/reference/compare_nlme_fit.md)
+  : Compare fit of two or more NLME fits
+
+- [`create_cache()`](https://insightrx.github.io/luna/reference/create_cache.md)
+  : Create a cache environment to store settings for project and system
+
+- [`create_covariate_search_space()`](https://insightrx.github.io/luna/reference/create_covariate_search_space.md)
+  :
+
+  Create covariate search space definition for pharmpy `covsearch`
+
+- [`create_dosing_records()`](https://insightrx.github.io/luna/reference/create_dosing_records.md)
+  : Create dosing records, given a specified regimen as a data frame
+  with potentially multiple regimens and varying dosing times / doses
+
+- [`create_model()`](https://insightrx.github.io/luna/reference/create_model.md)
+  : Create model
+
+- [`create_model_nlmixr()`](https://insightrx.github.io/luna/reference/create_model_nlmixr.md)
+  : Temporary function that returns a hardcoded nlmixr2 model
+
+- [`create_modelfit_info_table()`](https://insightrx.github.io/luna/reference/create_modelfit_info_table.md)
+  : Create a data.frame with basic model fit info
+
+- [`create_modelfit_parameter_table()`](https://insightrx.github.io/luna/reference/create_modelfit_parameter_table.md)
+  : Create a data.frame with parameter estimates
+
+- [`create_obs_records()`](https://insightrx.github.io/luna/reference/create_obs_records.md)
+  : Create observation records, given a specified t_obs vector
+
+- [`create_pharmpy_model_from_list()`](https://insightrx.github.io/luna/reference/create_pharmpy_model_from_list.md)
+  : Create a model object from the model code and dataset stored as a
+  list object.
+
+- [`create_pkmodel_search_space()`](https://insightrx.github.io/luna/reference/create_pkmodel_search_space.md)
+  :
+
+  Create PK mmodel search space definition for pharmpy `modelsearch`
+
+- [`create_regimen()`](https://insightrx.github.io/luna/reference/create_regimen.md)
+  : Create a single regimen
+
+- [`create_run_folder()`](https://insightrx.github.io/luna/reference/create_run_folder.md)
+  : Create a folder for a run
+
+- [`create_vpc_data()`](https://insightrx.github.io/luna/reference/create_vpc_data.md)
+  : Run a simulation based on supplied parameters estimates, and combine
+  into proper format for VPC
+
+- [`detect_nmfe_version()`](https://insightrx.github.io/luna/reference/detect_nmfe_version.md)
+  : get nmfe file name from a NONMEM installation folder
+
+- [`estimation_options_defaults`](https://insightrx.github.io/luna/reference/estimation_options_defaults.md)
+  : List of default options for estimation method.
+
+- [`extract()`](https://insightrx.github.io/luna/reference/extract.md) :
+  Helper function for read_ini
+
+- [`find_file_with_fallback()`](https://insightrx.github.io/luna/reference/find_file_with_fallback.md)
+  : Find a file(s) from a model run with a potential fallback
+
+- [`fit_model()`](https://insightrx.github.io/luna/reference/fit_model.md)
+  : Fit model using NONMEM or nlmixr2
+
+- [`fit_model_nlmixr()`](https://insightrx.github.io/luna/reference/fit_model_nlmixr.md)
+  : Fit model using nlmixr2
+
+- [`fit_model_nonmem()`](https://insightrx.github.io/luna/reference/fit_model_nonmem.md)
+  : Fit model using NONMEM
+
+- [`get_advan()`](https://insightrx.github.io/luna/reference/get_advan.md)
+  : Get ADVAN number for model
+
+- [`get_all_results()`](https://insightrx.github.io/luna/reference/get_all_results.md)
+  : helper function to extract all fit results based on vector of model
+  files
+
+- [`get_compartment_scale()`](https://insightrx.github.io/luna/reference/get_compartment_scale.md)
+  : Get compartment scale definition
+
+- [`get_condition_number_for_fit()`](https://insightrx.github.io/luna/reference/get_condition_number_for_fit.md)
+  : Calculate the condition number for a model fit object Performs some
+  safety checks
+
+- [`get_cov_matrix()`](https://insightrx.github.io/luna/reference/get_cov_matrix.md)
+  : Create a covariance block matrix
+
+- [`get_defined_pk_parameters()`](https://insightrx.github.io/luna/reference/get_defined_pk_parameters.md)
+  : Get all parameters that are defined (from a predefined vector of
+  possible parameters)
+
+- [`get_estimation_options()`](https://insightrx.github.io/luna/reference/get_estimation_options.md)
+  : Helper function to combine default estimation options with
+  user-specified, and ensure correct format.
+
+- [`get_final_results_from_search()`](https://insightrx.github.io/luna/reference/get_final_results_from_search.md)
+  : For a Pharmpy grid search, fetch the fit info and attach to object
+
+- [`get_fit_info()`](https://insightrx.github.io/luna/reference/get_fit_info.md)
+  : Get fit info from NONMEM run
+
+- [`get_flag_from_config()`](https://insightrx.github.io/luna/reference/get_flag_from_config.md)
+  : Get a binary value from config, based on path
+
+- [`get_initial_estimates_from_data()`](https://insightrx.github.io/luna/reference/get_initial_estimates_from_data.md)
+  : Get a very crude estimate for V to serve as initial estimate for CL
+  and V, without performing an NCA. The calculation is based on the
+  assumption that often in clinical trial data, there is at least a peak
+  and a trough (and likely other samples) taken, hence it's possible to
+  get a crude estimate for CL and V from that. For 2-compartment models
+  we just set Q and V to half and twice the size of CL and V, which is
+  often a good starting point. In most scenarios this is sufficiently
+  close to the final estimates that estimation methods will be able to
+  find the global minimum.
+
+- [`get_initial_estimates_from_individual_data()`](https://insightrx.github.io/luna/reference/get_initial_estimates_from_individual_data.md)
+  : Core function to get parameter estimates from individual data
+
+- [`get_luna_config()`](https://insightrx.github.io/luna/reference/get_luna_config.md)
+  : Get luna config, either from global config file, or from project
+  config
+
+- [`get_new_run_number()`](https://insightrx.github.io/luna/reference/get_new_run_number.md)
+  : Get new run number for model fit
+
+- [`get_nmfe_location_for_run()`](https://insightrx.github.io/luna/reference/get_nmfe_location_for_run.md)
+  : Helper function to determine nmfe location from various sources The
+  order is as follows:
+
+- [`get_nmfe_output()`](https://insightrx.github.io/luna/reference/get_nmfe_output.md)
+  : Get output from NMFE
+
+- [`get_nmtran_from_nmfe()`](https://insightrx.github.io/luna/reference/get_nmtran_from_nmfe.md)
+  : Get the location of NM-TRAN based on the location of nmfe It's
+  usually up one folder from nmfe, then in tr/NMTRAN.exe
+
+- [`get_obs_compartment()`](https://insightrx.github.io/luna/reference/get_obs_compartment.md)
+  : Get observation compartment number from model
+
+- [`get_ode_size()`](https://insightrx.github.io/luna/reference/get_ode_size.md)
+  : Get size of ODE system in \$DES
+
+- [`get_parameters_with_iiv()`](https://insightrx.github.io/luna/reference/get_parameters_with_iiv.md)
+  : Get a character vector with all parameters on which IIV is present
+
+- [`get_pharmpy_conf()`](https://insightrx.github.io/luna/reference/get_pharmpy_conf.md)
+  : Get pharmpy configuration, as an R object (list)
+
+- [`get_pharmpy_runfolders()`](https://insightrx.github.io/luna/reference/get_pharmpy_runfolders.md)
+  : Find last pharmpy run folder
+
+- [`get_random_id()`](https://insightrx.github.io/luna/reference/get_random_id.md)
+  :
+
+  Get a random sequence of letters and numbers of size `n`
+
+- [`get_route_from_data()`](https://insightrx.github.io/luna/reference/get_route_from_data.md)
+  : Get route from data. If dose and observation events all happen in
+  the same compartment, then assume IV administration, else oral
+  absorption (or sc, im, etc).
+
+- [`get_shrinkage_summary()`](https://insightrx.github.io/luna/reference/get_shrinkage_summary.md)
+  : Parses a NONMEM output file and extracts shrinkage
+
+- [`get_shrinkage_values()`](https://insightrx.github.io/luna/reference/get_shrinkage_values.md)
+  : Get shrinkage values from a single line in NONMEM output
+
+- [`get_status()`](https://insightrx.github.io/luna/reference/get_status.md)
+  : Get the status of a run
+
+- [`get_table_for_plots()`](https://insightrx.github.io/luna/reference/get_table_for_plots.md)
+  : Get table for basic GOF plots based on run id
+
+- [`get_tables_from_fit()`](https://insightrx.github.io/luna/reference/get_tables_from_fit.md)
+  : Read tables created in model run and return as a list of data.frames
+
+- [`get_tables_from_folder()`](https://insightrx.github.io/luna/reference/get_tables_from_folder.md)
+  : Get tables from a folder, by table_names
+
+- [`get_tables_in_model_code()`](https://insightrx.github.io/luna/reference/get_tables_in_model_code.md)
+  : extract FILE names from \$TABLE using simple regex. For some reason
+  the tables are not (yet?) available in pharmpy
+
+- [`get_time_ago()`](https://insightrx.github.io/luna/reference/get_time_ago.md)
+  : Get time to now since a given date, in character
+
+- [`get_time_last_updated_file()`](https://insightrx.github.io/luna/reference/get_time_last_updated_file.md)
+  : Get date/time stamp for last update to file
+
+- [`get_time_last_updated_folder()`](https://insightrx.github.io/luna/reference/get_time_last_updated_folder.md)
+  : Get a timestamp for when the last update was made to any file in a
+  folder Will look only 1 level deep.
+
+- [`get_tool_from_model()`](https://insightrx.github.io/luna/reference/get_tool_from_model.md)
+  : Get estimation/simulation engine from pharmpy model
+
+- [`get_tools_info()`](https://insightrx.github.io/luna/reference/get_tools_info.md)
+  : For a given run, get info on what folders are available for selected
+  Pharmpy or PsN tools
+
+- [`ifelse0()`](https://insightrx.github.io/luna/reference/ifelse0.md) :
+  ifelse function but then based on whether value is NULL or not
+
+- [`insert_entry()`](https://insightrx.github.io/luna/reference/insert_entry.md)
+  : The reverse of pluck_entry, insert_entry() inserts an entry into an
+  unnamded outer list, based on an element in the inner list.
+
+- [`is_ltbs_model()`](https://insightrx.github.io/luna/reference/is_ltbs_model.md)
+  : Is the residual error model "log-transform both-sides"?
+
+- [`is_luna_cache_available()`](https://insightrx.github.io/luna/reference/is_luna_cache_available.md)
+  : Check if luna cache is available / loaded
+
+- [`is_maxeval_zero()`](https://insightrx.github.io/luna/reference/is_maxeval_zero.md)
+  : Does the last estimation method in a model have maxeval=0?
+
+- [`is_run_as_job()`](https://insightrx.github.io/luna/reference/is_run_as_job.md)
+  : Checks config if should run as job
+
+- [`log_add()`](https://insightrx.github.io/luna/reference/log_add.md) :
+  Add event to log
+
+- [`log_get_last_event()`](https://insightrx.github.io/luna/reference/log_get_last_event.md)
+  : Get last event from log, as list object
+
+- [`luna_cache_get()`](https://insightrx.github.io/luna/reference/luna_cache_get.md)
+  : Get element from active project Just a convenience wrapper with
+  error checking
+
+- [`luna_check()`](https://insightrx.github.io/luna/reference/luna_check.md)
+  : Syntax-check a NONMEM model
+
+- [`luna_clone()`](https://insightrx.github.io/luna/reference/luna_clone.md)
+  : Clone model
+
+- [`luna_compare()`](https://insightrx.github.io/luna/reference/luna_compare.md)
+  : Compare basic run info for 2 or more model runs
+
+- [`luna_config()`](https://insightrx.github.io/luna/reference/luna_config.md)
+  : Edit luna config file in editor, e.g. RStudio
+
+- [`luna_dataset()`](https://insightrx.github.io/luna/reference/luna_dataset.md)
+  : Get data from a model
+
+- [`luna_diff()`](https://insightrx.github.io/luna/reference/luna_diff.md)
+  : Show a diff between two models
+
+- [`luna_edit()`](https://insightrx.github.io/luna/reference/luna_edit.md)
+  : Edit model in editor, e.g. RStudio
+
+- [`luna_edit_project()`](https://insightrx.github.io/luna/reference/luna_edit_project.md)
+  : Edit luna config file in editor, e.g. RStudio
+
+- [`luna_gof()`](https://insightrx.github.io/luna/reference/luna_gof.md)
+  : Creates a ggplot2 panel object with basic goodness of fit plots
+
+- [`luna_help()`](https://insightrx.github.io/luna/reference/luna_help.md)
+  : Ask AI agent to help
+
+- [`luna_ind()`](https://insightrx.github.io/luna/reference/luna_ind.md)
+  : Creates a ggplot2 plot with predictions and observations, split by
+  subject
+
+- [`luna_info()`](https://insightrx.github.io/luna/reference/luna_info.md)
+  : Show info for a model run
+
+- [`luna_list()`](https://insightrx.github.io/luna/reference/luna_list.md)
+  : List runs in current project
+
+- [`luna_load_project()`](https://insightrx.github.io/luna/reference/luna_load_project.md)
+  : Load a project from yaml and gather results. Project is then
+  stored/updated in .luna_cache
+
+- [`luna_log()`](https://insightrx.github.io/luna/reference/luna_log.md)
+  : Show a log of events (actions and errors)
+
+- [`luna_new_project()`](https://insightrx.github.io/luna/reference/luna_new_project.md)
+  : Create a new project folder with template YAML project file
+
+- [`luna_note()`](https://insightrx.github.io/luna/reference/luna_note.md)
+  : Annotate a run Either add a note or clear notes from a run
+
+- [`luna_project_templates()`](https://insightrx.github.io/luna/reference/luna_project_templates.md)
+  : Show available templates
+
+- [`luna_run()`](https://insightrx.github.io/luna/reference/luna_run.md)
+  : Run a NONMEM model
+
+- [`luna_sync()`](https://insightrx.github.io/luna/reference/luna_sync.md)
+  : Synchronize (re-load) luna project
+
+- [`luna_tables()`](https://insightrx.github.io/luna/reference/luna_tables.md)
+  : Get tables from a model / run
+
+- [`luna_tag()`](https://insightrx.github.io/luna/reference/luna_tag.md)
+  : Add a tag to a run Either add a tag or clear tags from a run
+
+- [`luna_tool()`](https://insightrx.github.io/luna/reference/luna_tool.md)
+  : Run external tools (e.g. diagnostics) on models or run outputs This
+  can be used e.g. for bootstraps and VPCs. The function is implemented
+  in a modular way so that it can be easily extended.
+
+- [`luna_xpose()`](https://insightrx.github.io/luna/reference/luna_xpose.md)
+  : Read tables for a model and parse into an Xpose database
+
+- [`new_project_from_template()`](https://insightrx.github.io/luna/reference/new_project_from_template.md)
+  : Create a new project object based on a predefined template
+
+- [`nm_read_model()`](https://insightrx.github.io/luna/reference/nm_read_model.md)
+  : Parse NONMEM model file into a list containing blocks of code
+
+- [`nm_save_dataset()`](https://insightrx.github.io/luna/reference/nm_save_dataset.md)
+  : Save an R data.frame to a NONMEM-style dataset as CSV
+
+- [`nm_save_model()`](https://insightrx.github.io/luna/reference/nm_save_model.md)
+  : Write a NONMEM model object to file
+
+- [`nm_update_dataset()`](https://insightrx.github.io/luna/reference/nm_update_dataset.md)
+  : Update \$DATA in NONMEM model with new dataset
+
+- [`parse_psn_args()`](https://insightrx.github.io/luna/reference/parse_psn_args.md)
+  : Parse tool options specified in YAML into PsN commandline args
+
+- [`pluck_entry()`](https://insightrx.github.io/luna/reference/pluck_entry.md)
+  : Pluck an inner list element from an unnamed outer list, where an
+  element matches (default name is "id") a specific value. Analogue to
+  \_.pluck() in JS/underscore
+
+- [`prepare_run_folder()`](https://insightrx.github.io/luna/reference/prepare_run_folder.md)
+  : Create a folder for running model, with the model and dataset
+
+- [`print(`*`<luna.run_table>`*`)`](https://insightrx.github.io/luna/reference/print.luna.run_table.md)
+  : Prints a list of models / runs in project
+
+- [`print(`*`<pharmpy.workflows.results.ModelfitResults>`*`)`](https://insightrx.github.io/luna/reference/print.pharmpy.workflows.results.ModelfitResults.md)
+  : Print function that provides basic run information for a pharmpy
+  modelfit
+
+- [`print_nmfe_output()`](https://insightrx.github.io/luna/reference/print_nmfe_output.md)
+  : Print nmfe output (stdout and stderr) from a run folder
+
+- [`read_ini()`](https://insightrx.github.io/luna/reference/read_ini.md)
+  : Read ini file core function
+
+- [`read_table_nm()`](https://insightrx.github.io/luna/reference/read_table_nm.md)
+  : NONMEM output table import function
+
+- [`read_yaml_safe()`](https://insightrx.github.io/luna/reference/read_yaml_safe.md)
+  : Safe way to read YAML
+
+- [`remove_data_section()`](https://insightrx.github.io/luna/reference/remove_data_section.md)
+  : Remove \$DATA from a NONMEM model
+
+- [`remove_table_from_model()`](https://insightrx.github.io/luna/reference/remove_table_from_model.md)
+  : Remove all \$TABLE records from a model
+
+- [`remove_table_sections()`](https://insightrx.github.io/luna/reference/remove_table_sections.md)
+  : Function to remove all \$TABLE sections
+
+- [`remove_tables_from_model()`](https://insightrx.github.io/luna/reference/remove_tables_from_model.md)
+  : Remove all \$TABLE records from a model
+
+- [`replace_list_elements()`](https://insightrx.github.io/luna/reference/replace_list_elements.md)
+  : Replace elements in a list, based on elements in a second list
+
+- [`run_nlme()`](https://insightrx.github.io/luna/reference/run_nlme.md)
+  : Run model in NONMEM
+
+- [`run_psn()`](https://insightrx.github.io/luna/reference/run_psn.md) :
+  Run a PsN tool
+
+- [`run_sim()`](https://insightrx.github.io/luna/reference/run_sim.md) :
+  Run simulations
+
+- [`runs_as_table()`](https://insightrx.github.io/luna/reference/runs_as_table.md)
+  : Convert runs in a project object to a data.frame
+
+- [`save_model_code()`](https://insightrx.github.io/luna/reference/save_model_code.md)
+  : Save model code to a markdown file
+
+- [`save_project()`](https://insightrx.github.io/luna/reference/save_project.md)
+  : Save a project to a YAML file
+
+- [`set_compartment_scale()`](https://insightrx.github.io/luna/reference/set_compartment_scale.md)
+  : Set scaling for certain compartments, e.g. dose and observation
+  compartments.
+
+- [`set_covariance()`](https://insightrx.github.io/luna/reference/set_covariance.md)
+  : Function to set covariance between parameters in the omega block
+
+- [`set_iiv()`](https://insightrx.github.io/luna/reference/set_iiv.md) :
+  Set inter-individual variability on parameters
+
+- [`set_residual_error()`](https://insightrx.github.io/luna/reference/set_residual_error.md)
+  : Logic to set the residual error model structure for the model
+
+- [`stack_encounters()`](https://insightrx.github.io/luna/reference/stack_encounters.md)
+  : Stack encounters when data from multiple encounters is available for
+  the same ID, and TIME is starting at 0 for each encounter.
+
+- [`truncate_columns()`](https://insightrx.github.io/luna/reference/truncate_columns.md)
+  : Apply column width truncation based on console width and relative
+  width specs
+
+- [`update_cache()`](https://insightrx.github.io/luna/reference/update_cache.md)
+  : Update luna project cache
+
+- [`update_estimation_method()`](https://insightrx.github.io/luna/reference/update_estimation_method.md)
+  : Wrapper around pharmr's functions to set/add estimation methods
+
+- [`update_parameters()`](https://insightrx.github.io/luna/reference/update_parameters.md)
+  : Update parameter estimates (and fix)
+
+- [`update_pk_tables()`](https://insightrx.github.io/luna/reference/update_pk_tables.md)
+  : Updates PK parameter tables (patab)
+
+- [`validate_id()`](https://insightrx.github.io/luna/reference/validate_id.md)
+  : Validate id
+
+- [`validate_model()`](https://insightrx.github.io/luna/reference/validate_model.md)
+  : Validate the specified model, ensure it's valid Pharmpy model
