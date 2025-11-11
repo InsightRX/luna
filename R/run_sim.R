@@ -172,6 +172,11 @@ run_sim <- function(
         dplyr::everything(),
         .direction = "downup"
       )
+    if(is.null(t_obs)) {
+      ## TODO: could be made somewhat smarter, based on e.g. original dataset or
+      t_max <- max(sim_data$TIME) + round(diff(tail(sim_data$TIME, 2)))
+      t_obs <- seq(0, t_max, 4)
+    }
   } else {
     sim_data[[".regimen"]] <- "original regimens"
   }
