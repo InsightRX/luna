@@ -205,13 +205,6 @@ run_nlme <- function(
     clean_nonmem_folder(obj$fit_folder)
   }
 
-  ## Read results using Pharmpy and return
-  if(verbose) cli::cli_process_start("Parsing results from run")
-  fit <- pharmr::read_modelfit_results(
-    file.path(obj$fit_folder, obj$model_file)
-  )
-  if(verbose) cli::cli_process_done()
-
   ## Check if sim / eval model only
   is_sim_model <- pharmr::is_simulation_model(model)
   is_eval_model <- is_maxeval_zero(model)
@@ -220,6 +213,12 @@ run_nlme <- function(
       ## just return empty list for now
     )
   } else {
+    ## Read results using Pharmpy and return
+    if(verbose) cli::cli_process_start("Parsing results from run")
+    fit <- pharmr::read_modelfit_results(
+      file.path(obj$fit_folder, obj$model_file)
+    )
+    if(verbose) cli::cli_process_done()
     if(is.null(fit)) {
       if(verbose) {
         if(!console) {
