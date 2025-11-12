@@ -68,8 +68,8 @@ clean_modelfit_data <- function(
       if("LNDV" %in% names(data)) {
         cli::cli_alert_info("Log-transform both sides error model, and detected LNDV column in dataset. Setting LNDV column as dependent variable instead of current `DV` column (will be retained as `ODV`).")
         data <- data |>
-          mutate(ODV = DV) |>
-          mutate(DV = LNDV)
+          dplyr::mutate(ODV = DV) |>
+          dplyr::mutate(DV = LNDV)
       } else {
         cli::cli_alert_warning("Log-transform both sides error model, but no `LNDV` column. Assuming `DV` is log-transformed.")
       }

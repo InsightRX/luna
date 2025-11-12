@@ -474,6 +474,29 @@ test_that("RUV settings work as expected", {
   )
 })
 
+test_that("LTBS model is handled, and LNDV is set to DV", {
+  nm_data <- data.frame(
+    ID = c(1, 1,1,1,1),
+    AMT = c(100, 0,0,0,0),
+    TIME = c(0, 1,2,3,4),
+    DV = c(0, 1,2,3,4),
+    LNDV = c(0, -2,-1,0,1),
+    EVID = c(1, 0, 0, 0, 0),
+    CMT = c(1, 1,1,1,1)
+  )
+  mod <- create_model(
+    ruv = "ltbs",
+    data = nm_data
+  )
+  expect_equal(
+    mod$dataset$DV,
+    mod$dataset$LNDV
+  )
+  expect_true(
+    "ODV" %in% names(mod$dataset)
+  )
+})
+
 test_that("can create mu-referenced model", {
   mod <- create_model(mu_reference = TRUE)
   expect_s3_class(mod, "pharmpy.model.external.nonmem.model.Model")
