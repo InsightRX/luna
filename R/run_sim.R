@@ -26,6 +26,10 @@
 #' iterations.
 #' @param add_pk_variables calculate basic PK variables that can be extracted
 #' in post-processing, such as CMAX_OBS, TMAX_OBS, AUC_SS.
+#' @param update_table should any existing $TABLE records be removed, and a new
+#'  `simtab` be created? This is default. If `FALSE`, it will leave $TABLEs as
+#' specifed in the model. However, in the return object, only the first table
+#' is returned back. If `FALSE`, the `add_pk_variables` argument will be ignored.
 #'
 #' @returns data.frame with simulation results
 #'
@@ -53,6 +57,7 @@ run_sim <- function(
     variables = c("ID", "TIME", "DV", "EVID", "IPRED", "PRED"),
     add_pk_variables = TRUE,
     output_file = "simtab",
+    update_table = TRUE,
     seed = 12345,
     verbose = TRUE
 ) {
@@ -219,12 +224,16 @@ run_sim <- function(
       pharmr::set_dataset(sim_data_regimen)
 
     ## Add tables
-    if(verbose) cli::cli_alert_info("Updating table record")
-    parameter_names <- get_defined_pk_parameters(sim_model)
-    variables <- unique(c(variables, parameter_names, names(covariates)))
-    sim_model <- sim_model |>
-      remove_tables_from_model() |>
-      add_table_to_model(variables, file = output_file)
+    if(update_table) {
+      if(verbose) cli::cli_alert_info("Updating table record(s)")
+      parameter_names <- get_defined_pk_parameters(sim_model)
+      variables <- unique(c(variables, parameter_names, names(covariates)))
+      sim_model <- sim_model |>
+        remove_tables_from_model() |>
+        add_table_to_model(variables, file = output_file)
+    } else {
+      if(verbose) cli::cli_alert_info("Using existing table record(s)")
+    }
 
     ## Run simulation
     if(verbose) cli::cli_alert_info("Running simulation ({reg_label})")
@@ -236,18 +245,20 @@ run_sim <- function(
     )
 
     ## post-processing
-    if(add_pk_variables) {
-      if(!is.null(regimen_df)) { # regimen needed for calculation of AUCss
-        attr(results, "tables")[[output_file]] <- calc_pk_variables(
-          data = attr(results, "tables")[[output_file]],
-          regimen = regimen_df |>
-            dplyr::filter(regimen == reg_label)
-        )
-      } else {
-        attr(results, "tables")[[output_file]] <- calc_pk_variables(
-          data = attr(results, "tables")[[output_file]],
-          regimen = NULL
-        )
+    if(update_table) {
+      if(add_pk_variables) {
+        if(!is.null(regimen_df)) { # regimen needed for calculation of AUCss
+          attr(results, "tables")[[output_file]] <- calc_pk_variables(
+            data = attr(results, "tables")[[output_file]],
+            regimen = regimen_df |>
+              dplyr::filter(regimen == reg_label)
+          )
+        } else {
+          attr(results, "tables")[[output_file]] <- calc_pk_variables(
+            data = attr(results, "tables")[[output_file]],
+            regimen = NULL
+          )
+        }
       }
     }
 
@@ -259,9 +270,11 @@ run_sim <- function(
 
   ## combine back down to single data.frame again
   out <- lapply(unique_regimens, function(reg_label) {
-    if(!is.null(comb[[reg_label]]$simtab)) {
+    table_names <- names(comb[[reg_label]])
+    simtab <- table_names[1]
+    if(!is.null(simtab) && !is.null(comb[[reg_label]][[simtab]])) {
       return(
-        comb[[reg_label]]$simtab |>
+        comb[[reg_label]][[simtab]] |>
           dplyr::mutate(regimen_label = reg_label)
       )
     } else {
