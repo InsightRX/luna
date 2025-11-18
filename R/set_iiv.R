@@ -187,11 +187,6 @@ get_defined_pk_parameters <- function(
   pars
 }
 
-translate_parameters <- function(par) {
-  map <- list(V = "V1", Q = "QP1")
-  unlist(map[par])
-}
-
 #' Function to set covariance between parameters in the omega block
 #'
 #' One caveat is that it will remove any existing covariances, since currently
@@ -207,6 +202,8 @@ translate_parameters <- function(par) {
 #' @export
 set_covariance <- function(model, covariance) {
   omegas <- pharmr::get_omegas(model)
+  advan <- get_advan(model)
+  params <- pharmr::get_pk_parameters(model)
   om_names <- omegas$names |>
     stringr::str_replace_all("IIV_", "")
   om_values <- lapply(omegas$inits, "sqrt") |>
@@ -218,9 +215,12 @@ set_covariance <- function(model, covariance) {
       cov_terms <- c(cov_terms, stringr::str_split(key, "\\~")[[1]])
     }
   }
-  if(! all(cov_terms %in% unique(c(om_names, translate_parameters(om_names))))) {
+  om_safe_names <- lapply(om_names, find_pk_parameter, model) |>
+    as.character()
+  if(! all(cov_terms %in% om_safe_names)) {
     cli::cli_abort("Cannot add covariance: no IIV is present on one or more of the parameters between which covariance is requested.")
   }
+  names(om_values)[1:length(om_safe_names)] <- om_safe_names
   new_model <- set_iiv(
     model,
     iiv = om_values,
