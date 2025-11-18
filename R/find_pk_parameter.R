@@ -26,5 +26,11 @@ find_pk_parameter <- function(parameter, model) {
   } else {
     map <- list("V" = "V2", "Q" = "QP1", "V3" = "VP1", "V4" = "VP2")
   }
-  as.character(map[parameter])
+  if(is.null(map[[parameter]])) {
+    cli::cli_warn("Could not find parameter {parameter} in model as {parameter}, nor under different name.")
+    return(parameter)
+  } else {
+    cli::cli_alert_info("Found parameter {parameter} in model as {map[[parameter]]}.")
+    return(map[[parameter]])
+  }
 }
