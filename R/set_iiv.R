@@ -208,6 +208,10 @@ set_covariance <- function(model, covariance) {
     stringr::str_replace_all("IIV_", "")
   om_values <- lapply(omegas$inits, "sqrt") |>
     setNames(om_names)
+  ## remove existing covariance entries
+  idx_cov <- !grepl("^OMEGA_", om_names)
+  om_names <- om_names[idx_cov]
+  om_values <- om_values[idx_cov]
   cov_terms <- c()
   for(key in names(covariance)) {
     if(stringr::str_detect(key, "\\~")) {
