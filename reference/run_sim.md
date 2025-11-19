@@ -22,6 +22,7 @@ run_sim(
   variables = c("ID", "TIME", "DV", "EVID", "IPRED", "PRED"),
   add_pk_variables = TRUE,
   output_file = "simtab",
+  update_table = TRUE,
   seed = 12345,
   verbose = TRUE
 )
@@ -92,6 +93,14 @@ run_sim(
 
   calculate basic PK variables that can be extracted in post-processing,
   such as CMAX_OBS, TMAX_OBS, AUC_SS.
+
+- update_table:
+
+  should any existing \$TABLE records be removed, and a new `simtab` be
+  created? This is default. If `FALSE`, it will leave \$TABLEs as
+  specifed in the model. However, in the return object, only the first
+  table is returned back. If `FALSE`, the `add_pk_variables` argument
+  will be ignored.
 
 - verbose:
 

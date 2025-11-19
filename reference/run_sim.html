@@ -55,6 +55,7 @@
 <span>  variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"TIME"</span>, <span class="st">"DV"</span>, <span class="st">"EVID"</span>, <span class="st">"IPRED"</span>, <span class="st">"PRED"</span><span class="op">)</span>,</span>
 <span>  add_pk_variables <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  output_file <span class="op">=</span> <span class="st">"simtab"</span>,</span>
+<span>  update_table <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">12345</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -126,6 +127,13 @@ iterations.</p></dd>
 <dt id="arg-add-pk-variables">add_pk_variables<a class="anchor" aria-label="anchor" href="#arg-add-pk-variables"></a></dt>
 <dd><p>calculate basic PK variables that can be extracted
 in post-processing, such as CMAX_OBS, TMAX_OBS, AUC_SS.</p></dd>
+
+
+<dt id="arg-update-table">update_table<a class="anchor" aria-label="anchor" href="#arg-update-table"></a></dt>
+<dd><p>should any existing $TABLE records be removed, and a new
+<code>simtab</code> be created? This is default. If <code>FALSE</code>, it will leave $TABLEs as
+specifed in the model. However, in the return object, only the first table
+is returned back. If <code>FALSE</code>, the <code>add_pk_variables</code> argument will be ignored.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
