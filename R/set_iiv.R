@@ -216,11 +216,20 @@ set_covariance <- function(model, covariance) {
   for(key in names(covariance)) {
     if(stringr::str_detect(key, "\\~")) {
       om_values[[key]] <- covariance[[key]]
-      cov_terms <- c(cov_terms, stringr::str_split(key, "\\~")[[1]])
+      terms <- stringr::str_split(key, "\\~")[[1]]
+      cov_terms_safe <- lapply(terms, find_pk_parameter, model) |>
+        as.character()
+      names(om_values)[grepl(key, names(om_values))] <- paste(cov_terms_safe, collapse = "~")
+      cov_terms <- c(cov_terms, cov_terms_safe)
     }
   }
   om_safe_names <- lapply(om_names, find_pk_parameter, model) |>
     as.character()
+  ## Need to re-add parameters that are listed under a different name, e.g. V -> V2
+  to_add <- setdiff(om_safe_names, om_names)
+  model <- model |>
+    pharmr::remove_iiv(to_add) |>
+    pharmr::add_iiv(to_add, expression = "exp")
   if(! all(cov_terms %in% om_safe_names)) {
     cli::cli_abort("Cannot add covariance: no IIV is present on one or more of the parameters between which covariance is requested.")
   }
