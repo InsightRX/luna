@@ -7,8 +7,9 @@ compartments.}
 \usage{
 set_compartment_scale(
   model,
-  compartment = 1,
+  compartment = NULL,
   expression = list(variable = "V", scale = 1000),
+  update_inits = TRUE,
   verbose = TRUE
 )
 }
@@ -16,10 +17,17 @@ set_compartment_scale(
 \item{model}{pharmpy model object or NONMEM model code (character) or path
 to NONMEM model file.}
 
-\item{compartment}{compartment number}
+\item{compartment}{compartment number. If \code{NULL} will be attempted to
+infer from ADVAN. If not a default ADVAN is used, will use 1 as default. So
+for safe use, please always specify the observation compartment to be scaled.}
 
 \item{expression}{specification of new scaling, should always contain variable
 and scale arguments. E.g. \code{list(variable = "V", "scale" = 1000)}.}
+
+\item{update_inits}{update initial estimates for basic PK parameters? This is
+likely needed when applying scale, or else it is very likely that the model
+starts too far off from the maximum likelihood and the fit will not
+converge properly. \code{TRUE} by default.}
 
 \item{verbose}{verbose output?}
 }

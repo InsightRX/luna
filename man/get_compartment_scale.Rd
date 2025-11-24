@@ -10,7 +10,9 @@ get_compartment_scale(model, compartment = 2)
 \item{model}{pharmpy model object or NONMEM model code (character) or path
 to NONMEM model file.}
 
-\item{compartment}{compartment number}
+\item{compartment}{compartment number. If \code{NULL} will be attempted to
+infer from ADVAN. If not a default ADVAN is used, will use 1 as default. So
+for safe use, please always specify the observation compartment to be scaled.}
 }
 \value{
 a list with elements \code{variable} and \code{scale}, e.g.
