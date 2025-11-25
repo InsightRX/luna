@@ -38,6 +38,7 @@
 <url><loc>https://insightrx.github.io/luna/reference/estimation_options_defaults.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/extract.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/find_file_with_fallback.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/find_pk_parameter.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/fit_model.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/fit_model_nlmixr.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/fit_model_nonmem.html</loc></url>
@@ -136,6 +137,7 @@
 <url><loc>https://insightrx.github.io/luna/reference/runs_as_table.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/save_model_code.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/save_project.html</loc></url>
+<url><loc>https://insightrx.github.io/luna/reference/scale_initial_estimates_pk.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/set_compartment_scale.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/set_covariance.html</loc></url>
 <url><loc>https://insightrx.github.io/luna/reference/set_iiv.html</loc></url>

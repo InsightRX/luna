@@ -20,7 +20,9 @@ get_compartment_scale(model, compartment = 2)
 
 - compartment:
 
-  compartment number
+  compartment number. If `NULL` will be attempted to infer from ADVAN.
+  If not a default ADVAN is used, will use 1 as default. So for safe
+  use, please always specify the observation compartment to be scaled.
 
 ## Value
 

@@ -125,6 +125,9 @@
 - [`find_file_with_fallback()`](https://insightrx.github.io/luna/reference/find_file_with_fallback.md)
   : Find a file(s) from a model run with a potential fallback
 
+- [`find_pk_parameter()`](https://insightrx.github.io/luna/reference/find_pk_parameter.md)
+  : Find / match PK parameter based on generic name.
+
 - [`fit_model()`](https://insightrx.github.io/luna/reference/fit_model.md)
   : Fit model using NONMEM or nlmixr2
 
@@ -446,6 +449,9 @@
 
 - [`save_project()`](https://insightrx.github.io/luna/reference/save_project.md)
   : Save a project to a YAML file
+
+- [`scale_initial_estimates_pk()`](https://insightrx.github.io/luna/reference/scale_initial_estimates_pk.md)
+  : Only applies to PK parameters, not all parameters
 
 - [`set_compartment_scale()`](https://insightrx.github.io/luna/reference/set_compartment_scale.md)
   : Set scaling for certain compartments, e.g. dose and observation

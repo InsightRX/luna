@@ -60,7 +60,9 @@ to NONMEM model file.</p></dd>
 
 
 <dt id="arg-compartment">compartment<a class="anchor" aria-label="anchor" href="#arg-compartment"></a></dt>
-<dd><p>compartment number</p></dd>
+<dd><p>compartment number. If <code>NULL</code> will be attempted to
+infer from ADVAN. If not a default ADVAN is used, will use 1 as default. So
+for safe use, please always specify the observation compartment to be scaled.</p></dd>
 
 </dl></div>
     <div class="section level2">
