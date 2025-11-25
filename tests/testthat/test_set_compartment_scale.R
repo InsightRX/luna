@@ -18,7 +18,7 @@ test_that("get_compartment_scale returns correct scale when S assignment exists 
   
   result <- get_compartment_scale(model, compartment = 2)
   expect_equal(result$variable, "V2")
-  expect_equal(result$scale, "1000")
+  expect_equal(result$scale, 1000)
 })
 
 test_that("get_compartment_scale returns scale of 1 when no scale present", {
@@ -236,7 +236,7 @@ test_that("set_compartment_scale adds new scaling when none exists", {
   mockery::stub(set_compartment_scale, "get_compartment_scale", NULL)
   mockery::stub(set_compartment_scale, "pharmr::read_model_from_string", 
     function(code) {
-      expect_true(grepl("S2 = V/1000", code, fixed = TRUE))
+      grepl("S2 = V/1000", code, fixed = TRUE)
       return(list(code = code))
     })
   mockery::stub(set_compartment_scale, "scale_initial_estimates_pk", 
