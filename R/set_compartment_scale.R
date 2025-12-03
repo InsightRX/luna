@@ -48,7 +48,8 @@ set_compartment_scale <- function(
   if(! class(expression$scale) %in% c("numeric", "integer")) {
     cli::cli_abort("`expression$scale` should be a numeric value.")
   }
-  new_expr <- paste0(Sx, " = ", expression$variable, "/", expression$scale)
+  expr_var <- find_pk_parameter(expression$variable, model)
+  new_expr <- paste0(Sx, " = ", expr_var, "/", expression$scale)
 
   ## Regex find and update scaling in model code
   code <- stringr::str_split(model$code, "\\n")[[1]]
