@@ -130,7 +130,7 @@ get_compartment_scale <- function(model, compartment = 2) {
     if(is.na(elements[2])) {
       elements[2] <- 1
     }
-    return(list(variable = elements[1], scale = elements[2]))
+    return(list(variable = elements[1], scale = as.numeric(elements[2])))
   } else {
     return(invisible())
   }
