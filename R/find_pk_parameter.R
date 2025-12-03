@@ -16,7 +16,7 @@
 find_pk_parameter <- function(parameter, model) {
   ## first try if parameter exist as-is
   model_params <- pharmr::get_pk_parameters(model)
-  if(parameter %in% model_params) {
+  if(as.character(parameter) %in% model_params) {
     return(parameter)
   }
   ## then, try to find depending on advan
