@@ -13,9 +13,16 @@ get_condition_number_for_fit <- function(
   }
   mat <- as.matrix(fit$correlation_matrix)
   if(!inherits(mat, "matrix") || diff(dim(mat)) != 0) {
-    cli::cli_abort("Needs a square matrix to calculate condition number.")
+    cli::cli_alert_warning("Needs a square matrix to calculate condition number.")
+    return(NA)
   }
-  calc_condition_number(mat)
+  tryCatch({
+    cond <- calc_condition_number(mat)
+  }, error = function(e) {
+    cli::cli_alert_warning("Failed to calculate condition number: {e}")
+    cond <- NA
+  })
+  cond
 }
 
 #' Calculate the condition number given a matrix
