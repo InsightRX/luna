@@ -13,31 +13,30 @@ Imports:
     purrr,
     glue,
     rlang,
-    withr,
     lubridate, 
     pharmr, 
     yaml, 
     stringr,
     cli, 
     cachem,
-    vpc,
     stats,
     job,
-    diffr,
-    rstudioapi,
-    altair
+    diffr
 Suggests: 
     httr,
     ellmer,
     nlmixr2,
     ggplot2,
     xpose,
+    vpc,
     patchwork,
     testthat (>= 3.0.0),
     mockery,
     knitr,
     rmarkdown,
-    Rapp
+    Rapp,
+    withr,
+    rstudioapi
 License: MIT + file LICENSE
 URL: https://github.com/InsightRX/uno, https://insightrx.github.io/uno/, https://insightrx.github.io/luna/
 LazyData: TRUE

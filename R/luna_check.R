@@ -1,6 +1,6 @@
 #' Syntax-check a NONMEM model
 #'
-#' @inheritParams run_nlme
+#' @inheritParams luna_run
 #'
 #' @export
 luna_check <- function(
@@ -49,7 +49,7 @@ luna_check <- function(
   }
   cli::cli_alert_success("Model loaded successfully.")
 
-  model_ok <- run_nlme(
+  model_ok <- pharmr.extra::run_nlme(
     model = model,
     id = id,
     path = folder,

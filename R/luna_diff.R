@@ -21,7 +21,7 @@ luna_diff <- function(
   if(is.null(folder)) {
     folder <- .luna_cache$get("project")$metadata$folder
   }
-  
+
   ## Figure out which files to look at
   if(!is.null(reference)) {
     new_id <- validate_id(id)
@@ -29,7 +29,7 @@ luna_diff <- function(
   } else { # get reference from YAML, if available
     new_id <- validate_id(id)
     runs <- .luna_cache$get("project")$yaml$runs
-    log_entry <- luna:::pluck_entry(runs, new_id)
+    log_entry <- pluck_entry(runs, new_id)
     if(is.null(log_entry)) {
       cli::cli_abort("Cannot find run in YAML.")
     }
@@ -42,7 +42,7 @@ luna_diff <- function(
       }
     }
   }
-  
+
   ## Load files
   model_file_new <- find_file_with_fallback(
     folder,
@@ -56,11 +56,11 @@ luna_diff <- function(
     fallback = paste0(ref_id, ".mod"),
     verbose = FALSE
   )
-  
+
   ## Generate diff
   diffr::diffr(
-    model_file_new, 
+    model_file_new,
     model_file_ref
   )
-  
+
 }

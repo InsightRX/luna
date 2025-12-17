@@ -68,7 +68,7 @@ luna_run <- function(
   }
   method <- ifelse0(config$tools$modelfit$method, "pharmpy")
   console <- ifelse0(config$tools$modelfit$console, TRUE)
-  run_nlme(
+  pharmr.extra::run_nlme(
     model = model,
     id = id,
     path = folder,
