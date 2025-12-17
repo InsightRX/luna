@@ -34,14 +34,14 @@ luna_list <- function(
       sel_cols <- names(cols)[unlist(cols)]
       check_unknown <- setdiff(sel_cols, names(out))
       if(length(check_unknown) > 0) {
-        cli::cli_alert_warning("Columns {check_unknown} not available, please check configuration.")
+        cli::cli_warn("Columns {check_unknown} not available, please check configuration.")
         sel_cols <- intersect(sel_cols, names(out))
       }
       if(length(sel_cols) > 0) {
         out <- out |>
           dplyr::select(!!sel_cols)
       } else {
-        cli::cli_warning("No columns selected, please check luna configuration.")
+        cli::cli_warn("No columns selected, please check luna configuration.")
       }
     }
   }
