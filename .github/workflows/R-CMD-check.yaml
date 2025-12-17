@@ -50,11 +50,6 @@ jobs:
           pak-version: devel
           extra-packages: |
             any::rcmdcheck
-            cran/lotri
-            cran/rxode2
-            cran/nlmixr2est
-            cran/nlmixr2extra
-            cran/nlmixr2plot
             pharmpy/pharmr
           needs: check
       
