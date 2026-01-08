@@ -101,6 +101,10 @@ run_sim <- function(
   } else {
     input_data <- data
   }
+  ## Set CMT to NA if not in dataset
+  if(is.null(input_data[[dictionary$CMT]])) {
+    input_data[[dictionary$CMT]] <- NA
+  }
   if(is.null(covariates)) { # use original dataset
     if(verbose) cli::cli_alert_info("Using input dataset for simulation")
     sim_data <- input_data
@@ -174,7 +178,8 @@ run_sim <- function(
       dplyr::arrange(.regimen, ID, TIME, EVID) |>
       dplyr::group_by(ID) |>
       tidyr::fill(
-        dplyr::everything(),
+        tidyselect::everything(),
+        -CMT,
         .direction = "downup"
       )
     if(is.null(t_obs)) {
@@ -191,7 +196,8 @@ run_sim <- function(
       sim_data,
       t_obs,
       n_subjects,
-      dictionary
+      dictionary,
+      model
     )
     ## remove old obs and add new
     sim_data <- sim_data |>
@@ -395,15 +401,19 @@ create_obs_records <- function(
     data,
     t_obs,
     n_subjects,
-    dictionary
+    dictionary,
+    model
 ) {
   unq_reg <- unique(data[[".regimen"]])
   ## create a template row
+  ## 1st try pull CMT from data. if not available in data, try based on ADVAN
   cmt <- data |>
     dplyr::filter(ID == 1 & EVID == 0) |>
     dplyr::slice(1) |>
     dplyr::pull(CMT)
-  if(is.null(cmt)) cmt <- 1
+  if(is.null(cmt) || is.na(cmt)) {
+    cmt <- get_obs_compartment(model)
+  }
   obs <- data.frame(
     ID = 1,
     TIME = t_obs,
