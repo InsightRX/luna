@@ -148,20 +148,6 @@ is_run_as_job <- function(config, as_job = NULL) {
   as_job
 }
 
-#' Does the last estimation method in a model have maxeval=0?
-#'
-#' @export
-#'
-is_maxeval_zero <- function(model) {
-  last_step <- model$execution_steps$to_dataframe() |>
-    tail(1)
-  options <- list()
-  if(!is.null(last_step$tool_options) && length(last_step$tool_options) > 0) {
-    options <- last_step$tool_options[[1]]
-  }
-  (is.na(last_step$maximum_evaluations) || last_step$maximum_evaluations == 0) && (is.null(options$MAXEVAL) || isTRUE(options$MAXEVAL == "0"))
-}
-
 #' Get a binary value from config, based on path
 #'
 #' @param flag character vector indicating path to flag
@@ -202,19 +188,4 @@ replace_list_elements <- function (x, y) {
     }
   )
   x
-}
-
-#' Get a random sequence of letters and numbers of size `n`
-#'
-#' @param prefix optional prefix
-#'
-#' @returns character
-get_random_id <- function(prefix = NULL, n = 6) {
-  paste0(
-    prefix,
-    paste0(
-      sample(c(letters, LETTERS, 0:9), n, replace = TRUE),
-      collapse = ""
-    )
-  )
 }

@@ -14,7 +14,9 @@ Imports:
     glue,
     rlang,
     lubridate, 
-    pharmr, 
+    pharmr,
+    pharmr.extra,
+    irxutils,
     yaml, 
     stringr,
     cli, 
@@ -37,6 +39,9 @@ Suggests:
     Rapp,
     withr,
     rstudioapi
+Remotes:
+    InsightRX/irxutils
+    InsightRX/pharmr.extra
 License: MIT + file LICENSE
 URL: https://github.com/InsightRX/uno, https://insightrx.github.io/uno/, https://insightrx.github.io/luna/
 LazyData: TRUE
