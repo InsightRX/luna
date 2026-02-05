@@ -50,18 +50,13 @@ jobs:
           pak-version: devel
           extra-packages: |
             any::rcmdcheck
-            cran/lotri
-            cran/rxode2
-            cran/nlmixr2est
-            cran/nlmixr2extra
-            cran/nlmixr2plot
             pharmpy/pharmr
           needs: check
       
       - name: Install pharmpy
         run: pharmr::install_pharmpy()
         shell: Rscript {0}
-          
+        
       - uses: r-lib/actions/check-r-package@v2
         with:
           args: 'c("--no-manual", "--as-cran")'

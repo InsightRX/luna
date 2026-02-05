@@ -8,11 +8,9 @@ luna_check(id, folder = NULL, verbose = FALSE, ...)
 }
 \arguments{
 \item{id}{run id, e.g. \code{run1}. This will be the folder in which the NONMEM
-model is run. If no folder is specified, it will create a folder \code{run1} in
-the current working directory, and will increment the run number for each
-subsequent run.}
+model is run.}
 
-\item{verbose}{verbose output?}
+\item{folder}{path to folder containing the model file. Default is current directory.}
 }
 \description{
 Syntax-check a NONMEM model
