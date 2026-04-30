@@ -18,6 +18,8 @@ file_extensions:
   output: lst
 
 tools:
+  nonmem:
+    nmfe: null  # Full path to nmfe executable, e.g. /opt/NONMEM/nm75/run/nmfe75
   modelfit:
     method: pharmpy
     console: true

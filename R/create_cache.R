@@ -32,13 +32,6 @@ create_cache <- function(
     "project", project
   )
 
-  ## read pharmpy configuration
-  if(verbose)
-    cli::cli_alert_info("Reading Pharmpy settings into cache")
-  .luna_cache$set(
-    "pharmpy_conf", get_pharmpy_conf()
-  )
-
   ## read / update models and results
   update_cache(project)
 

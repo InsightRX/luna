@@ -49,12 +49,14 @@ luna_check <- function(
   }
   cli::cli_alert_success("Model loaded successfully.")
 
+  nmfe <- config$tools$nonmem$nmfe
+
   model_ok <- pharmr.extra::run_nlme(
     model = model,
     id = id,
     path = folder,
     method = "nmfe",
-    as_job = as_job,
+    nmfe = pharmr.extra::get_nmfe_location(nmfe),
     check_only = TRUE, # !! don't run the model, only check it using NM-TRAN
     console = FALSE,
     verbose = verbose,

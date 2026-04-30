@@ -68,12 +68,15 @@ luna_run <- function(
   }
   method <- ifelse0(config$tools$modelfit$method, "pharmpy")
   console <- ifelse0(config$tools$modelfit$console, TRUE)
+  if(is.null(nmfe)) nmfe <- config$tools$nonmem$nmfe
+  if(method == "nmfe") nmfe <- pharmr.extra::get_nmfe_location(nmfe)
   pharmr.extra::run_nlme(
     model = model,
     id = id,
     path = folder,
     verbose = TRUE,
     method = method,
+    nmfe = nmfe,
     as_job = as_job,
     console = console,
     ...
