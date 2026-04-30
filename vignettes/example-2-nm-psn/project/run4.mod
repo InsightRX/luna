@@ -8,9 +8,9 @@ $PROB run4 - 2-cmt + WT allometry + SEX effect on CL (tested, not adopted)
 ; IIV        : CL, V1 (BLOCK 2), V2 (diagonal)
 ; RUV        : proportional + additive
 
-$DATA ../../data/busulfan_adults.csv IGNORE=@ IGNORE=(ID.EQ.0) COMMA
-
 $INPUT ID TIME AMT RATE DV MDV EVID CMT AGE WT HT SEX ALT AST ALP TBILI ALB SCR CRP WBC
+
+$DATA ../../data/busulfan_adults.csv IGNORE=@ IGNORE=(ID.EQ.0)
 
 $SUBROUTINE ADVAN3 TRANS4
 
@@ -43,7 +43,7 @@ $THETA
   (0,    5)       ; 4. TVV2 at 70 kg (L)
   (0,    0.10)    ; 5. prop RUV (fraction)
   (0,   30)       ; 6. add  RUV (ng/mL)
-  (-0.5, 0, 0.5)  ; 7. SEX effect on CL (fractional, male vs female)
+  (-0.5, 0.01, 0.5)  ; 7. SEX effect on CL (fractional, male vs female)
 
 $OMEGA BLOCK(2)
   0.05          ; 1. IIV CL

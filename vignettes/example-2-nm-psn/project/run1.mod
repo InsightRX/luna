@@ -9,9 +9,9 @@ $PROB run1 - 1-compartment base model, no covariates, proportional RUV
 ;   Columns  : ID TIME AMT RATE DV MDV EVID CMT
 ;              AGE WT HT SEX ALT AST ALP TBILI ALB SCR CRP WBC
 
-$DATA ../../data/busulfan_adults.csv IGNORE=@ IGNORE=(ID.EQ.0) COMMA
-
 $INPUT ID TIME AMT RATE DV MDV EVID CMT AGE WT HT SEX ALT AST ALP TBILI ALB SCR CRP WBC
+
+$DATA ../../data/busulfan_adults.csv IGNORE=@ IGNORE=(ID.EQ.0)
 
 $SUBROUTINE ADVAN1 TRANS2
 

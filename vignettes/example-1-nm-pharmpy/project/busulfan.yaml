@@ -1,29 +1,14 @@
 project:
-  description: Busulfan population PK model building - 250 adults, 4 mg/kg Q24h
-    IV (3h infusion). Sequential model development from 1-cmt base through 2-cmt
-    with allometric WT scaling and IOV on CL.
+  description: Busulfan popPK model building - 250 adults, 4 mg/kg Q24h IV
 runs:
 - id: run1
-  description: 1-cmt base model, no covariates, proportional RUV
+  description: run1 - 1-compartment base model, no covariates, proportional RUV
 - id: run2
-  description: 2-cmt base model, no covariates, proportional+additive RUV
-  reference: run1
+  description: run2 - 2-compartment base model, no covariates, proportional+additive
+    RUV
 - id: run3
-  description: 2-cmt + allometric WT scaling on CL and V (fixed exponents 0.75/1.0)
-  reference: run2
+  description: run3 - 2-cmt + allometric weight scaling on CL and V (fixed exponents)
 - id: run4
-  description: 2-cmt + WT allometry + SEX effect on CL (dOFV < 3.84, not adopted)
-  reference: run3
-  tag:
-  - not_adopted
-  notes:
-  - SEX on CL tested; not significant (1 df chi-sq threshold 3.84); reverted to
-    run3
+  description: run4 - 2-cmt + WT allometry + SEX effect on CL (tested, not adopted)
 - id: run5
-  description: 2-cmt + WT allometry + IOV on CL (4 occasions)
-  reference: run3
-  tag:
-  - final
-  notes:
-  - IOV on CL significantly improves fit; captures between-dose variability across
-    4-dose conditioning course
+  description: run5 - 2-cmt + WT allometry + IOV on CL (final model)

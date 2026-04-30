@@ -9,9 +9,9 @@ $PROB run5 - 2-cmt + WT allometry + IOV on CL (final model)
 ; IOV        : CL (4 occasions, 24-h bins)
 ; RUV        : proportional + additive
 
-$DATA ../../data/busulfan_adults.csv IGNORE=@ IGNORE=(ID.EQ.0) COMMA
-
 $INPUT ID TIME AMT RATE DV MDV EVID CMT AGE WT HT SEX ALT AST ALP TBILI ALB SCR CRP WBC
+
+$DATA ../../data/busulfan_adults.csv IGNORE=@ IGNORE=(ID.EQ.0)
 
 $SUBROUTINE ADVAN3 TRANS4
 

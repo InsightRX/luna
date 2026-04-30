@@ -6,9 +6,9 @@ $PROB run2 - 2-compartment base model, no covariates, proportional+additive RUV
 ; IIV        : CL, V1 (correlated, BLOCK 2), V2 (diagonal)
 ; RUV        : proportional + additive
 
-$DATA ../../data/busulfan_adults.csv IGNORE=@ IGNORE=(ID.EQ.0) COMMA
-
 $INPUT ID TIME AMT RATE DV MDV EVID CMT AGE WT HT SEX ALT AST ALP TBILI ALB SCR CRP WBC
+
+$DATA ../../data/busulfan_adults.csv IGNORE=@ IGNORE=(ID.EQ.0)
 
 $SUBROUTINE ADVAN3 TRANS4
 

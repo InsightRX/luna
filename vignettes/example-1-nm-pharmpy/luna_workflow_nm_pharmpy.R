@@ -68,14 +68,7 @@ luna_project_templates()
 # 2. PRE-RUN INSPECTION & SYNTAX CHECKS
 # =============================================================================
 
-# --- 2a. Tabular overview of all runs ----------------------------------------
-#
-# luna_list() prints a formatted table with run ID, description, status,
-# OFV, and any tags/notes. Useful at the start of every session.
-
-luna_list()
-
-# --- 2b. Syntax-check a model without running it ----------------------------
+# --- 2a. Syntax-check a model without running it ----------------------------
 #
 # luna_check() uses pharmpy to parse the .mod file and reports any errors
 # (missing dataset, bad THETA bounds, unknown ADVANs, etc.).
@@ -87,18 +80,19 @@ luna_check("run3")
 luna_check("run4")
 luna_check("run5")
 
-# --- 2c. Diff model code between two runs ------------------------------------
+
+# --- 2b. Diff model code between two runs ------------------------------------
 #
 # luna_diff() prints a side-by-side diff of two .mod files.
 # With reference = NULL, luna uses the 'reference' field from the YAML.
 # Useful for reviewing what changed between a parent and child model.
 
-luna_diff("run2")              # run2 vs its YAML reference (run1)
-luna_diff("run3")              # run3 vs run2
+luna_diff("run2","run1")              # run2 vs its YAML reference (run1)
+luna_diff("run3", "run2")              # run3 vs run2
 luna_diff("run4", "run3")      # explicit: run4 vs run3 (non-significant branch)
 luna_diff("run5", "run3")      # run5 vs run3 (adopted IOV extension)
 
-# --- 2d. Inspect the dataset linked to a model file --------------------------
+# --- 2c. Inspect the dataset linked to a model file --------------------------
 #
 # luna_dataset() reads the dataset path from $DATA in the .mod file via
 # pharmpy and returns it as a data frame.
@@ -112,7 +106,7 @@ table(dat$EVID)                         # 1000 dose events, 4000 observations
 range(dat$DV[dat$EVID == 0])            # DV range (ng/mL)
 length(unique(dat$ID))                  # 250 patients
 
-# --- 2e. Open a model in the editor ------------------------------------------
+# --- 2d. Open a model in the editor ------------------------------------------
 #
 # luna_edit() opens the .mod file in RStudio's source editor for manual review
 # or hand-editing before running.
@@ -129,6 +123,7 @@ length(unique(dat$ID))                  # 250 patients
 # Set as_job = TRUE to run asynchronously in an RStudio background job.
 
 luna_run("run1")
+
 luna_run("run2")
 
 # After reviewing run1/run2 results with luna_compare() below, proceed:
