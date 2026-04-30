@@ -2,6 +2,10 @@
   description: Busulfan population PK model building - 250 adults, 4 mg/kg Q24h
     IV (3h infusion). Sequential model development from 1-cmt base through 2-cmt
     with allometric WT scaling and IOV on CL. Executed via PsN.
+  config:
+    tools:
+      modelfit:
+        method: psn
 runs:
 - id: run1
   description: 1-cmt base model, no covariates, proportional RUV
