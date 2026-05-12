@@ -4,11 +4,11 @@
 
 run1_model <- function() {
   ini({
-    tvcl     <- 10        # TVCL (L/h)
-    tvv      <- 55        # TVV  (L)
-    eta.cl   ~ 0.10       # IIV CL (variance)
-    eta.v    ~ 0.10       # IIV V  (variance)
-    prop.err <- 0.15      # proportional RUV (fraction)
+    tvcl     <- c(0, 10)    # TVCL (L/h)
+    tvv      <- c(0, 55)    # TVV  (L)
+    eta.cl   ~ 0.10         # IIV CL (variance)
+    eta.v    ~ 0.10         # IIV V  (variance)
+    prop.err <- c(0, 0.15) # proportional RUV (fraction)
   })
   model({
     cl <- tvcl * exp(eta.cl)
