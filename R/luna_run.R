@@ -68,8 +68,20 @@ luna_run <- function(
   }
   method <- ifelse0(config$tools$modelfit$method, "pharmpy")
   console <- ifelse0(config$tools$modelfit$console, TRUE)
-  if(is.null(nmfe)) nmfe <- config$tools$nonmem$nmfe
-  if(method == "nmfe") nmfe <- pharmr.extra:::get_nmfe_location(nmfe)
+  if(is.null(nmfe)) {
+    nmfe <- ifelse0(config$tools$modelfit$nmfe, config$tools$nonmem$nmfe)
+  }
+  if(method == "nmfe") {
+    if(is.null(nmfe) || identical(trimws(nmfe), "")) {
+      cli::cli_abort(
+        c(
+          "NMFE method selected, but no nmfe path is configured.",
+          "i" = "Set {.code tools.modelfit.nmfe} in the luna config, or pass {.arg nmfe} to {.fn luna_run}."
+        )
+      )
+    }
+    nmfe <- pharmr.extra:::get_nmfe_location(nmfe)
+  }
   pharmr.extra::run_nlme(
     model = model,
     id = id,

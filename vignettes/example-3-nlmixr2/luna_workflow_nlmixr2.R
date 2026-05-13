@@ -2,7 +2,7 @@
 # luna_workflow_nlmixr2.R
 # Example workflow: busulfan population PK model building with nlmixr2
 #
-# nlmixr2 is not a supported luna execution backend (only pharmpy / PSN).
+# nlmixr2 is not a supported luna execution backend yet (only pharmpy / PSN).
 # Luna is used here for project organisation (run list, tags, notes, log).
 # All model fitting, comparison, and diagnostics use nlmixr2 directly.
 #

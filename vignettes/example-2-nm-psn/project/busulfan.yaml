@@ -4,11 +4,15 @@ runs:
 - id: run1
   description: run1 - 1-compartment base model, no covariates, proportional RUV
 - id: run2
+  reference: run1
   description: run2 - 2-compartment base model, no covariates, proportional+additive
     RUV
 - id: run3
+  reference: run2
   description: run3 - 2-cmt + allometric weight scaling on CL and V (fixed exponents)
 - id: run4
+  reference: run3
   description: run4 - 2-cmt + WT allometry + SEX effect on CL (tested, not adopted)
 - id: run5
+  reference: run3
   description: run5 - 2-cmt + WT allometry + IOV on CL (final model)
