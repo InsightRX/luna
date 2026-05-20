@@ -6,16 +6,16 @@
 
 run4_model <- function() {
   ini({
-    tvcl     <- 11
-    tvv      <- 50
-    tvq      <-  4
-    tvvp     <-  5
-    fsex_cl  <-  0        # fractional sex difference in CL (male vs female)
+    tvcl     <- c(0, 11)
+    tvv      <- c(0, 50)
+    tvq      <- c(0,  4)
+    tvvp     <- c(0,  5)
+    fsex_cl  <- c(-0.99, 0)  # fractional sex diff in CL; bounded > -1
     eta.cl + eta.v ~ c(0.05,
                        0.03, 0.04)
     eta.vp   ~ 0.20
-    prop.err <- 0.10
-    add.err  <- 30
+    prop.err <- c(0, 0.10)
+    add.err  <- c(0, 30)
   })
   model({
     fsex <- 1 + fsex_cl * SEX     # SEX: 0 = female (ref), 1 = male

@@ -60,7 +60,20 @@ luna_check <- function(
     cli::cli_alert_warning("Model parsed but dataset could not be loaded. Check the {.field $DATA} path.")
     return(invisible(FALSE))
   }
-  
+
+  cli::cli_alert_success("Model loaded successfully.")
+
+  model_ok <- pharmr.extra::run_nlme(
+    model,
+    check_only = TRUE,
+    verbose = verbose
+  )
+
+  if (isFALSE(model_ok)) {
+    cli::cli_alert_warning("Model failed NONMEM compilation check.")
+    return(invisible(FALSE))
+  }
+
   cli::cli_alert_success("Model syntax OK!")
   invisible(TRUE)
 }

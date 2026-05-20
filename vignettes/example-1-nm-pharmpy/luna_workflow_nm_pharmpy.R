@@ -22,6 +22,8 @@
 # =============================================================================
 
 library(luna)
+library(dplyr)
+library(tidyr)
 
 PROJECT_DIR <- "vignettes/example-1-nm-pharmpy/project"
 PROJECT_NAME <- "busulfan"
@@ -302,13 +304,13 @@ head(tab)
 
 # Compute individual ETA distributions post-hoc
 eta_summary <- tab |>
-  dplyr::group_by(ID) |>
-  dplyr::slice(1) |>
-  dplyr::ungroup() |>
-  dplyr::select(ID, AGE, WT, SEX, ETA1, ETA2, ETA3) |>
-  tidyr::pivot_longer(cols = starts_with("ETA"), names_to = "eta") |>
-  dplyr::group_by(eta) |>
-  dplyr::summarise(mean = mean(value), sd = sd(value), .groups = "drop")
+  group_by(ID) |>
+  slice(1) |>
+  ungroup() |>
+  select(ID, AGE, WT, SEX, ETA1, ETA2, ETA3) |>
+  pivot_longer(cols = starts_with("ETA"), names_to = "eta") |>
+  group_by(eta) |>
+  summarise(mean = mean(value), sd = sd(value), .groups = "drop")
 
 eta_summary
 

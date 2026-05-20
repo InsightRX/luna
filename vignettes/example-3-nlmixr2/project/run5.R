@@ -6,10 +6,10 @@
 
 run5_model <- function() {
   ini({
-    tvcl         <- 11
-    tvv          <- 50
-    tvq          <-  4
-    tvvp         <-  5
+    tvcl         <- c(0, 11)
+    tvv          <- c(0, 50)
+    tvq          <- c(0,  4)
+    tvvp         <- c(0,  5)
     eta.cl + eta.v ~ c(0.05,
                        0.03, 0.04)
     eta.vp       ~ 0.20
@@ -18,8 +18,8 @@ run5_model <- function() {
     eta.iov.cl.2 ~ 0.01   # dose 2 (24 ≤ t < 48 h)
     eta.iov.cl.3 ~ 0.01   # dose 3 (48 ≤ t < 72 h)
     eta.iov.cl.4 ~ 0.01   # dose 4 (t ≥ 72 h)
-    prop.err     <- 0.10
-    add.err      <- 30
+    prop.err     <- c(0, 0.10)
+    add.err      <- c(0, 30)
   })
   model({
     # Select IOV eta based on dose occasion (defined by 24-h TIME bins)
