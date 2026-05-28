@@ -25,7 +25,7 @@ library(luna)
 library(dplyr)
 library(tidyr)
 
-PROJECT_DIR <- "vignettes/example-1-nm-pharmpy/project"
+PROJECT_DIR <- system.file("extdata", "example-1-nm-pharmpy", "project", package = "luna")
 PROJECT_NAME <- "busulfan"
 
 # =============================================================================

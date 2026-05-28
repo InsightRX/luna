@@ -27,7 +27,7 @@ library(xpose.nlmixr2)
 library(ggplot2)
 library(dplyr)
 
-PROJECT_DIR  <- "vignettes/example-3-nlmixr2/project"
+PROJECT_DIR  <- system.file("extdata", "example-3-nlmixr2", "project", package = "luna")
 PROJECT_NAME <- "busulfan"
 
 # Source all model definitions
@@ -52,7 +52,7 @@ luna_list()
 # 2. DATA PREPARATION
 # =============================================================================
 
-dat_raw <- read.csv("vignettes/data/busulfan_adults.csv")
+dat_raw <- read.csv(system.file("extdata", "data", "busulfan_adults.csv", package = "luna"))
 
 # nlmixr2 accepts NONMEM-style datasets directly.
 # Observations with MDV = 1 are excluded from the likelihood automatically.

@@ -23,7 +23,7 @@
 
 library(luna)
 
-PROJECT_DIR  <- "vignettes/example-2-nm-psn/project"
+PROJECT_DIR  <- system.file("extdata", "example-2-nm-psn", "project", package = "luna")
 PROJECT_NAME <- "busulfan"
 
 # =============================================================================
