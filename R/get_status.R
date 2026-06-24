@@ -5,6 +5,7 @@
 #'
 get_status <- function(id, folder = ".") {
   status <- "not run"
+  # NONMEM: check for .lst output file
   tmp <- find_file_with_fallback(
     folder,
     file.path(id, paste0("run", ".lst")),
@@ -12,7 +13,11 @@ get_status <- function(id, folder = ".") {
     verbose = FALSE,
     abort = FALSE
   )
-  if(!is.null(tmp)) {
+  if (!is.null(tmp)) {
+    status <- "finished"
+  }
+  # ferx: check for -fit.rds result file
+  if (file.exists(file.path(folder, paste0(id, "-fit.rds")))) {
     status <- "finished"
   }
   status

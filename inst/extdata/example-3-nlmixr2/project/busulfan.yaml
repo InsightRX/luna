@@ -1,0 +1,29 @@
+project:
+  description: Busulfan population PK model building - 250 adults, 4 mg/kg Q24h
+    IV (3h infusion). Sequential model development using nlmixr2. Luna used for
+    project organisation, tagging, and notes only (execution via nlmixr2 directly).
+runs:
+- id: run1
+  description: 1-cmt base model, no covariates, proportional RUV
+- id: run2
+  description: 2-cmt base model, no covariates, proportional+additive RUV
+  reference: run1
+- id: run3
+  description: 2-cmt + allometric WT scaling on CL and V (fixed exponents 0.75/1.0)
+  reference: run2
+- id: run4
+  description: 2-cmt + WT allometry + SEX effect on CL (dOFV < 3.84, not adopted)
+  reference: run3
+  tag:
+  - not_adopted
+  notes:
+  - SEX on CL tested; not significant (1 df chi-sq threshold 3.84); reverted to
+    run3
+- id: run5
+  description: 2-cmt + WT allometry + IOV on CL (4 occasions)
+  reference: run3
+  tag:
+  - final
+  notes:
+  - IOV on CL significantly improves fit; captures between-dose variability across
+    4-dose conditioning course

@@ -2,19 +2,21 @@
 % Please edit documentation in R/luna_run.R
 \name{luna_run}
 \alias{luna_run}
-\title{Run a NONMEM model}
+\title{Run a model}
 \usage{
 luna_run(id, folder = NULL, nmfe = NULL, as_job = NULL, ...)
 }
 \arguments{
-\item{id}{run id, e.g. \code{run1}. This will be the folder in which the NONMEM
-model is run.}
+\item{id}{run id, e.g. \code{run1}. This will be the folder in which the model
+is run.}
 
 \item{folder}{path to folder containing the model file. Default is current directory.}
 
 \item{as_job}{run as an RStudio job (async), or in the console. If left \code{NULL}
-will use setting in luna config.}
+will use setting in luna config. Not yet supported for \code{method = "ferx"}.}
 }
 \description{
-Run a NONMEM model
+Dispatches to the configured execution backend. Supported methods:
+\code{"pharmpy"} (default), \code{"psn"}, \code{"nmfe"} for NONMEM-based workflows, and
+\code{"ferx"} for the ferx-nlme Rust engine.
 }

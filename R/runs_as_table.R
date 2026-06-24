@@ -34,22 +34,30 @@ runs_as_table <- function(
         ifelse0(paste(y$notes, collapse = ", "), "")
       }),
       "model_file" = sapply(models, function(y) {
-        ifelse0(find_file_with_fallback(
+        # Try NONMEM .mod first, then ferx .ferx
+        nm <- find_file_with_fallback(
           folder = x$metadata$folder,
           filename = file.path(y$id, paste0("run", ".mod")),
           fallback = paste0(y$id, ".mod"),
           verbose = FALSE,
           abort = FALSE
-        ), "")
+        )
+        if (!is.null(nm)) return(nm)
+        ferx <- file.path(x$metadata$folder, paste0(y$id, ".ferx"))
+        ifelse0(if (file.exists(ferx)) ferx else NULL, "")
       }),
       "output_file" = sapply(models, function(y) {
-        ifelse0(find_file_with_fallback(
+        # Try NONMEM .lst first, then ferx -fit.rds
+        nm <- find_file_with_fallback(
           folder = x$metadata$folder,
           filename = file.path(y$id, paste0("run", ".lst")),
           fallback = paste0(y$id, ".lst"),
           verbose = FALSE,
           abort = FALSE
-        ), "")
+        )
+        if (!is.null(nm)) return(nm)
+        ferx <- file.path(x$metadata$folder, paste0(y$id, "-fit.rds"))
+        ifelse0(if (file.exists(ferx)) ferx else NULL, "")
       }),
       "tools" = sapply(models, function(y) {
         ifelse0(get_tools(y), "")
@@ -62,6 +70,10 @@ runs_as_table <- function(
       ifelse0(get_time_ago(timestamps$results[[y$id]]), "")
     })
     fit_results <- get_all_results(model_table$model_file)
+    # Ensure ofv column exists even when no results are available yet
+    if (!"ofv" %in% names(fit_results)) {
+      fit_results$ofv <- NA_real_
+    }
     if(!raw) {
       fit_results <- fit_results |>
         dplyr::select(model_file, ofv)
@@ -129,7 +141,25 @@ get_tools <- function(run) {
 get_all_results <- function(model_file) {
   cli::cli_alert_info("Parsing run results")
   res <- lapply(model_file, function(x) {
+    if (is.na(x) || x == "") return(NULL)
     tryCatch({
+      ## ferx: read -fit.rds saved by luna_run_ferx()
+      if (grepl("\\.ferx$", x)) {
+        rds <- sub("\\.ferx$", "-fit.rds", x)
+        if (!file.exists(rds)) return(list(model_file = x))
+        fit <- readRDS(rds)
+        return(list(
+          model_file = x,
+          ofv = round(fit$ofv, 2),
+          minimization_successful = isTRUE(fit$converged),
+          covstep_successful = !is.null(fit$cov_matrix),
+          runtime_total = fit$wall_time_secs,
+          warnings = NA_character_,
+          significant_digits = NA_real_,
+          function_evaluations = fit$n_iterations
+        ))
+      }
+      ## NONMEM
       res <- pharmr::read_modelfit_results(
         esttool = "nonmem",
         path = x

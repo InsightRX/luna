@@ -6,3 +6,7 @@
 .Rproj.user
 .DS_Store
 docs
+data-raw/
+.claude
+*-fit.rds
+.luna.cache.*

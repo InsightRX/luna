@@ -24,10 +24,11 @@ Imports:
     stats,
     job,
     diffr
-Suggests: 
+Suggests:
     httr,
     ellmer,
     nlmixr2,
+    ferx,
     ggplot2,
     xpose,
     vpc,
@@ -41,7 +42,8 @@ Suggests:
     rstudioapi
 Remotes:
     InsightRX/irxutils,
-    InsightRX/pharmr.extra
+    InsightRX/pharmr.extra,
+    ferx=FeRx-NLME/ferx-r
 License: MIT + file LICENSE
 URL: https://github.com/InsightRX/uno, https://insightrx.github.io/uno/, https://insightrx.github.io/luna/
 LazyData: TRUE

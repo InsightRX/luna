@@ -1,13 +1,17 @@
-#' Syntax-check a NONMEM model
+#' Syntax-check a model
+#'
+#' For NONMEM models (`method = "pharmpy"`, `"psn"`, `"nmfe"`): uses pharmpy
+#' to parse the model file. For ferx models (`method = "ferx"`): verifies the
+#' `.ferx` file exists.
 #'
 #' @inheritParams luna_run
 #'
 #' @export
 luna_check <- function(
-  id,
-  folder = NULL,
-  verbose = FALSE,
-  ...
+    id,
+    folder = NULL,
+    verbose = FALSE,
+    ...
 ) {
 
   id <- unlist(lapply(id, validate_id))
@@ -30,42 +34,61 @@ luna_check <- function(
     verbose = FALSE
   )
 
-  # Transform folder path to absolute path
   folder <- normalizePath(folder, mustWork = TRUE)
 
-  # read the model file with nm_read_model()
+  method <- ifelse0(config$tools$modelfit$method, "pharmpy")
+
+  ## ferx: check file existence only
+  if (method == "ferx") {
+    model_file <- file.path(folder, paste0(id, ".ferx"))
+    if (!file.exists(model_file)) {
+      cli::cli_alert_warning("ferx model file not found: {.file {model_file}}")
+      return(invisible(FALSE))
+    }
+    cli::cli_alert_success("ferx model file found: {.file {model_file}}")
+    return(invisible(TRUE))
+  }
+
+  ## NONMEM path
   model_file <- file.path(folder, paste0(id, ".mod"))
-  if(! file.exists(model_file)) {
+  if (!file.exists(model_file)) {
     cli::cli_abort("Model file for run {id} not found!")
   }
-  model <- pharmr::read_model(model_file)
 
-  # Some integrity checksa
-  if(! inherits(model, "pharmpy.model.model.Model")) {
-    cli::cli_abort("Model is not a pharmpy model. Please check the model file.")
+  model <- tryCatch(
+    pharmr::read_model(model_file),
+    error = function(e) {
+      cli::cli_alert_warning("Model has a syntax error:")
+      message(conditionMessage(e))
+      return(invisible(FALSE))
+    }
+  )
+
+  if (isFALSE(model)) return(invisible(FALSE))
+
+  if (!inherits(model, "pharmpy.model.model.Model")) {
+    cli::cli_alert_warning("Model could not be parsed as a pharmpy model.")
+    return(invisible(FALSE))
   }
-  if(is.null(model$dataset)) {
-    cli::cli_abort("Model has no dataset. Please check the model and dataset files.")
+
+  if (is.null(model$dataset)) {
+    cli::cli_alert_warning("Model parsed but dataset could not be loaded. Check the {.field $DATA} path.")
+    return(invisible(FALSE))
   }
+
   cli::cli_alert_success("Model loaded successfully.")
 
   model_ok <- pharmr.extra::run_nlme(
-    model = model,
-    id = id,
-    path = folder,
-    method = "nmfe",
-    as_job = as_job,
-    check_only = TRUE, # !! don't run the model, only check it using NM-TRAN
-    console = FALSE,
-    verbose = verbose,
-    ...
+    model,
+    check_only = TRUE,
+    verbose = verbose
   )
 
-  if(model_ok) {
-    cli::cli_alert_success("Model syntax OK!")
-  } else {
-    cli::cli_alert_warning("Model seems to have syntax error")
-    cat(attr(model_ok, "message"))
+  if (isFALSE(model_ok)) {
+    cli::cli_alert_warning("Model failed NONMEM compilation check.")
+    return(invisible(FALSE))
   }
 
+  cli::cli_alert_success("Model syntax OK!")
+  invisible(TRUE)
 }
