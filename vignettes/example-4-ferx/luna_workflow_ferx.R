@@ -4,7 +4,7 @@
 #
 # ferx-nlme is a Rust-based NLME estimation engine with an R wrapper (ferx).
 # luna_run() dispatches to ferx when method = "ferx" is set in the project
-# config. Model files use the .ferx DSL; results are saved as {id}-fit.rds.
+# config. Model files use the .ferx DSL; results are saved as {id}.fitrx.
 #
 # Dataset  : busulfan_adults_mgl.csv (DV in mg/L; converted from ng/mL)
 # Models   : project/run1.ferx – run3.ferx
@@ -59,7 +59,7 @@ luna_list()
 # =============================================================================
 #
 # luna_check() verifies that the .ferx file exists (file-presence check).
-# luna_run() calls ferx::ferx_fit() and saves the result as {id}-fit.rds.
+# luna_run() calls ferx::ferx_fit() and saves the result as {id}.fitrx.
 # Additional ferx_fit() arguments (method, covariance, etc.) can be passed
 # directly through luna_run() via ...
 
@@ -81,16 +81,16 @@ luna_list()
 # 4. INSPECTING FIT RESULTS
 # =============================================================================
 #
-# luna_ferx_info() reads {id}-fit.rds and prints key convergence statistics.
+# luna_ferx_info() reads {id}.fitrx and prints key convergence statistics.
 # The full ferx_fit object can be read back directly for deeper access.
 
 luna_ferx_info("run1")
 luna_ferx_info("run3")
 
 # Read the raw fit objects for detailed access
-fit1 <- readRDS(file.path(PROJECT_DIR, "run1-fit.rds"))
-fit2 <- readRDS(file.path(PROJECT_DIR, "run2-fit.rds"))
-fit3 <- readRDS(file.path(PROJECT_DIR, "run3-fit.rds"))
+fit1 <- ferx::ferx_load_fit(file.path(PROJECT_DIR, "run1.fitrx"))
+fit2 <- ferx::ferx_load_fit(file.path(PROJECT_DIR, "run2.fitrx"))
+fit3 <- ferx::ferx_load_fit(file.path(PROJECT_DIR, "run3.fitrx"))
 
 # Tidy parameter table (theta, omega, sigma with SE and %RSE)
 ferx_estimates(fit3)

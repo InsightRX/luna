@@ -16,6 +16,6 @@ is run.}
 The \code{ferx_fit} result object, invisibly.
 }
 \description{
-Reads the \code{{id}-fit.rds} file saved by \code{\link[=luna_run]{luna_run()}} (when
+Reads the \verb{\{id\}.fitrx} file saved by \code{\link[=luna_run]{luna_run()}} (when
 \code{method = "ferx"}) and prints a formatted parameter summary.
 }

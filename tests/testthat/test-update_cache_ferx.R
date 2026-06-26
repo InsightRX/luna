@@ -27,7 +27,7 @@ test_that("update_cache records ferx model and result timestamps", {
   expect_false(is.null(timestamps$results$run1))
 })
 
-test_that("update_cache records NA timestamp when -fit.rds missing", {
+test_that("update_cache records NA timestamp when .fitrx missing", {
   dir <- create_ferx_fixture(include_result = FALSE)
 
   stored <- list()

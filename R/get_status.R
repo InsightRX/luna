@@ -16,9 +16,15 @@ get_status <- function(id, folder = ".") {
   if (!is.null(tmp)) {
     status <- "finished"
   }
-  # ferx: check for -fit.rds result file
-  if (file.exists(file.path(folder, paste0(id, "-fit.rds")))) {
-    status <- "finished"
+  # ferx: check for .fitrx result file and convergence
+  rds_path <- file.path(folder, paste0(id, ".fitrx"))
+  if (file.exists(rds_path)) {
+    fit <- tryCatch(ferx::ferx_load_fit(rds_path), error = function(e) NULL)
+    if (!is.null(fit) && isTRUE(fit$converged)) {
+      status <- "finished"
+    } else {
+      status <- "failed"
+    }
   }
   status
 }

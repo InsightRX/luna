@@ -66,9 +66,6 @@ luna_run <- function(
   }
   cli::cli_alert_success("Model loaded successfully.")
 
-  # Resolve data file path as string to avoid pandas→R coercion inside run_nlme
-  data_path <- get_nm_data_path(model_file)
-
   ## log event
   log_add(
     event = "action",
@@ -114,7 +111,7 @@ luna_run <- function(
 #' @param config resolved luna config list
 #'
 #' @keywords internal
-luna_run_ferx <- function(id, folder, config, force = FALSE, ...) {
+luna_run_ferx <- function(id, folder, config, ...) {
   if (!requireNamespace("ferx", quietly = TRUE)) {
     cli::cli_abort(c(
       "The {.pkg ferx} package is required to run ferx models.",
@@ -151,32 +148,13 @@ luna_run_ferx <- function(id, folder, config, force = FALSE, ...) {
     id = id
   )
 
-  ## Extract method from [fit_options] section if not supplied in ...
-  dots <- list(...)
-  if (is.null(dots$method)) {
-    fit_opt_lines <- tryCatch(
-      ferx::ferx_model_section(model_file, "fit_options"),
-      error = function(e) character(0)
-    )
-    method_line <- grep("^\\s*method\\s*=", fit_opt_lines, value = TRUE)
-    if (length(method_line) > 0) {
-      parsed_method <- trimws(sub(".*=\\s*", "", method_line[1]))
-      # strip trailing comments
-      parsed_method <- trimws(sub("#.*", "", parsed_method))
-      if (nzchar(parsed_method)) {
-        dots$method <- parsed_method
-        cli::cli_alert_info("Using method from .ferx file: {.val {parsed_method}}")
-      }
-    }
-  }
-
   cli::cli_alert_info("Running ferx model {.val {id}}...")
 
-  result <- do.call(ferx::ferx_fit,
-                    c(list(model = model_file, data = data_path), dots))
+  result_file <- file.path(folder, paste0(id, ".fitrx"))
 
-  result_file <- file.path(folder, paste0(id, "-fit.rds"))
-  saveRDS(result, result_file)
+  result <- ferx::ferx_fit(
+    model = model_file, data = data_path, output = result_file, ...
+  )
 
   if (isTRUE(result$converged)) {
     cli::cli_alert_success(

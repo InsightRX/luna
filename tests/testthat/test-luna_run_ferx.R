@@ -56,11 +56,9 @@ test_that("luna_run_ferx resolves relative data path to folder", {
 
   mock_fit <- fake_ferx_fit()
   mock_ferx_fit <- mockery::mock(mock_fit)
-  mock_section <- mockery::mock(character(0))
 
   mockery::stub(luna_run_ferx, "requireNamespace", TRUE)
   mockery::stub(luna_run_ferx, "ferx::ferx_fit", mock_ferx_fit)
-  mockery::stub(luna_run_ferx, "ferx::ferx_model_section", mock_section)
   mockery::stub(luna_run_ferx, "log_add", NULL)
 
   luna_run_ferx(id = "run1", folder = dir, config = config)
@@ -77,11 +75,9 @@ test_that("luna_run_ferx uses absolute data path as-is", {
 
   mock_fit <- fake_ferx_fit()
   mock_ferx_fit <- mockery::mock(mock_fit)
-  mock_section <- mockery::mock(character(0))
 
   mockery::stub(luna_run_ferx, "requireNamespace", TRUE)
   mockery::stub(luna_run_ferx, "ferx::ferx_fit", mock_ferx_fit)
-  mockery::stub(luna_run_ferx, "ferx::ferx_model_section", mock_section)
   mockery::stub(luna_run_ferx, "log_add", NULL)
 
   luna_run_ferx(id = "run1", folder = dir, config = config)
@@ -90,17 +86,15 @@ test_that("luna_run_ferx uses absolute data path as-is", {
   expect_equal(call_args$data, abs_data)
 })
 
-test_that("luna_run_ferx saves .rds and returns result invisibly", {
+test_that("luna_run_ferx saves .fitrx and returns result invisibly", {
   dir <- create_ferx_fixture(include_result = FALSE)
   config <- list(tools = list(modelfit = list(method = "ferx", data = "data.csv")))
 
   mock_fit <- fake_ferx_fit()
   mock_ferx_fit <- mockery::mock(mock_fit)
-  mock_section <- mockery::mock(character(0))
 
   mockery::stub(luna_run_ferx, "requireNamespace", TRUE)
   mockery::stub(luna_run_ferx, "ferx::ferx_fit", mock_ferx_fit)
-  mockery::stub(luna_run_ferx, "ferx::ferx_model_section", mock_section)
   mockery::stub(luna_run_ferx, "log_add", NULL)
 
   result <- withVisible(luna_run_ferx(id = "run1", folder = dir, config = config))
@@ -110,30 +104,9 @@ test_that("luna_run_ferx saves .rds and returns result invisibly", {
   expect_false(result$visible)
   expect_equal(result$value$ofv, 1234.56)
 
-  # .rds was saved
-  rds_path <- file.path(dir, "run1-fit.rds")
-  expect_true(file.exists(rds_path))
-  saved <- readRDS(rds_path)
-  expect_equal(saved$ofv, 1234.56)
-})
-
-test_that("luna_run_ferx extracts method from .ferx fit_options", {
-  dir <- create_ferx_fixture(include_result = FALSE)
-  config <- list(tools = list(modelfit = list(method = "ferx", data = "data.csv")))
-
-  mock_fit <- fake_ferx_fit()
-  mock_ferx_fit <- mockery::mock(mock_fit)
-  mock_section <- mockery::mock(c("  method     = foce", "  covariance = true"))
-
-  mockery::stub(luna_run_ferx, "requireNamespace", TRUE)
-  mockery::stub(luna_run_ferx, "ferx::ferx_fit", mock_ferx_fit)
-  mockery::stub(luna_run_ferx, "ferx::ferx_model_section", mock_section)
-  mockery::stub(luna_run_ferx, "log_add", NULL)
-
-  luna_run_ferx(id = "run1", folder = dir, config = config)
-
+  # .fitrx was saved — verify ferx_fit was called with output arg
   call_args <- mockery::mock_args(mock_ferx_fit)[[1]]
-  expect_equal(call_args$method, "foce")
+  expect_equal(call_args$output, file.path(dir, "run1.fitrx"))
 })
 
 test_that("luna_run_ferx reports non-convergence", {
@@ -142,11 +115,9 @@ test_that("luna_run_ferx reports non-convergence", {
 
   mock_fit <- fake_ferx_fit(converged = FALSE)
   mock_ferx_fit <- mockery::mock(mock_fit)
-  mock_section <- mockery::mock(character(0))
 
   mockery::stub(luna_run_ferx, "requireNamespace", TRUE)
   mockery::stub(luna_run_ferx, "ferx::ferx_fit", mock_ferx_fit)
-  mockery::stub(luna_run_ferx, "ferx::ferx_model_section", mock_section)
   mockery::stub(luna_run_ferx, "log_add", NULL)
 
   expect_message(

@@ -1,10 +1,10 @@
 #' Create a temporary ferx project fixture for testing
 #'
-#' Sets up a temp directory with a .ferx model file, a fake -fit.rds result,
+#' Sets up a temp directory with a .ferx model file, a fake .fitrx result,
 #' a minimal CSV data file, and a busulfan.yaml project config.
 #'
 #' @param id Character model id (default "run1")
-#' @param include_result Logical; if TRUE, create a fake -fit.rds (default TRUE)
+#' @param include_result Logical; if TRUE, create a fake .fitrx (default TRUE)
 #' @return Path to the temp project directory
 create_ferx_fixture <- function(id = "run1", include_result = TRUE) {
   dir <- withr::local_tempdir(pattern = "ferx_test_", .local_envir = parent.frame())
@@ -48,7 +48,7 @@ create_ferx_fixture <- function(id = "run1", include_result = TRUE) {
       wall_time_secs = 3.7,
       cov_matrix = matrix(c(0.01, 0.001, 0.001, 0.02), nrow = 2)
     )
-    saveRDS(fake_fit, file.path(dir, paste0(id, "-fit.rds")))
+    saveRDS(fake_fit, file.path(dir, paste0(id, ".fitrx")))
   }
 
   # Project YAML

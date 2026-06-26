@@ -1,6 +1,6 @@
 #' Show fit results for a ferx model run
 #'
-#' Reads the `{id}-fit.rds` file saved by [luna_run()] (when
+#' Reads the `{id}.fitrx` file saved by [luna_run()] (when
 #' `method = "ferx"`) and prints a formatted parameter summary.
 #'
 #' @inheritParams luna_run
@@ -15,7 +15,7 @@ luna_ferx_info <- function(id, folder = NULL) {
   }
   folder <- normalizePath(folder, mustWork = TRUE)
 
-  result_file <- file.path(folder, paste0(id, "-fit.rds"))
+  result_file <- file.path(folder, paste0(id, ".fitrx"))
   if (!file.exists(result_file)) {
     cli::cli_abort(
       c(
@@ -25,7 +25,7 @@ luna_ferx_info <- function(id, folder = NULL) {
     )
   }
 
-  result <- readRDS(result_file)
+  result <- ferx::ferx_load_fit(result_file)
 
   cli::cli_h1("ferx fit: {id}")
   cli::cli_alert_info("Method:    {result$method}")

@@ -44,7 +44,7 @@ update_cache <- function(
       file.path(folder, m)
     )
     timestamps$results[[id]] <- get_time_last_updated_file(
-      file.path(folder, paste0(id, "-fit.rds"))
+      file.path(folder, paste0(id, ".fitrx"))
     )
   }
 

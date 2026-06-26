@@ -1,7 +1,7 @@
 Package: luna
 Type: Package
 Title: Light-weight Universal NLME Admininstrator
-Version: 0.1.0
+Version: 0.2.0
 Author: Ron Keizer
 Maintainer: Ron Keizer <ron@insight-rx.com>
 Description: Organizes model development workflows in NONMEM and nlmixr2. The 

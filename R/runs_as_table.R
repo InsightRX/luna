@@ -47,7 +47,7 @@ runs_as_table <- function(
         ifelse0(if (file.exists(ferx)) ferx else NULL, "")
       }),
       "output_file" = sapply(models, function(y) {
-        # Try NONMEM .lst first, then ferx -fit.rds
+        # Try NONMEM .lst first, then ferx .fitrx
         nm <- find_file_with_fallback(
           folder = x$metadata$folder,
           filename = file.path(y$id, paste0("run", ".lst")),
@@ -56,7 +56,7 @@ runs_as_table <- function(
           abort = FALSE
         )
         if (!is.null(nm)) return(nm)
-        ferx <- file.path(x$metadata$folder, paste0(y$id, "-fit.rds"))
+        ferx <- file.path(x$metadata$folder, paste0(y$id, ".fitrx"))
         ifelse0(if (file.exists(ferx)) ferx else NULL, "")
       }),
       "tools" = sapply(models, function(y) {
@@ -70,7 +70,10 @@ runs_as_table <- function(
       ifelse0(get_time_ago(timestamps$results[[y$id]]), "")
     })
     fit_results <- get_all_results(model_table$model_file)
-    # Ensure ofv column exists even when no results are available yet
+    # Ensure required columns exist when no results are available
+    if (!"model_file" %in% names(fit_results)) {
+      fit_results$model_file <- character(0)
+    }
     if (!"ofv" %in% names(fit_results)) {
       fit_results$ofv <- NA_real_
     }
@@ -143,11 +146,11 @@ get_all_results <- function(model_file) {
   res <- lapply(model_file, function(x) {
     if (is.na(x) || x == "") return(NULL)
     tryCatch({
-      ## ferx: read -fit.rds saved by luna_run_ferx()
+      ## ferx: read .fitrx saved by luna_run_ferx()
       if (grepl("\\.ferx$", x)) {
-        rds <- sub("\\.ferx$", "-fit.rds", x)
+        rds <- sub("\\.ferx$", ".fitrx", x)
         if (!file.exists(rds)) return(list(model_file = x))
-        fit <- readRDS(rds)
+        fit <- ferx::ferx_load_fit(rds)
         return(list(
           model_file = x,
           ofv = round(fit$ofv, 2),
