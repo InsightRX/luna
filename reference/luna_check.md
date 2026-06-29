@@ -1,6 +1,7 @@
 # Syntax-check a NONMEM model
 
-Syntax-check a NONMEM model
+Uses pharmpy to parse the model. A successful parse indicates the model
+is valid. Any pharmpy parse error is reported as a syntax issue.
 
 ## Usage
 
