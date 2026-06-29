@@ -39,11 +39,21 @@ luna_load_project <- function(
   )
   class(project) <- c("luna.project", class(project))
 
-  if(dir.exists(paste0(".luna.cache.", name))) {
+  cache_folder <- file.path(folder, paste0(".luna.cache.", name))
+  if(dir.exists(cache_folder)) {
     is_cache_available <- is_luna_cache_available(abort = FALSE)
-    if(!is_cache_available) {
+    cached_folder <- if(
+      is_cache_available && .luna_cache$exists("folder")
+    ) .luna_cache$get("folder") else NULL
+    cached_name <- if(
+      is_cache_available && .luna_cache$exists("name")
+    ) .luna_cache$get("name") else NULL
+    if(
+      !is_cache_available ||
+      !identical(cached_folder, folder) ||
+      !identical(cached_name, name)
+    ) {
       if(verbose) cli::cli_alert_info("Reloading luna project cache")
-      cache_folder <- file.path(folder, paste0(".luna.cache.", name))
       .luna_cache <<- cachem::cache_disk(dir = cache_folder)
     }
     if(verbose) cli::cli_alert_info("Updating luna project cache")

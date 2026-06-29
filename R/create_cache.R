@@ -32,12 +32,11 @@ create_cache <- function(
     "project", project
   )
 
-  ## read pharmpy configuration
-  if(verbose)
-    cli::cli_alert_info("Reading Pharmpy settings into cache")
-  .luna_cache$set(
-    "pharmpy_conf", get_pharmpy_conf()
-  )
+  ## Note: pharmpy configuration (previously read here via get_pharmpy_conf())
+  ## is intentionally not read at cache creation. Reading it eagerly required
+  ## pharmpy to be installed for all users, causing luna_load_project() to fail
+  ## for PSN and nlmixr2 users. Pharmpy config is now read lazily inside
+  ## pharmpy-specific functions (luna_run(), luna_check(), etc.).
 
   ## read / update models and results
   update_cache(project)
