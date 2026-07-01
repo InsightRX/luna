@@ -1,6 +1,8 @@
-# Run a NONMEM model
+# Run a model
 
-Run a NONMEM model
+Dispatches to the configured execution backend. Supported methods:
+`"pharmpy"` (default), `"psn"`, `"nmfe"` for NONMEM-based workflows, and
+`"ferx"` for the ferx-nlme Rust engine.
 
 ## Usage
 
@@ -12,8 +14,8 @@ luna_run(id, folder = NULL, nmfe = NULL, as_job = NULL, ...)
 
 - id:
 
-  run id, e.g. `run1`. This will be the folder in which the NONMEM model
-  is run.
+  run id, e.g. `run1`. This will be the folder in which the model is
+  run.
 
 - folder:
 
@@ -23,4 +25,4 @@ luna_run(id, folder = NULL, nmfe = NULL, as_job = NULL, ...)
 - as_job:
 
   run as an RStudio job (async), or in the console. If left `NULL` will
-  use setting in luna config.
+  use setting in luna config. Not yet supported for `method = "ferx"`.

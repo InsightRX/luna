@@ -14,8 +14,8 @@ luna_tool(id, tool = NULL, force = FALSE, as_job = NULL, verbose = TRUE)
 
 - id:
 
-  run id, e.g. `run1`. This will be the folder in which the NONMEM model
-  is run.
+  run id, e.g. `run1`. This will be the folder in which the model is
+  run.
 
 - tool:
 
@@ -25,7 +25,7 @@ luna_tool(id, tool = NULL, force = FALSE, as_job = NULL, verbose = TRUE)
 - as_job:
 
   run as an RStudio job (async), or in the console. If left `NULL` will
-  use setting in luna config.
+  use setting in luna config. Not yet supported for `method = "ferx"`.
 
 - verbose:
 

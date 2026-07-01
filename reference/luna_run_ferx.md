@@ -1,11 +1,11 @@
-# Get tables from a model / run
+# Run a ferx model (internal helper for luna_run)
 
-Get tables from a model / run
+Run a ferx model (internal helper for luna_run)
 
 ## Usage
 
 ``` r
-luna_tables(id, folder = NULL, verbose = TRUE)
+luna_run_ferx(id, folder, config, ...)
 ```
 
 ## Arguments
@@ -19,3 +19,7 @@ luna_tables(id, folder = NULL, verbose = TRUE)
 
   path to folder containing the model file. Default is current
   directory.
+
+- config:
+
+  resolved luna config list

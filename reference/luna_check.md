@@ -1,7 +1,8 @@
-# Syntax-check a NONMEM model
+# Syntax-check a model
 
-Uses pharmpy to parse the model. A successful parse indicates the model
-is valid. Any pharmpy parse error is reported as a syntax issue.
+For NONMEM models (`method = "pharmpy"`, `"psn"`, `"nmfe"`): uses
+pharmpy to parse the model file. For ferx models (`method = "ferx"`):
+verifies the `.ferx` file exists.
 
 ## Usage
 
@@ -13,8 +14,8 @@ luna_check(id, folder = NULL, verbose = FALSE, ...)
 
 - id:
 
-  run id, e.g. `run1`. This will be the folder in which the NONMEM model
-  is run.
+  run id, e.g. `run1`. This will be the folder in which the model is
+  run.
 
 - folder:
 

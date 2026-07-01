@@ -18,8 +18,8 @@ get_table_for_plots(
 
 - id:
 
-  run id, e.g. `run1`. This will be the folder in which the NONMEM model
-  is run.
+  run id, e.g. `run1`. This will be the folder in which the model is
+  run.
 
 - folder:
 

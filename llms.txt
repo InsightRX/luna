@@ -180,7 +180,7 @@ other PsN tools.
   : Get element from active project Just a convenience wrapper with
   error checking
 - [`luna_check()`](https://insightrx.github.io/luna/reference/luna_check.md)
-  : Syntax-check a NONMEM model
+  : Syntax-check a model
 - [`luna_clone()`](https://insightrx.github.io/luna/reference/luna_clone.md)
   : Clone model
 - [`luna_compare()`](https://insightrx.github.io/luna/reference/luna_compare.md)
@@ -195,6 +195,8 @@ other PsN tools.
   : Edit model in editor, e.g. RStudio
 - [`luna_edit_project()`](https://insightrx.github.io/luna/reference/luna_edit_project.md)
   : Edit luna config file in editor, e.g. RStudio
+- [`luna_ferx_info()`](https://insightrx.github.io/luna/reference/luna_ferx_info.md)
+  : Show fit results for a ferx model run
 - [`luna_gof()`](https://insightrx.github.io/luna/reference/luna_gof.md)
   : Creates a ggplot2 panel object with basic goodness of fit plots
 - [`luna_help()`](https://insightrx.github.io/luna/reference/luna_help.md)
@@ -218,7 +220,7 @@ other PsN tools.
 - [`luna_project_templates()`](https://insightrx.github.io/luna/reference/luna_project_templates.md)
   : Show available templates
 - [`luna_run()`](https://insightrx.github.io/luna/reference/luna_run.md)
-  : Run a NONMEM model
+  : Run a model
 - [`luna_sync()`](https://insightrx.github.io/luna/reference/luna_sync.md)
   : Synchronize (re-load) luna project
 - [`luna_tables()`](https://insightrx.github.io/luna/reference/luna_tables.md)

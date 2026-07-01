@@ -11,7 +11,7 @@ in a modular way so that it can be easily extended."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">luna</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,8 +52,8 @@ in a modular way so that it can be easily extended.</p>
 
 
 <dl><dt id="arg-id">id<a class="anchor" aria-label="anchor" href="#arg-id"></a></dt>
-<dd><p>run id, e.g. <code>run1</code>. This will be the folder in which the NONMEM
-model is run.</p></dd>
+<dd><p>run id, e.g. <code>run1</code>. This will be the folder in which the model
+is run.</p></dd>
 
 
 <dt id="arg-tool">tool<a class="anchor" aria-label="anchor" href="#arg-tool"></a></dt>
@@ -63,7 +63,7 @@ for further details.</p></dd>
 
 <dt id="arg-as-job">as_job<a class="anchor" aria-label="anchor" href="#arg-as-job"></a></dt>
 <dd><p>run as an RStudio job (async), or in the console. If left <code>NULL</code>
-will use setting in luna config.</p></dd>
+will use setting in luna config. Not yet supported for <code>method = "ferx"</code>.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
