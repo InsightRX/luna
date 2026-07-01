@@ -16,7 +16,7 @@ get_luna_config <- function(
     proj_conf <- proj_yaml$project$config
     ## use any specified project conf to overwrite env conf
     for(key in names(proj_conf)) {
-      if(is.null(conf[[key]]) || proj_conf[[key]] != conf[[key]]) {
+      if(is.null(conf[[key]]) || !identical(proj_conf[[key]], conf[[key]])) {
         if(verbose)
           cli::cli_alert_info("Overriding global luna setting for `{key}` with project-specific setting")
         conf[[key]] <- proj_conf[[key]]

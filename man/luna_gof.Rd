@@ -15,8 +15,8 @@ luna_gof(
 )
 }
 \arguments{
-\item{id}{run id, e.g. \code{run1}. This will be the folder in which the NONMEM
-model is run.}
+\item{id}{run id, e.g. \code{run1}. This will be the folder in which the model
+is run.}
 
 \item{folder}{path to folder containing the model file. Default is current directory.}
 

@@ -8,3 +8,6 @@
 docs
 data-raw/
 .claude
+*.fitrx
+!inst/extdata/**/*.fitrx
+.luna.cache.*

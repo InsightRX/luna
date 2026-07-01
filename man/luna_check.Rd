@@ -2,17 +2,18 @@
 % Please edit documentation in R/luna_check.R
 \name{luna_check}
 \alias{luna_check}
-\title{Syntax-check a NONMEM model}
+\title{Syntax-check a model}
 \usage{
 luna_check(id, folder = NULL, verbose = FALSE, ...)
 }
 \arguments{
-\item{id}{run id, e.g. \code{run1}. This will be the folder in which the NONMEM
-model is run.}
+\item{id}{run id, e.g. \code{run1}. This will be the folder in which the model
+is run.}
 
 \item{folder}{path to folder containing the model file. Default is current directory.}
 }
 \description{
-Uses pharmpy to parse the model. A successful parse indicates the model is
-valid. Any pharmpy parse error is reported as a syntax issue.
+For NONMEM models (\code{method = "pharmpy"}, \code{"psn"}, \code{"nmfe"}): uses pharmpy
+to parse the model file. For ferx models (\code{method = "ferx"}): verifies the
+\code{.ferx} file exists.
 }

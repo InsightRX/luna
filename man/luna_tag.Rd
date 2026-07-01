@@ -8,8 +8,8 @@ Either add a tag or clear tags from a run}
 luna_tag(id, tag = NULL, clear = FALSE, force = TRUE, verbose = FALSE)
 }
 \arguments{
-\item{id}{run id, e.g. \code{run1}. This will be the folder in which the NONMEM
-model is run.}
+\item{id}{run id, e.g. \code{run1}. This will be the folder in which the model
+is run.}
 
 \item{tag}{tag to add (character vector)}
 

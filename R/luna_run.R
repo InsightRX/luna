@@ -1,10 +1,14 @@
-#' Run a NONMEM model
+#' Run a model
 #'
-#' @param id run id, e.g. `run1`. This will be the folder in which the NONMEM
-#' model is run.
+#' Dispatches to the configured execution backend. Supported methods:
+#' `"pharmpy"` (default), `"psn"`, `"nmfe"` for NONMEM-based workflows, and
+#' `"ferx"` for the ferx-nlme Rust engine.
+#'
+#' @param id run id, e.g. `run1`. This will be the folder in which the model
+#' is run.
 #' @param folder path to folder containing the model file. Default is current directory.
 #' @param as_job run as an RStudio job (async), or in the console. If left `NULL`
-#' will use setting in luna config.
+#' will use setting in luna config. Not yet supported for `method = "ferx"`.
 #'
 #' @export
 luna_run <- function(
@@ -14,12 +18,12 @@ luna_run <- function(
     as_job = NULL,
     ...
 ) {
-  
+
   id <- unlist(lapply(id, validate_id))
   if(length(id) > 1) {
     cli::cli_abort("Sorry, running of multiple runs in batch is not yet supported.")
   }
-  
+
   ## Get cache and config
   is_luna_cache_available(abort = TRUE)
   config <- get_luna_config()
@@ -28,25 +32,32 @@ luna_run <- function(
     folder <- .luna_cache$get("project")$metadata$folder
   }
   as_job <- is_run_as_job(config, as_job)
-  
+
   ## make sure we're up to date
   luna_load_project(
     name = name,
     folder = folder,
     verbose = FALSE
   )
-  
+
   # Transform folder path to absolute path
   folder <- normalizePath(folder, mustWork = TRUE)
-  
+
+  ## Detect method early to dispatch non-NONMEM engines
+  method <- ifelse0(config$tools$modelfit$method, "pharmpy")
+
+  if (method == "ferx") {
+    return(luna_run_ferx(id = id, folder = folder, config = config, ...))
+  }
+
   # read the model file with nm_read_model()
   model_file <- file.path(folder, paste0(id, ".mod"))
   if(! file.exists(model_file)) {
     cli::cli_abort("Model file for run {id} not found!")
   }
   model <- pharmr::read_model(model_file)
-  
-  # Some integrity checksa
+
+  # Some integrity checks
   if(! inherits(model, "pharmpy.model.model.Model")) {
     cli::cli_abort("Model is not a pharmpy model. Please check the model file.")
   }
@@ -54,19 +65,18 @@ luna_run <- function(
     cli::cli_abort("Model has no dataset. Please check the model and dataset files.")
   }
   cli::cli_alert_success("Model loaded successfully.")
-  
+
   ## log event
   log_add(
     event = "action",
     action = "modelfit",
     id = id
   )
-  
+
   # Determine nmfe location to use.
   if(is.null(config$tools$modelfit$method)) {
     cli::cli_alert_warning("Default method for modelfit not configured, using pharmpy dispatcher.")
   }
-  method <- ifelse0(config$tools$modelfit$method, "pharmpy")
   console <- ifelse0(config$tools$modelfit$console, TRUE)
   if(is.null(nmfe)) {
     nmfe <- ifelse0(config$tools$modelfit$nmfe, config$tools$nonmem$nmfe)
@@ -93,4 +103,67 @@ luna_run <- function(
     console = console,
     ...
   )
+}
+
+#' Run a ferx model (internal helper for luna_run)
+#'
+#' @inheritParams luna_run
+#' @param config resolved luna config list
+#'
+#' @keywords internal
+luna_run_ferx <- function(id, folder, config, ...) {
+  if (!requireNamespace("ferx", quietly = TRUE)) {
+    cli::cli_abort(c(
+      "The {.pkg ferx} package is required to run ferx models.",
+      "i" = "Install it with: {.code devtools::install_github('FeRx-NLME/ferx-r')}"
+    ))
+  }
+
+  model_file <- file.path(folder, paste0(id, ".ferx"))
+  if (!file.exists(model_file)) {
+    cli::cli_abort("ferx model file {.file {model_file}} not found!")
+  }
+
+  data_path <- config$tools$modelfit$data
+  if (is.null(data_path)) {
+    cli::cli_abort(c(
+      "ferx method requires a data file path.",
+      "i" = "Set {.code tools.modelfit.data} in the project config YAML."
+    ))
+  }
+  if (!file.exists(data_path)) {
+    data_path_abs <- file.path(folder, data_path)
+    if (!file.exists(data_path_abs)) {
+      cli::cli_abort(
+        "Data file {.file {data_path}} not found (also checked relative to project folder)."
+      )
+    }
+    data_path <- data_path_abs
+  }
+
+  ## log event
+  log_add(
+    event = "action",
+    action = "modelfit",
+    id = id
+  )
+
+  cli::cli_alert_info("Running ferx model {.val {id}}...")
+
+  result_file <- file.path(folder, paste0(id, ".fitrx"))
+
+  result <- ferx::ferx_fit(
+    model = model_file, data = data_path, output = result_file, ...
+  )
+
+  if (isTRUE(result$converged)) {
+    cli::cli_alert_success(
+      "ferx run {.val {id}} converged. OFV = {round(result$ofv, 2)}"
+    )
+  } else {
+    cli::cli_alert_warning("ferx run {.val {id}} did not converge.")
+  }
+  cli::cli_alert_info("Results saved to {.file {result_file}}")
+
+  invisible(result)
 }

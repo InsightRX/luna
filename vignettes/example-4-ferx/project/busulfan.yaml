@@ -1,0 +1,22 @@
+project:
+  description: Busulfan population PK model building - 250 adults, 4 mg/kg Q24h
+    IV (3h infusion). Sequential model development using ferx-nlme. DV in mg/L
+    (busulfan_adults_mgl.csv, converted from ng/mL).
+  config:
+    tools:
+      modelfit:
+        method: ferx
+        data: ../../data/busulfan_adults_mgl.csv
+runs:
+- id: run1
+  description: 1-cmt base model, no covariates, proportional RUV
+- id: run2
+  reference: run1
+  description: 2-cmt base model, no covariates, proportional RUV
+- id: run3
+  reference: run2
+  description: 2-cmt + allometric WT scaling on CL and V1 (fixed exponents 0.75/1.0)
+  tag:
+  - final
+  notes:
+  - WT allometry significantly improves fit (dOFV > 3.84 vs run2)

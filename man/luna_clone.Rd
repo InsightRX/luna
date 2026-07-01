@@ -14,8 +14,8 @@ luna_clone(
 )
 }
 \arguments{
-\item{id}{run id, e.g. \code{run1}. This will be the folder in which the NONMEM
-model is run.}
+\item{id}{run id, e.g. \code{run1}. This will be the folder in which the model
+is run.}
 
 \item{new_id}{new run id}
 

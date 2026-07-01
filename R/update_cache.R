@@ -24,7 +24,7 @@ update_cache <- function(
     folders = list()
   )
 
-  ## Models
+  ## Models (NONMEM)
   model_list <- dir(folder, pattern = ".mod$", include.dirs = FALSE)
   for(m in model_list) {
     id <- stringr::str_replace(m, "\\.mod$", "")
@@ -33,6 +33,18 @@ update_cache <- function(
     )
     timestamps$results[[id]] <- get_time_last_updated_file(
       file.path(folder, paste0(id, ".lst"))
+    )
+  }
+
+  ## Models (ferx)
+  ferx_list <- dir(folder, pattern = "\\.ferx$", include.dirs = FALSE)
+  for(m in ferx_list) {
+    id <- stringr::str_replace(m, "\\.ferx$", "")
+    timestamps$models[[id]] <- get_time_last_updated_file(
+      file.path(folder, m)
+    )
+    timestamps$results[[id]] <- get_time_last_updated_file(
+      file.path(folder, paste0(id, ".fitrx"))
     )
   }
 

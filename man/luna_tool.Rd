@@ -9,14 +9,14 @@ in a modular way so that it can be easily extended.}
 luna_tool(id, tool = NULL, force = FALSE, as_job = NULL, verbose = TRUE)
 }
 \arguments{
-\item{id}{run id, e.g. \code{run1}. This will be the folder in which the NONMEM
-model is run.}
+\item{id}{run id, e.g. \code{run1}. This will be the folder in which the model
+is run.}
 
 \item{tool}{id for the tool, needs to be referenced in project YAML. See examples
 for further details.}
 
 \item{as_job}{run as an RStudio job (async), or in the console. If left \code{NULL}
-will use setting in luna config.}
+will use setting in luna config. Not yet supported for \code{method = "ferx"}.}
 
 \item{verbose}{verbose output}
 }

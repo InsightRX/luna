@@ -19,6 +19,8 @@ file_extensions:
 
 tools:
   modelfit:
+    # Supported methods: "pharmpy" (default), "psn", "nmfe", "ferx"
+    # For method "ferx", also set: data: <path/to/data.csv>
     method: pharmpy
     console: true
   bootstrap:
