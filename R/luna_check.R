@@ -67,11 +67,13 @@ luna_check <- function(
   if (isFALSE(model)) return(invisible(FALSE))
 
   if (!inherits(model, "pharmpy.model.model.Model")) {
-    cli::cli_abort("Model could not be parsed as a pharmpy model.")
+    cli::cli_alert_warning("Model could not be parsed as a pharmpy model.")
+    return(invisible(FALSE))
   }
 
   if (is.null(model$dataset)) {
-    cli::cli_abort("Model parsed but dataset could not be loaded. Check the {.field $DATA} path.")
+    cli::cli_alert_warning("Model parsed but dataset could not be loaded. Check the {.field $DATA} path.")
+    return(invisible(FALSE))
   }
 
   cli::cli_alert_success("Model loaded successfully.")
