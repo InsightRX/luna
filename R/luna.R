@@ -4,6 +4,7 @@ luna <- function() {
       data.frame(
         Function = c(
           "luna_new_project",
+          "luna_list",
           "luna_run",
           "luna_info"
         ),

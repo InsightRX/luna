@@ -49,15 +49,14 @@ test_that("luna_tool aborts for unsupported tool method", {
   )
 })
 
-# prepare_run_folder() is stubbed with a function that does not force its
-# `model_path`/`dataset_path` arguments (which reference an undefined object).
 test_that("luna_tool calls pharmpy tool with options", {
   folder <- local_luna_project(runs = tool_runs())
   mock_tool <- mockery::mock("vpc_result")
+  mock_prepare <- mockery::mock(list(model = "prepared"))
   mockery::stub(luna_tool, "pharmr::read_model", "model_obj")
-  mockery::stub(luna_tool, "pharmr.extra::prepare_run_folder", function(id, model, ...) "prepared")
+  mockery::stub(luna_tool, "prepare_run_folder", mock_prepare)
   mockery::stub(luna_tool, "pharmr::read_modelfit_results", "results")
-  mockery::stub(luna_tool, "call_pharmpy_tool", mock_tool)
+  mockery::stub(luna_tool, "pharmr.extra::call_pharmpy_tool", mock_tool)
   res <- suppressMessages(luna_tool("run1", tool = "vpc"))
   expect_equal(res, "vpc_result")
   args <- mockery::mock_args(mock_tool)[[1]]
@@ -65,19 +64,56 @@ test_that("luna_tool calls pharmpy tool with options", {
   expect_equal(args$results, "results")
   expect_equal(args$tool, "vpc")
   expect_equal(args$options, list(samples = 100))
+  expect_equal(args$folder, normalizePath(folder))
+  prepare_args <- mockery::mock_args(mock_prepare)[[1]]
+  expect_equal(prepare_args$id, "run1")
+  expect_equal(prepare_args$model, "model_obj")
+  expect_equal(prepare_args$path, normalizePath(folder))
+})
+
+test_that("luna_tool leaves an existing run folder untouched", {
+  folder <- local_luna_project(runs = tool_runs())
+  dir.create(file.path(folder, "run1"))
+  mock_tool <- mockery::mock("vpc_result")
+  mock_prepare <- mockery::mock()
+  mockery::stub(luna_tool, "pharmr::read_model", "model_obj")
+  mockery::stub(luna_tool, "prepare_run_folder", mock_prepare)
+  mockery::stub(luna_tool, "pharmr::read_modelfit_results", "results")
+  mockery::stub(luna_tool, "pharmr.extra::call_pharmpy_tool", mock_tool)
+  suppressMessages(luna_tool("run1", tool = "vpc"))
+  mockery::expect_called(mock_prepare, 0)
+  expect_equal(mockery::mock_args(mock_tool)[[1]]$model, "model_obj")
 })
 
 test_that("luna_tool calls PsN tool with parsed args", {
   folder <- local_luna_project(runs = tool_runs())
   mock_psn <- mockery::mock("psn_result")
   mockery::stub(luna_tool, "pharmr::read_model", "model_obj")
-  mockery::stub(luna_tool, "pharmr.extra::prepare_run_folder", function(id, model, ...) "prepared")
+  mockery::stub(luna_tool, "prepare_run_folder", function(...) list(model = "prepared"))
   mockery::stub(luna_tool, "pharmr.extra::parse_psn_args", "-samples=50")
-  mockery::stub(luna_tool, "call_psn", mock_psn)
+  mockery::stub(luna_tool, "pharmr.extra::call_psn", mock_psn)
   expect_message(res <- luna_tool("run1", tool = "psn::bootstrap"), "Running")
   expect_equal(res, "psn_result")
   args <- mockery::mock_args(mock_psn)[[1]]
   expect_equal(args$tool, "bootstrap")
   expect_equal(args$options, "-samples=50")
   expect_equal(args$path, file.path(folder, "run1"))
+})
+
+test_that("luna_tool runs pharmpy tool from the project folder", {
+  folder <- local_luna_project(runs = tool_runs())
+  other <- withr::local_tempdir()
+  withr::local_dir(other)
+  tool_wd <- NULL
+  mockery::stub(luna_tool, "pharmr::read_model", "model_obj")
+  mockery::stub(luna_tool, "prepare_run_folder", function(...) list(model = "prepared"))
+  mockery::stub(luna_tool, "pharmr::read_modelfit_results", "results")
+  mockery::stub(luna_tool, "pharmr.extra::call_pharmpy_tool", function(...) {
+    tool_wd <<- getwd()
+    list(...)$folder
+  })
+  res <- suppressMessages(luna_tool("run1", tool = "vpc"))
+  expect_equal(normalizePath(tool_wd), normalizePath(folder))
+  expect_equal(res, normalizePath(folder))
+  expect_equal(normalizePath(getwd()), normalizePath(other))
 })
