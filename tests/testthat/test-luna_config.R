@@ -40,8 +40,8 @@ test_that("luna_config aborts when config file is missing", {
 })
 
 test_that("check_default_config_file creates config only when absent", {
-  home <- withr::local_tempdir()
-  withr::local_envvar(HOME = home)
+  home <- local_luna_home(config = FALSE)
+  unlink(file.path(home, ".config"), recursive = TRUE)
   conf_file <- file.path(home, ".config", "luna", "config.yaml")
   check_default_config_file()
   expect_true(file.exists(conf_file))
@@ -62,8 +62,9 @@ test_that("check_llm_key messages only when key is missing", {
 })
 
 test_that(".onLoad sets up config file", {
-  home <- withr::local_tempdir()
-  withr::local_envvar(HOME = home, OPENAI_API_KEY = "abc")
+  home <- local_luna_home(config = FALSE)
+  unlink(file.path(home, ".config"), recursive = TRUE)
+  withr::local_envvar(OPENAI_API_KEY = "abc")
   expect_null(.onLoad("lib", "luna"))
   expect_true(file.exists(file.path(home, ".config", "luna", "config.yaml")))
 })

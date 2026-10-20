@@ -9,7 +9,11 @@
 #' @return Path to the temp HOME folder
 local_luna_home <- function(config = NULL, .local_envir = parent.frame()) {
   home <- withr::local_tempdir(pattern = "luna_home_", .local_envir = .local_envir)
-  withr::local_envvar(HOME = home, .local_envir = .local_envir)
+  withr::local_envvar(HOME = home, R_USER = home, .local_envir = .local_envir)
+  # On Windows `~` may be cached at startup; never fall back to the real HOME
+  if (!identical(normalizePath(path.expand("~")), normalizePath(home))) {
+    testthat::skip("Cannot redirect `~` to a temporary HOME on this platform")
+  }
   dir.create(file.path(home, ".config", "luna"), recursive = TRUE)
   if (is.null(config)) {
     config <- yaml::read_yaml(
