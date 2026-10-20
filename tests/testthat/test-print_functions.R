@@ -41,4 +41,7 @@ test_that("truncate_columns aborts when console is too narrow", {
 
 test_that("luna_project_templates lists available templates", {
   expect_output(luna_project_templates(), "Available templates:.*- clean")
+  out <- capture.output(luna_project_templates())
+  expect_true(" - clean" %in% out)
+  expect_false(any(grepl("\\\\n", out, fixed = TRUE)))
 })

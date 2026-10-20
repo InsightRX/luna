@@ -70,8 +70,33 @@ test_that("save_project writes yaml and respects force", {
   project <- list(yaml = list(project = list(description = "d")))
   expect_message(save_project(project, f, verbose = TRUE), "Saving project")
   expect_equal(yaml::read_yaml(f), project$yaml)
-  expect_error(save_project(project, f))
+  expect_error(save_project(project, f), "use `force=TRUE` argument")
   project$yaml$project$description <- "e"
   save_project(project, f, force = TRUE)
   expect_equal(yaml::read_yaml(f)$project$description, "e")
+})
+
+test_that("new_project_from_template reads built-in templates and files", {
+  project <- new_project_from_template("clean")
+  expect_named(project, c("yaml", "metadata"))
+  expect_true("project" %in% names(project$yaml))
+  expect_true("modelfit" %in% names(project$yaml))
+  expect_equal(new_project_from_template("clean.yaml"), project)
+  f <- withr::local_tempfile(fileext = ".yaml")
+  writeLines(c("project:", "  description: from file"), f)
+  expect_equal(new_project_from_template(f)$yaml$project$description, "from file")
+  expect_error(new_project_from_template("nonexistent"), "not found")
+})
+
+test_that("luna_new_project creates project from template", {
+  dir <- local_new_project_folder()
+  write_nm_model(file.path(dir, "run1.mod"), "one")
+  suppressMessages(
+    luna_new_project("myproj", folder = dir, description = "d", template = "clean", verbose = FALSE)
+  )
+  yml <- yaml::read_yaml(file.path(dir, "myproj.yaml"))
+  expect_equal(yml$project$description, "d")
+  expect_true("modelfit" %in% names(yml))
+  expect_equal(yml$runs[[1]]$id, "run1")
+  expect_equal(.luna_cache$get("name"), "myproj")
 })

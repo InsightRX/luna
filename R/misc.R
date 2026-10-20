@@ -177,8 +177,8 @@ get_flag_from_config <- function(
 replace_list_elements <- function (x, y) {
   missing <- which(!names(y) %in% names(x))
   if (length(missing) != 0) {
-    warning(paste("Nothing named: ", paste(names(y)[missing],
-                                           collapse = ", ", "found to replace")))
+    warning(paste("Nothing named:", paste(names(y)[missing], collapse = ", "),
+                  "found to replace"))
     y <- y[-missing]
   }
   x[names(y)] <- lapply(

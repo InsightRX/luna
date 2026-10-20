@@ -87,6 +87,10 @@ test_that("replace_list_elements replaces and warns on unknown names", {
     "Nothing named"
   )
   expect_equal(out, list(a = 5, b = 2))
+  expect_warning(
+    replace_list_elements(x, list(y = 1, z = 1)),
+    "^Nothing named: y, z found to replace$"
+  )
 })
 
 test_that("validate_id converts numeric ids and aborts on NULL", {

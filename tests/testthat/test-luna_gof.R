@@ -7,6 +7,8 @@ test_that("luna_gof returns patchwork of gof plots and logs event", {
   p <- luna_gof("run1", ltbs = TRUE, verbose = FALSE)
   expect_s3_class(p, "patchwork")
   expect_length(p$patches$plots, 1)
+  expect_equal(p$patches$plots[[1]]$labels$y, "Observation (DV)")
+  expect_equal(p$labels$y, "Conditional weighted residual (CWRES)")
   args <- mockery::mock_args(mock_tab)[[1]]
   expect_true(args$ltbs)
   expect_equal(args$id, "run1")

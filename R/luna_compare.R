@@ -27,4 +27,5 @@ luna_compare <- function(
     model_results,
     return_object = return_object
   )
+  results
 }
