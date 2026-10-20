@@ -20,3 +20,11 @@ test_that("luna_tag clears tags before adding", {
   yml <- yaml::read_yaml(file.path(dir, "testproj.yaml"))
   expect_equal(yml$runs[[1]]$tag, "b")
 })
+
+test_that("luna_tag with clear = TRUE and no tag clears tags", {
+  dir <- local_luna_project()
+  luna_tag("run1", "a")
+  luna_tag("run1", clear = TRUE)
+  yml <- yaml::read_yaml(file.path(dir, "testproj.yaml"))
+  expect_null(yml$runs[[1]]$tag)
+})

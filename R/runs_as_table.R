@@ -14,7 +14,7 @@ runs_as_table <- function(
 
   ## Print a table of models and their descriptions
   models <- x$yaml$runs
-  model_table <- data.frame()
+  full_table <- data.frame()
   if(length(models) > 0) {
     timestamps <- .luna_cache$get("timestamps")
     model_table <- data.frame(

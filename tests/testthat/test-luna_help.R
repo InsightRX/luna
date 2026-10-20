@@ -57,6 +57,6 @@ test_that("luna_help aborts for other event types", {
 
 test_that("luna_help aborts when there is no event", {
   local_luna_project()
-  mockery::stub(luna_help, "log_get_last_event", NULL)
-  expect_error(luna_help(verbose = FALSE), "No recent event found")
+  .luna_cache$set("log", list())
+  expect_error(luna_help(verbose = TRUE), "No recent event found")
 })

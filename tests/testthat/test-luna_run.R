@@ -3,10 +3,9 @@ fake_pharmpy_model <- function(dataset = data.frame(ID = 1)) {
 }
 
 run_config <- function(modelfit = list(method = "pharmpy", console = TRUE)) {
-  # tools.nonmem.nmfe is set because ifelse0() errors when the fallback is NULL
   list(
     general = list(runs = list(as_job = FALSE)),
-    tools = list(modelfit = modelfit, nonmem = list(nmfe = "/opt/nm/fallback"))
+    tools = list(modelfit = modelfit)
   )
 }
 
@@ -94,4 +93,33 @@ test_that("luna_run dispatches to luna_run_ferx for ferx method", {
   expect_equal(args$folder, folder)
   expect_equal(args$config$tools$modelfit$method, "ferx")
   mockery::expect_called(mock_read, 0)
+})
+
+test_that("luna_run uses tools.modelfit.nmfe when tools.nonmem.nmfe is unset", {
+  local_luna_project(config = run_config(list(method = "pharmpy", nmfe = "/opt/nm/nmfe75")))
+  mock_run <- mockery::mock("fit")
+  mockery::stub(luna_run, "pharmr::read_model", fake_pharmpy_model())
+  mockery::stub(luna_run, "pharmr.extra::run_nlme", mock_run)
+  suppressMessages(luna_run("run1"))
+  expect_equal(mockery::mock_args(mock_run)[[1]]$nmfe, "/opt/nm/nmfe75")
+})
+
+test_that("luna_run falls back to tools.nonmem.nmfe", {
+  config <- run_config(list(method = "pharmpy"))
+  config$tools$nonmem <- list(nmfe = "/opt/nm/fallback")
+  local_luna_project(config = config)
+  mock_run <- mockery::mock("fit")
+  mockery::stub(luna_run, "pharmr::read_model", fake_pharmpy_model())
+  mockery::stub(luna_run, "pharmr.extra::run_nlme", mock_run)
+  suppressMessages(luna_run("run1"))
+  expect_equal(mockery::mock_args(mock_run)[[1]]$nmfe, "/opt/nm/fallback")
+})
+
+test_that("luna_run without any nmfe configured passes NULL for pharmpy method", {
+  local_luna_project(config = run_config(list(method = "pharmpy")))
+  mock_run <- mockery::mock("fit")
+  mockery::stub(luna_run, "pharmr::read_model", fake_pharmpy_model())
+  mockery::stub(luna_run, "pharmr.extra::run_nlme", mock_run)
+  suppressMessages(luna_run("run1"))
+  expect_null(mockery::mock_args(mock_run)[[1]]$nmfe)
 })

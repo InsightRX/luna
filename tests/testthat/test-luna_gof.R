@@ -14,3 +14,18 @@ test_that("luna_gof returns patchwork of gof plots and logs event", {
   expect_equal(last$event, "plot")
   expect_equal(last$context$plot, "gof")
 })
+
+test_that("luna_gof plots the selected residual", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("patchwork")
+  local_luna_project()
+  mockery::stub(luna_gof, "get_table_for_plots", fake_nm_table())
+  p <- luna_gof("run1", residual = "NPDE", verbose = FALSE)
+  p2 <- p[[2]]
+  expect_equal(p2$labels$y, "NPDE")
+  built <- suppressWarnings(ggplot2::ggplot_build(p2))
+  tab <- fake_nm_table()
+  expect_setequal(built$data[[1]]$y, tab$NPDE[tab$MDV == 0])
+  p <- luna_gof("run1", verbose = FALSE)
+  expect_equal(p[[2]]$labels$y, "CWRES")
+})

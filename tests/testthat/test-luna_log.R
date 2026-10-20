@@ -44,3 +44,11 @@ test_that("luna_log returns data.frame of last n events", {
   out2 <- luna_log(n = 2)
   expect_equal(out2$event, c("error", "plot"))
 })
+
+test_that("log_get_last_event returns NULL for empty log", {
+  local_luna_project()
+  .luna_cache$set("log", list())
+  expect_null(log_get_last_event())
+  .luna_cache$remove("log")
+  expect_null(log_get_last_event())
+})

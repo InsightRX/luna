@@ -58,25 +58,27 @@ luna_new_project <- function(
   # create a project object from template
   if(!is.null(template)) {
     template <- stringr::str_replace(template, "\\.yaml$", "")
-    project <- read_yaml_safe(
+    project_yaml <- read_yaml_safe(
       file.path(system.file("templates", package = "luna"),
       paste0(template, ".yaml"))
     )
   } else {
-    project <- list(
-      yaml = list(
-        project = list(
-        )
-      ),
-      metadata = list(
-        name = name,
-        folder = folder
+    project_yaml <- list(
+      project = list(
       )
     )
   }
+  project <- list(
+    yaml = project_yaml,
+    metadata = list(
+      name = name,
+      folder = folder
+    )
+  )
   project$yaml$project$description <- description
 
   ## Import models, if present in folder and requested
+  models <- character(0)
   if(import_models) {
     models <- stringr::str_replace_all(
       dir(folder, pattern = "\\.mod$"),
@@ -86,7 +88,7 @@ luna_new_project <- function(
       stringr::str_sort(numeric = TRUE)
     project$yaml$runs <- list()
   }
-  for(i in 1:length(models)) {
+  for(i in seq_along(models)) {
     model_file <- file.path(folder, paste0(models[i], ".mod"))
     if(file.exists(model_file)) {
       project$yaml$runs[[i]] <- list(

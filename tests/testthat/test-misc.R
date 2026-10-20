@@ -53,6 +53,10 @@ test_that("find_file_with_fallback finds file, fallback, or aborts", {
   expect_silent(find_file_with_fallback(dir, "none.txt", "fb.txt", verbose = FALSE))
   expect_error(find_file_with_fallback(dir, "none.txt", "none2.txt"), "not found")
   expect_null(find_file_with_fallback(dir, "none.txt", "none2.txt", abort = FALSE))
+  expect_error(
+    find_file_with_fallback(dir, "none.txt", "none2.txt", verbose = FALSE),
+    "not found"
+  )
 })
 
 test_that("read_yaml_safe parses `n` keys", {
@@ -74,6 +78,8 @@ test_that("get_flag_from_config reads flag from given or global config", {
   conf <- list(tools = list(modelfit = list(force = TRUE)))
   expect_true(get_flag_from_config(config = conf))
   expect_false(get_flag_from_config(c("tools", "other"), config = conf))
+  expect_true(get_flag_from_config(c("tools", "other"), default = TRUE, config = conf))
+  expect_false(get_flag_from_config(default = FALSE, config = conf |> purrr::assign_in(c("tools", "modelfit", "force"), FALSE)))
   local_luna_home(config = conf)
   local_no_luna_cache()
   expect_true(suppressMessages(get_flag_from_config()))

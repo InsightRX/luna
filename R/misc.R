@@ -109,8 +109,7 @@ find_file_with_fallback <- function(folder, filename, fallback, verbose = TRUE, 
     f <- file.path(folder, fallback)
     if(! file.exists(f)) {
       if(abort) {
-        if(verbose)
-          cli::cli_abort("An expected file was not found.")
+        cli::cli_abort("An expected file was not found.")
       } else {
         return(NULL)
       }
@@ -160,14 +159,14 @@ get_flag_from_config <- function(
   default = FALSE,
   config = NULL
 ) {
-  out <- default
   if(is.null(config)) {
     config <- get_luna_config()
   }
-  out <- isTRUE(
-    purrr::pluck(config, !!!flag)
-  )
-  out
+  value <- purrr::pluck(config, !!!flag)
+  if(is.null(value)) {
+    return(default)
+  }
+  isTRUE(value)
 }
 
 #' Replace elements in a list, based on elements in a second list

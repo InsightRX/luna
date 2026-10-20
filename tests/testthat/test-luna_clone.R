@@ -43,6 +43,8 @@ test_that("luna_clone overwrites with force and warns when run already in YAML",
 
 test_that("luna_clone with update_inits calls PsN update_inits", {
   dir <- local_luna_project()
+  dir.create(file.path(dir, "run1"))
+  write_nm_model(file.path(dir, "run1", "run.mod"))
   mockery::stub(luna_clone, "luna_edit", function(id) NULL)
   psn <- mockery::mock(NULL)
   mockery::stub(luna_clone, "call_psn", psn)
@@ -58,4 +60,27 @@ test_that("luna_clone with update_inits calls PsN update_inits", {
   )
   yml <- yaml::read_yaml(file.path(dir, "testproj.yaml"))
   expect_equal(yml$runs[[3]]$id, "run4")
+})
+
+test_that("luna_clone aborts when source model is missing", {
+  dir <- local_luna_project()
+  mockery::stub(luna_clone, "luna_edit", function(id) NULL)
+  expect_error(luna_clone("run9", "run10"), "not found")
+  expect_false(file.exists(file.path(dir, "run10.mod")))
+  yml <- yaml::read_yaml(file.path(dir, "testproj.yaml"))
+  expect_length(yml$runs, 2)
+})
+
+test_that("luna_clone with update_inits aborts when source run folder is missing", {
+  dir <- local_luna_project()
+  mockery::stub(luna_clone, "luna_edit", function(id) NULL)
+  psn <- mockery::mock(NULL)
+  mockery::stub(luna_clone, "call_psn", psn)
+  expect_error(luna_clone("run1", "run4", update_inits = TRUE), "run.mod not found")
+  mockery::expect_called(psn, 0)
+})
+
+test_that("luna_clone aborts without luna cache", {
+  local_no_luna_cache()
+  expect_error(luna_clone("run1", "run2"), "Luna cache not found")
 })

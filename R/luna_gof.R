@@ -18,6 +18,7 @@ luna_gof <- function(
   verbose = TRUE
 ) {
 
+  residual <- match.arg(residual)
   tab <- get_table_for_plots(
     id = id,
     folder = folder,
@@ -40,19 +41,19 @@ luna_gof <- function(
       ggplot2::xlab("Prediction") +
       ggplot2::ylab("Obervation (DV)") +
       theme()
-  ## CWRES vs TIME / PRED
+  ## Residual (CWRES/NPDE) vs TIME / PRED
   p2 <- tab |>
     dplyr::filter(MDV == 0) |>
     tidyr::pivot_longer(cols = c(TIME, PRED)) |>
     ggplot2::ggplot(
-      ggplot2::aes(x = value, y = CWRES)
+      ggplot2::aes(x = value, y = .data[[residual]])
     ) +
     ggplot2::geom_point() +
     ggplot2::geom_smooth(method = smooth_method, formula = y ~ x) +
     ggplot2::geom_hline(yintercept = 0, linetype = "dotted") +
     ggplot2::facet_wrap(~name, scales = "free") +
     ggplot2::xlab("") +
-    ggplot2::ylab("Obervation (DV)") +
+    ggplot2::ylab(residual) +
     theme()
 
   ## Add log event

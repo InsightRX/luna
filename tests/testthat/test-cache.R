@@ -49,3 +49,28 @@ test_that("update_cache records folder timestamps", {
   expect_true("run1" %in% names(ts$folders))
   expect_match(ts$folders$run1, "^\\d{4}-")
 })
+
+test_that("update_cache records folder timestamps outside the project folder", {
+  dir <- local_luna_project()
+  dir.create(file.path(dir, "run1"))
+  writeLines("x", file.path(dir, "run1", "out.txt"))
+  withr::local_dir(tempdir())
+  update_cache(.luna_cache$get("project"))
+  ts <- .luna_cache$get("timestamps")
+  expect_match(ts$folders$run1, "^\\d{4}-")
+})
+
+test_that("update_cache handles regex special characters in folder path", {
+  local_luna_home()
+  local_no_luna_cache()
+  parent <- normalizePath(withr::local_tempdir())
+  dir <- file.path(parent, "proj (v1.0)+")
+  dir.create(dir)
+  dir.create(file.path(dir, "run1"))
+  writeLines("x", file.path(dir, "run1", "out.txt"))
+  yaml::write_yaml(list(project = list(description = "d")), file.path(dir, "p.yaml"))
+  suppressMessages(luna_load_project(name = "p", folder = dir, verbose = FALSE))
+  ts <- .luna_cache$get("timestamps")
+  expect_true("run1" %in% names(ts$folders))
+  expect_match(ts$folders$run1, "^\\d{4}-")
+})

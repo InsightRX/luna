@@ -113,13 +113,15 @@ luna_ind <- function(
 
   start_idx <- set_len * (page-1) + 1
   end_idx <- set_len * page
-  max_pages <- floor(length(ids) / (ncol * nrow))
+  max_pages <- ceiling(length(ids) / set_len)
   if(page > max_pages) {
     cli::cli_abort("Sorry, only {max_pages} pages available.")
   }
   if(end_idx > length(ids)) {
-    cli::cli_alert_info("Only first {set_len} IDs will be shown.")
     end_idx <- length(ids)
+    if(verbose) {
+      cli::cli_alert_info("Only {end_idx - start_idx + 1} IDs left to show on page {page}.")
+    }
   }
   if(verbose) {
     cli::cli_alert_info("Showing page {page}/{max_pages}.")

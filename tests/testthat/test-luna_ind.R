@@ -80,3 +80,27 @@ test_that("luna_ind plots only the selected subject_ids", {
   p <- luna_ind("run1", data = fake_nm_table(3), ncol = 1, nrow = 2, verbose = FALSE)
   expect_setequal(unique(p$data$ID), c(2, 3))
 })
+
+test_that("luna_ind shows a single partial page", {
+  setup_luna_ind()
+  mockery::stub(luna_ind, "element_blank", ggplot2::element_blank)
+  expect_message(
+    p <- luna_ind("run1", data = fake_nm_table(3), ncol = 2, nrow = 2),
+    "page 1/1"
+  )
+  expect_setequal(unique(p$data$ID), 1:3)
+})
+
+test_that("luna_ind shows a partial last page", {
+  setup_luna_ind()
+  mockery::stub(luna_ind, "element_blank", ggplot2::element_blank)
+  expect_message(
+    p <- luna_ind("run1", data = fake_nm_table(3), ncol = 1, nrow = 2, page = 2),
+    "Only 1 IDs left"
+  )
+  expect_equal(unique(p$data$ID), 3)
+  expect_error(
+    luna_ind("run1", data = fake_nm_table(3), ncol = 1, nrow = 2, page = 3),
+    "only 2 pages available"
+  )
+})

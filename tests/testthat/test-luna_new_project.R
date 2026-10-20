@@ -75,3 +75,31 @@ test_that("save_project writes yaml and respects force", {
   save_project(project, f, force = TRUE)
   expect_equal(yaml::read_yaml(f)$project$description, "e")
 })
+
+test_that("luna_new_project with import_models = FALSE creates project without runs", {
+  dir <- local_new_project_folder()
+  write_nm_model(file.path(dir, "run1.mod"), "one")
+  suppressMessages(
+    luna_new_project("myproj", folder = dir, description = "x", import_models = FALSE)
+  )
+  yml <- yaml::read_yaml(file.path(dir, "myproj.yaml"))
+  expect_null(yml$runs)
+})
+
+test_that("luna_new_project works in a folder without models", {
+  dir <- local_new_project_folder()
+  suppressMessages(luna_new_project("myproj", folder = dir, description = "x"))
+  yml <- yaml::read_yaml(file.path(dir, "myproj.yaml"))
+  expect_length(yml$runs, 0)
+})
+
+test_that("luna_new_project creates project from template", {
+  dir <- local_new_project_folder()
+  suppressMessages(
+    luna_new_project("myproj", folder = dir, description = "tmpl", template = "clean.yaml")
+  )
+  yml <- yaml::read_yaml(file.path(dir, "myproj.yaml"))
+  expect_equal(yml$project$description, "tmpl")
+  expect_equal(.luna_cache$get("name"), "myproj")
+  expect_equal(.luna_cache$get("project")$metadata$folder, dir)
+})
