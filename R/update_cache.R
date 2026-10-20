@@ -49,13 +49,11 @@ update_cache <- function(
   }
 
   ## Folders
-  dir_list <- stringr::str_replace_all(
-    list.dirs(folder, recursive = FALSE),
-    paste0(folder, "[\\/]"),
-    ""
-  )
+  dir_list <- basename(list.dirs(folder, recursive = FALSE))
   for(d in dir_list) {
-    timestamps$folders[[d]] <- get_time_last_updated_folder(d)
+    timestamps$folders[[d]] <- get_time_last_updated_folder(
+      file.path(folder, d)
+    )
   }
 
   if(verbose)

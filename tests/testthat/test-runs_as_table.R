@@ -111,3 +111,10 @@ test_that("get_all_results returns empty tibble when nothing to parse", {
   expect_s3_class(out, "tbl_df")
   expect_equal(nrow(out), 0)
 })
+
+test_that("runs_as_table returns empty table for project without runs", {
+  local_luna_project(runs = list())
+  out <- runs_as_table(.luna_cache$get("project"))
+  expect_s3_class(out, "luna.run_table")
+  expect_equal(nrow(out), 0)
+})

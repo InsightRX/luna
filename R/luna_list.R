@@ -27,8 +27,8 @@ luna_list <- function(
   project <- .luna_cache$get("project")
   out <- runs_as_table(project, raw = raw)
 
-  ## select columns
-  if(!raw) {
+  ## select columns (an empty project has no columns to select from)
+  if(!raw && nrow(out) > 0) {
     cols <- config$general$list$columns
     if(!is.null(cols)) {
       sel_cols <- names(cols)[unlist(cols)]

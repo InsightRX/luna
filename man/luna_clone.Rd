@@ -22,7 +22,10 @@ is run.}
 \item{folder}{path to folder containing the model file. Default is current directory.}
 
 \item{update_inits}{use the final estimates from the source model
-as initial estimates for the cloned model. Default \code{FALSE}}
+as initial estimates for the cloned model. Default \code{FALSE}. This requires
+the source model to have been run, i.e. \verb{<folder>/<id>/run.mod} and its
+results must exist. Without \code{update_inits}, the model file \verb{<folder>/<id>.mod}
+is copied.}
 }
 \description{
 Clone model

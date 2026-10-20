@@ -77,6 +77,10 @@ test_that("luna_ind shows a final partial page", {
     "page 2/2"
   )
   expect_equal(unique(p$data$ID), 3)
+  expect_error(
+    luna_ind("run1", data = fake_nm_table(3), ncol = 1, nrow = 2, page = 3),
+    "only 2 pages available"
+  )
 })
 
 test_that("luna_ind aborts when there are no subjects to plot", {

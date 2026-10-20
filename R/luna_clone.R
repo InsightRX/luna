@@ -3,7 +3,10 @@
 #' @inheritParams luna_run
 #' @param new_id new run id
 #' @param update_inits use the final estimates from the source model
-#' as initial estimates for the cloned model. Default `FALSE`
+#' as initial estimates for the cloned model. Default `FALSE`. This requires
+#' the source model to have been run, i.e. `<folder>/<id>/run.mod` and its
+#' results must exist. Without `update_inits`, the model file `<folder>/<id>.mod`
+#' is copied.
 #'
 #' @export
 #'
@@ -17,11 +20,21 @@ luna_clone <- function(
 ) {
   id <- validate_id(id)
   new_id <- validate_id(new_id)
+  is_luna_cache_available(abort = TRUE)
   if(is.null(folder)) {
     folder <- .luna_cache$get("project")$metadata$folder
   }
   old_file <- file.path(folder, paste0(id, ".mod"))
   new_file <- file.path(folder, paste0(new_id, ".mod"))
+  if(update_inits) {
+    ## final estimates are read from the run folder created by luna_run()
+    source_file <- file.path(folder, id, "run.mod")
+  } else {
+    source_file <- old_file
+  }
+  if(!file.exists(source_file)) {
+    cli::cli_abort("Source model file {source_file} not found.")
+  }
   if(file.exists(new_file)) {
     if(force) {
       if(verbose) {
@@ -35,18 +48,21 @@ luna_clone <- function(
     cli::cli_alert_info("Cloning model {id} to {new_id}")
   }
   if(!update_inits) {
-    file.copy(
+    copied <- file.copy(
       old_file,
       new_file,
       overwrite = TRUE
     )
+    if(!copied) {
+      cli::cli_abort("Could not copy {old_file} to {new_file}.")
+    }
   } else {
     cli::cli_alert_info("Updating parameters in cloned model")
     ## TODO: this currently doesn't work, due to a Pharmpy bug.
     ## Therefore, we'll be using PsN for now
     pharmpy_works <- FALSE
     if(pharmpy_works) {
-      model <- pharmr::read_model(old_file)
+      model <- pharmr::read_model(source_file)
       info <- luna_info(id)
       parameters <- replace_list_elements(
         model$parameters$inits,
@@ -74,7 +90,6 @@ luna_clone <- function(
   if(verbose) {
     cli::cli_alert_info("Updating project YAML")
   }
-  is_luna_cache_available(abort = TRUE)
   ## make sure we're up to date
   name <- .luna_cache$get("project")$metadata$name
   folder <- .luna_cache$get("project")$metadata$folder

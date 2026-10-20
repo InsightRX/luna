@@ -26,11 +26,11 @@ luna_help <- function(
   is_luna_cache_available(abort = TRUE)
   if(is.null(prompt)) {
     event <- log_get_last_event()
-    if(verbose)
-      cli::cli_alert_info("Getting help on {event$event} using {model}")
     if(is.null(event)) {
       cli::cli_abort("No recent event found, please call `luna_help()` with a question.")
     }
+    if(verbose)
+      cli::cli_alert_info("Getting help on {event$event} using {model}")
   }
   chat <- ellmer::chat_openai(
     system_prompt = paste0(

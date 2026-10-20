@@ -57,5 +57,9 @@ log_add <- function(
 #' Get last event from log, as list object
 #'
 log_get_last_event <- function() {
-  .luna_cache$get("log")[[length(.luna_cache$get("log"))]]
+  luna_log <- .luna_cache$get("log", missing = NULL)
+  if(length(luna_log) == 0) {
+    return(NULL)
+  }
+  luna_log[[length(luna_log)]]
 }

@@ -78,3 +78,9 @@ test_that("luna_list with raw = TRUE returns all information", {
   expect_s3_class(out, "tbl_df")
   expect_true(all(c("id", "reference", "tag", "notes", "dofv") %in% names(out)))
 })
+
+test_that("luna_list works on a project without runs", {
+  local_luna_project(runs = list())
+  expect_no_warning(out <- suppressMessages(luna_list()))
+  expect_equal(nrow(out), 0)
+})

@@ -49,6 +49,10 @@ luna_note <- function(
     return(run[[element]])
   } else { # add or clear notes/tags
 
+    if(is.null(run)) {
+      cli::cli_abort("Run {id} not found in project {name}.")
+    }
+
     ## Clear existing notes
     if(clear) {
       run[[element]] <- NULL
@@ -59,13 +63,11 @@ luna_note <- function(
       run[[element]],
       note
     )
-    if(!is.null(note)) {
-      project$yaml$runs <- insert_entry(
-        x = project$yaml$runs,
-        id = id,
-        entry = run
-      )
-    }
+    project$yaml$runs <- insert_entry(
+      x = project$yaml$runs,
+      id = id,
+      entry = run
+    )
 
     ## Update cache
     .luna_cache$set("project", project)

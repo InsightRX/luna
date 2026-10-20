@@ -79,7 +79,11 @@ luna_run <- function(
   }
   console <- ifelse0(config$tools$modelfit$console, TRUE)
   if(is.null(nmfe)) {
-    nmfe <- ifelse0(config$tools$modelfit$nmfe, config$tools$nonmem$nmfe)
+    nmfe <- ifelse0(
+      config$tools$modelfit$nmfe,
+      config$tools$nonmem$nmfe,
+      allow_null = TRUE
+    )
   }
   if(method == "nmfe") {
     if(is.null(nmfe) || identical(trimws(nmfe), "")) {

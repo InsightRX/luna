@@ -44,3 +44,19 @@ test_that("luna_note uses custom element", {
   yml <- yaml::read_yaml(file.path(dir, "testproj.yaml"))
   expect_equal(yml$runs[[2]]$remarks, "abc")
 })
+
+test_that("luna_note with clear = TRUE and no note clears notes", {
+  dir <- local_luna_project()
+  luna_note("run1", c("a", "b"))
+  luna_note("run1", clear = TRUE)
+  yml <- yaml::read_yaml(file.path(dir, "testproj.yaml"))
+  expect_null(yml$runs[[1]]$notes)
+  expect_null(pluck_entry(.luna_cache$get("project")$yaml$runs, "run1")$notes)
+})
+
+test_that("luna_note aborts when adding a note to an unknown run", {
+  dir <- local_luna_project()
+  expect_error(luna_note("run9", "a note"), "run9 not found")
+  yml <- yaml::read_yaml(file.path(dir, "testproj.yaml"))
+  expect_length(yml$runs, 2)
+})
