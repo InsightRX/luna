@@ -17,8 +17,6 @@ setup_luna_ind <- function(.local_envir = parent.frame()) {
   skip_if_not_installed("ggplot2")
   local_luna_project(.local_envir = .local_envir)
   local_subject_ids(.local_envir = .local_envir)
-  # ggplot2 >= 3.4 deprecates `size` in geom_line()
-  withr::local_options(lifecycle_verbosity = "quiet", .local_envir = .local_envir)
 }
 
 test_that("luna_ind returns ggplot from run table and logs event", {

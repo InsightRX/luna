@@ -162,7 +162,7 @@ luna_ind <- function(
       )
   }
   p1 <- p1 +
-    ggplot2::geom_line(size = 1) +
+    ggplot2::geom_line(linewidth = 1) +
     ggplot2::facet_wrap(~ID, scales = scales) +
     ggplot2::xlab("Time") +
     ggplot2::ylab("Concentration") +

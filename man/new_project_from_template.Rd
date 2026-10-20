@@ -4,11 +4,15 @@
 \alias{new_project_from_template}
 \title{Create a new project object based on a predefined template}
 \usage{
-new_project_from_template(template = "default")
+new_project_from_template(template = "clean")
 }
 \arguments{
 \item{template}{template for new project. Either a reference to one of the
-built-in templates (e.g. \code{default}), or path to a file.}
+built-in templates (e.g. \code{clean}), or path to a file.}
+}
+\value{
+a list with elements \code{yaml} (the project YAML contents) and
+\code{metadata} (empty, to be populated by the caller)
 }
 \description{
 Create a new project object based on a predefined template

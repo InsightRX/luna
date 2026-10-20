@@ -9,5 +9,5 @@ luna_project_templates <- function() {
     ""
   )
   cat("Available templates:\n")
-  cat(paste0(" - ", templates, collapse = "\\n"))
+  cat(paste0(" - ", templates, "\n"), sep = "")
 }

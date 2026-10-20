@@ -57,10 +57,10 @@ luna_new_project <- function(
 
   # create a project object from template
   if(!is.null(template)) {
-    template <- stringr::str_replace(template, "\\.yaml$", "")
-    project <- read_yaml_safe(
-      file.path(system.file("templates", package = "luna"),
-      paste0(template, ".yaml"))
+    project <- new_project_from_template(template)
+    project$metadata <- list(
+      name = name,
+      folder = folder
     )
   } else {
     project <- list(
@@ -163,8 +163,10 @@ save_project <- function(
 ) {
   if(file.exists(path) && !force) {
     cli::cli_abort(
-      "Project file exists in this folder. Please specify different",
-      "project name or folder, or use `force=TRUE` argument."
+      paste(
+        "Project file exists in this folder. Please specify different",
+        "project name or folder, or use `force=TRUE` argument."
+      )
     )
   }
   if(verbose)
@@ -177,10 +179,36 @@ save_project <- function(
 #' Create a new project object based on a predefined template
 #'
 #' @param template template for new project. Either a reference to one of the
-#'   built-in templates (e.g. `default`), or path to a file.
+#'   built-in templates (e.g. `clean`), or path to a file.
+#'
+#' @returns a list with elements `yaml` (the project YAML contents) and
+#'   `metadata` (empty, to be populated by the caller)
 #'
 new_project_from_template <- function(
-  template = "default"
+  template = "clean"
 ) {
-
+  if(file.exists(template)) {
+    template_file <- template
+  } else {
+    template <- stringr::str_replace(template, "\\.yaml$", "")
+    template_file <- file.path(
+      system.file("templates", package = "luna"),
+      paste0(template, ".yaml")
+    )
+    if(!file.exists(template_file)) {
+      cli::cli_abort(
+        paste0(
+          "Template `", template, "` not found. Use `luna_project_templates()` ",
+          "to show a list of available templates."
+        )
+      )
+    }
+  }
+  yaml <- read_yaml_safe(template_file)
+  if(is.null(yaml)) yaml <- list()
+  if(is.null(yaml$project)) yaml$project <- list()
+  list(
+    yaml = yaml,
+    metadata = list()
+  )
 }

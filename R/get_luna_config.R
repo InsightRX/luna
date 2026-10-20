@@ -23,7 +23,7 @@ get_luna_config <- function(
       }
     }
   } else {
-    if(verbose) cli::cli_alert_warning("Luna projecty cache not found, not using project-specific config")
+    if(verbose) cli::cli_alert_warning("Luna project cache not found, not using project-specific config")
   }
   conf
 }
