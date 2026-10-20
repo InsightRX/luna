@@ -19,6 +19,10 @@ luna_gof <- function(
 ) {
 
   residual <- match.arg(residual)
+  residual_label <- c(
+    CWRES = "Conditional weighted residual (CWRES)",
+    NPDE = "Normalized prediction distribution error (NPDE)"
+  )[[residual]]
   tab <- get_table_for_plots(
     id = id,
     folder = folder,
@@ -39,7 +43,7 @@ luna_gof <- function(
       ggplot2::geom_abline(slope = 1, intercept = 0, linetype = "dotted") +
       ggplot2::facet_wrap(~name) +
       ggplot2::xlab("Prediction") +
-      ggplot2::ylab("Obervation (DV)") +
+      ggplot2::ylab("Observation (DV)") +
       theme()
   ## Residual (CWRES/NPDE) vs TIME / PRED
   p2 <- tab |>
@@ -53,7 +57,7 @@ luna_gof <- function(
     ggplot2::geom_hline(yintercept = 0, linetype = "dotted") +
     ggplot2::facet_wrap(~name, scales = "free") +
     ggplot2::xlab("") +
-    ggplot2::ylab(residual) +
+    ggplot2::ylab(residual_label) +
     theme()
 
   ## Add log event

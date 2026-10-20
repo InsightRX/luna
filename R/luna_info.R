@@ -29,7 +29,7 @@ luna_info <- function(
     esttool = "nonmem",
     path = model_file
   )
-  fit_info <- get_fit_info(
+  fit_info <- pharmr.extra::get_fit_info(
     fit,
     path = folder,
     output_file = output_file

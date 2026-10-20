@@ -1,29 +1,10 @@
-# luna_ind() references an undefined `subject_ids` object (R/luna_ind.R:109)
-# and unqualified `element_blank`. To exercise the reachable logic, define
-# `subject_ids` in the global env for the duration of a test, and stub
-# `element_blank`.
-local_subject_ids <- function(value = NULL, .local_envir = parent.frame()) {
-  genv <- rlang::global_env()
-  had <- exists("subject_ids", envir = genv, inherits = FALSE)
-  old <- if (had) get("subject_ids", envir = genv) else NULL
-  assign("subject_ids", value, envir = genv)
-  withr::defer({
-    rm("subject_ids", envir = genv)
-    if (had) assign("subject_ids", old, envir = genv)
-  }, envir = .local_envir)
-}
-
 setup_luna_ind <- function(.local_envir = parent.frame()) {
   skip_if_not_installed("ggplot2")
   local_luna_project(.local_envir = .local_envir)
-  local_subject_ids(.local_envir = .local_envir)
-  # ggplot2 >= 3.4 deprecates `size` in geom_line()
-  withr::local_options(lifecycle_verbosity = "quiet", .local_envir = .local_envir)
 }
 
 test_that("luna_ind returns ggplot from run table and logs event", {
   setup_luna_ind()
-  mockery::stub(luna_ind, "element_blank", ggplot2::element_blank)
   mock_tab <- mockery::mock(fake_nm_table(4))
   mockery::stub(luna_ind, "get_table_for_plots", mock_tab)
   expect_message(p <- luna_ind("run1", ncol = 2, nrow = 2), "page 1/1")
@@ -37,7 +18,6 @@ test_that("luna_ind returns ggplot from run table and logs event", {
 
 test_that("luna_ind uses supplied data, shows SE ribbon and exponentiates", {
   setup_luna_ind()
-  mockery::stub(luna_ind, "element_blank", ggplot2::element_blank)
   tab <- fake_nm_table(2)
   tab$IPRED_SE <- 0.1
   p <- luna_ind(
@@ -54,7 +34,6 @@ test_that("luna_ind uses supplied data, shows SE ribbon and exponentiates", {
 
 test_that("luna_ind respects show settings", {
   setup_luna_ind()
-  mockery::stub(luna_ind, "element_blank", ggplot2::element_blank)
   tab <- fake_nm_table(2)
   tab$IPRED_SE <- 0.1
   p <- luna_ind(
@@ -75,32 +54,39 @@ test_that("luna_ind aborts when page is not available", {
 
 test_that("luna_ind plots only the selected subject_ids", {
   setup_luna_ind()
-  local_subject_ids(c(2, 3))
-  mockery::stub(luna_ind, "element_blank", ggplot2::element_blank)
-  p <- luna_ind("run1", data = fake_nm_table(3), ncol = 1, nrow = 2, verbose = FALSE)
+  p <- luna_ind(
+    "run1", data = fake_nm_table(3), subject_ids = c(2, 3),
+    ncol = 1, nrow = 2, verbose = FALSE
+  )
   expect_setequal(unique(p$data$ID), c(2, 3))
 })
 
-test_that("luna_ind shows a single partial page", {
+test_that("luna_ind plots a subject selection smaller than one page", {
   setup_luna_ind()
-  mockery::stub(luna_ind, "element_blank", ggplot2::element_blank)
   expect_message(
-    p <- luna_ind("run1", data = fake_nm_table(3), ncol = 2, nrow = 2),
+    p <- luna_ind("run1", data = fake_nm_table(3), subject_ids = 2),
     "page 1/1"
   )
-  expect_setequal(unique(p$data$ID), 1:3)
+  expect_equal(unique(p$data$ID), 2)
 })
 
-test_that("luna_ind shows a partial last page", {
+test_that("luna_ind shows a final partial page", {
   setup_luna_ind()
-  mockery::stub(luna_ind, "element_blank", ggplot2::element_blank)
   expect_message(
     p <- luna_ind("run1", data = fake_nm_table(3), ncol = 1, nrow = 2, page = 2),
-    "Only 1 IDs left"
+    "page 2/2"
   )
   expect_equal(unique(p$data$ID), 3)
   expect_error(
     luna_ind("run1", data = fake_nm_table(3), ncol = 1, nrow = 2, page = 3),
     "only 2 pages available"
+  )
+})
+
+test_that("luna_ind aborts when there are no subjects to plot", {
+  setup_luna_ind()
+  expect_error(
+    luna_ind("run1", data = fake_nm_table(2)[0, ], verbose = FALSE),
+    "No subjects"
   )
 })

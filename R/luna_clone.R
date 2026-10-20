@@ -74,7 +74,7 @@ luna_clone <- function(
       )
       writeLines(model$code, new_file)
     } else {
-      call_psn(
+      pharmr.extra::call_psn(
         "run.mod",
         tool = "update_inits",
         path = file.path(folder, id),

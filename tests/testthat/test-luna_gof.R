@@ -7,6 +7,8 @@ test_that("luna_gof returns patchwork of gof plots and logs event", {
   p <- luna_gof("run1", ltbs = TRUE, verbose = FALSE)
   expect_s3_class(p, "patchwork")
   expect_length(p$patches$plots, 1)
+  expect_equal(p$patches$plots[[1]]$labels$y, "Observation (DV)")
+  expect_equal(p$labels$y, "Conditional weighted residual (CWRES)")
   args <- mockery::mock_args(mock_tab)[[1]]
   expect_true(args$ltbs)
   expect_equal(args$id, "run1")
@@ -22,10 +24,10 @@ test_that("luna_gof plots the selected residual", {
   mockery::stub(luna_gof, "get_table_for_plots", fake_nm_table())
   p <- luna_gof("run1", residual = "NPDE", verbose = FALSE)
   p2 <- p[[2]]
-  expect_equal(p2$labels$y, "NPDE")
+  expect_equal(p2$labels$y, "Normalized prediction distribution error (NPDE)")
   built <- suppressWarnings(ggplot2::ggplot_build(p2))
   tab <- fake_nm_table()
   expect_setequal(built$data[[1]]$y, tab$NPDE[tab$MDV == 0])
   p <- luna_gof("run1", verbose = FALSE)
-  expect_equal(p[[2]]$labels$y, "CWRES")
+  expect_equal(p[[2]]$labels$y, "Conditional weighted residual (CWRES)")
 })

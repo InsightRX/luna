@@ -47,7 +47,7 @@ test_that("luna_clone with update_inits calls PsN update_inits", {
   write_nm_model(file.path(dir, "run1", "run.mod"))
   mockery::stub(luna_clone, "luna_edit", function(id) NULL)
   psn <- mockery::mock(NULL)
-  mockery::stub(luna_clone, "call_psn", psn)
+  mockery::stub(luna_clone, "pharmr.extra::call_psn", psn)
   suppressMessages(luna_clone("run1", "run4", update_inits = TRUE))
   mockery::expect_called(psn, 1)
   mockery::expect_args(

@@ -40,7 +40,8 @@ luna_ind <- function(
     nrow = 3,
     page = 1,
     scales = NULL,
-    verbose = TRUE
+    verbose = TRUE,
+    subject_ids = NULL
 ) {
 
   ## determine what to show
@@ -109,19 +110,16 @@ luna_ind <- function(
   if (!is.null(subject_ids)){
     ids <- subject_ids
   }
+  if(length(ids) == 0) {
+    cli::cli_abort("No subjects available to plot.")
+  }
   set_len <- ncol * nrow
 
   start_idx <- set_len * (page-1) + 1
-  end_idx <- set_len * page
+  end_idx <- min(set_len * page, length(ids))
   max_pages <- ceiling(length(ids) / set_len)
   if(page > max_pages) {
     cli::cli_abort("Sorry, only {max_pages} pages available.")
-  }
-  if(end_idx > length(ids)) {
-    end_idx <- length(ids)
-    if(verbose) {
-      cli::cli_alert_info("Only {end_idx - start_idx + 1} IDs left to show on page {page}.")
-    }
   }
   if(verbose) {
     cli::cli_alert_info("Showing page {page}/{max_pages}.")
@@ -164,13 +162,13 @@ luna_ind <- function(
       )
   }
   p1 <- p1 +
-    ggplot2::geom_line(size = 1) +
+    ggplot2::geom_line(linewidth = 1) +
     ggplot2::facet_wrap(~ID, scales = scales) +
     ggplot2::xlab("Time") +
     ggplot2::ylab("Concentration") +
     theme() +
     ggplot2::theme(
-      legend.title = element_blank(),
+      legend.title = ggplot2::element_blank(),
       legend.position = "top"
     )
 
