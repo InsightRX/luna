@@ -1,7 +1,7 @@
 Package: luna
 Type: Package
 Title: Light-weight Universal NLME Admininstrator
-Version: 0.2.0
+Version: 0.2.1
 Author: Ron Keizer
 Maintainer: Ron Keizer <ron@insight-rx.com>
 Description: Organizes model development workflows in NONMEM and nlmixr2. The 
@@ -33,7 +33,7 @@ Suggests:
     xpose,
     vpc,
     patchwork,
-    testthat (>= 3.0.0),
+    testthat (>= 3.1.7),
     mockery,
     knitr,
     rmarkdown,

@@ -1,0 +1,16 @@
+test_that("luna_gof returns patchwork of gof plots and logs event", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("patchwork")
+  local_luna_project()
+  mock_tab <- mockery::mock(fake_nm_table())
+  mockery::stub(luna_gof, "get_table_for_plots", mock_tab)
+  p <- luna_gof("run1", ltbs = TRUE, verbose = FALSE)
+  expect_s3_class(p, "patchwork")
+  expect_length(p$patches$plots, 1)
+  args <- mockery::mock_args(mock_tab)[[1]]
+  expect_true(args$ltbs)
+  expect_equal(args$id, "run1")
+  last <- log_get_last_event()
+  expect_equal(last$event, "plot")
+  expect_equal(last$context$plot, "gof")
+})
