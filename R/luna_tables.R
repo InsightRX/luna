@@ -29,7 +29,7 @@ luna_tables <- function(
     cli::cli_abort("Model file not found in run folder")
   }
   model <- pharmr::read_model(model_file)
-  get_tables_from_fit(
+  pharmr.extra::get_tables_from_fit(
     model,
     path = file.path(folder, id)
   )

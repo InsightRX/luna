@@ -40,6 +40,7 @@ luna_ind <- function(
     nrow = 3,
     page = 1,
     scales = NULL,
+    subject_ids = NULL,
     verbose = TRUE
 ) {
 
@@ -168,7 +169,7 @@ luna_ind <- function(
     ggplot2::ylab("Concentration") +
     theme() +
     ggplot2::theme(
-      legend.title = element_blank(),
+      legend.title = ggplot2::element_blank(),
       legend.position = "top"
     )
 

@@ -19,6 +19,7 @@ luna_ind(
   nrow = 3,
   page = 1,
   scales = NULL,
+  subject_ids = NULL,
   verbose = TRUE
 )
 }

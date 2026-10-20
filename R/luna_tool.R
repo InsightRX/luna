@@ -32,7 +32,6 @@ luna_tool <- function(
       jobid <- job::job(
         title = paste0(id, "-", tool),
         {
-          devtools::load_all("~/git/pharmaai/luna")
           luna::luna_load_project(name, folder)
           luna::luna_tool(
             id,
@@ -91,21 +90,22 @@ luna_tool <- function(
   }
   options <- tool_obj$options[[1]]
 
-  ## create run folder, if needed
-  model <- pharmr.extra::prepare_run_folder(
-    id = id,
-    model = model,
-    path = folder,
-    force = force,
-    model_path =  file.path(fit_folder, "run.mod"),
-    dataset_path = file.path(fit_folder, "data.csv"),
-    verbose = verbose
-  )
+  ## create run folder, if needed. An existing run folder holds the fit
+  ## results the tool runs on, so it is left untouched.
+  if(!dir.exists(run_folder)) {
+    model <- prepare_run_folder(
+      id = id,
+      model = model,
+      path = folder,
+      force = force,
+      verbose = verbose
+    )$model
+  }
 
   ## Determine what to do
   if(method == "pharmpy") {
     results <- pharmr::read_modelfit_results(model_run_file)
-    call_pharmpy_tool(
+    pharmr.extra::call_pharmpy_tool(
       id = id,
       model = model,
       results = results,
@@ -123,7 +123,7 @@ luna_tool <- function(
       cli::cli_alert_info("Running: {tool} on {id} with args: {args}")
     }
     suppressWarnings(
-      call_psn(
+      pharmr.extra::call_psn(
         model_file = "run.mod",
         path = run_folder,
         options = args,
@@ -132,4 +132,11 @@ luna_tool <- function(
       )
     )
   }
+}
+
+#' Wrapper for `pharmr.extra:::prepare_run_folder()`, which is not exported
+#'
+#' @noRd
+prepare_run_folder <- function(...) {
+  pharmr.extra:::prepare_run_folder(...)
 }
