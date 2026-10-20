@@ -64,6 +64,7 @@ test_that("luna_tool calls pharmpy tool with options", {
   expect_equal(args$results, "results")
   expect_equal(args$tool, "vpc")
   expect_equal(args$options, list(samples = 100))
+  expect_equal(args$folder, normalizePath(folder))
   prepare_args <- mockery::mock_args(mock_prepare)[[1]]
   expect_equal(prepare_args$id, "run1")
   expect_equal(prepare_args$model, "model_obj")
@@ -97,4 +98,22 @@ test_that("luna_tool calls PsN tool with parsed args", {
   expect_equal(args$tool, "bootstrap")
   expect_equal(args$options, "-samples=50")
   expect_equal(args$path, file.path(folder, "run1"))
+})
+
+test_that("luna_tool runs pharmpy tool from the project folder", {
+  folder <- local_luna_project(runs = tool_runs())
+  other <- withr::local_tempdir()
+  withr::local_dir(other)
+  tool_wd <- NULL
+  mockery::stub(luna_tool, "pharmr::read_model", "model_obj")
+  mockery::stub(luna_tool, "prepare_run_folder", function(...) list(model = "prepared"))
+  mockery::stub(luna_tool, "pharmr::read_modelfit_results", "results")
+  mockery::stub(luna_tool, "pharmr.extra::call_pharmpy_tool", function(...) {
+    tool_wd <<- getwd()
+    list(...)$folder
+  })
+  res <- suppressMessages(luna_tool("run1", tool = "vpc"))
+  expect_equal(normalizePath(tool_wd), normalizePath(folder))
+  expect_equal(res, normalizePath(folder))
+  expect_equal(normalizePath(getwd()), normalizePath(other))
 })

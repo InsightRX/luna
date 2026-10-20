@@ -40,8 +40,8 @@ luna_ind <- function(
     nrow = 3,
     page = 1,
     scales = NULL,
-    subject_ids = NULL,
-    verbose = TRUE
+    verbose = TRUE,
+    subject_ids = NULL
 ) {
 
   ## determine what to show

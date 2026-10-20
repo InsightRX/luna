@@ -105,11 +105,16 @@ luna_tool <- function(
   ## Determine what to do
   if(method == "pharmpy") {
     results <- pharmr::read_modelfit_results(model_run_file)
+    ## call_pharmpy_tool() prefers an existing `<getwd()>/<id>` over
+    ## `<folder>/<id>`, so also run it from within the project folder.
+    old_wd <- setwd(folder)
+    on.exit(setwd(old_wd), add = TRUE)
     pharmr.extra::call_pharmpy_tool(
       id = id,
       model = model,
       results = results,
       tool = tool,
+      folder = folder,
       options = options
     )
   } else if(method == "psn") {
