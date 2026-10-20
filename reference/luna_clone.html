@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">luna</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,10 @@ is run.</p></dd>
 
 <dt id="arg-update-inits">update_inits<a class="anchor" aria-label="anchor" href="#arg-update-inits"></a></dt>
 <dd><p>use the final estimates from the source model
-as initial estimates for the cloned model. Default <code>FALSE</code></p></dd>
+as initial estimates for the cloned model. Default <code>FALSE</code>. This requires
+the source model to have been run, i.e. <code>&lt;folder&gt;/&lt;id&gt;/run.mod</code> and its
+results must exist. Without <code>update_inits</code>, the model file <code>&lt;folder&gt;/&lt;id&gt;.mod</code>
+is copied.</p></dd>
 
 </dl></div>
 

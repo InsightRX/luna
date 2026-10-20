@@ -34,4 +34,7 @@ luna_clone(
 - update_inits:
 
   use the final estimates from the source model as initial estimates for
-  the cloned model. Default `FALSE`
+  the cloned model. Default `FALSE`. This requires the source model to
+  have been run, i.e. `<folder>/<id>/run.mod` and its results must
+  exist. Without `update_inits`, the model file `<folder>/<id>.mod` is
+  copied.
