@@ -60,3 +60,29 @@ test_that("luna_ind plots only the selected subject_ids", {
   )
   expect_setequal(unique(p$data$ID), c(2, 3))
 })
+
+test_that("luna_ind plots a subject selection smaller than one page", {
+  setup_luna_ind()
+  expect_message(
+    p <- luna_ind("run1", data = fake_nm_table(3), subject_ids = 2),
+    "page 1/1"
+  )
+  expect_equal(unique(p$data$ID), 2)
+})
+
+test_that("luna_ind shows a final partial page", {
+  setup_luna_ind()
+  expect_message(
+    p <- luna_ind("run1", data = fake_nm_table(3), ncol = 1, nrow = 2, page = 2),
+    "page 2/2"
+  )
+  expect_equal(unique(p$data$ID), 3)
+})
+
+test_that("luna_ind aborts when there are no subjects to plot", {
+  setup_luna_ind()
+  expect_error(
+    luna_ind("run1", data = fake_nm_table(2)[0, ], verbose = FALSE),
+    "No subjects"
+  )
+})

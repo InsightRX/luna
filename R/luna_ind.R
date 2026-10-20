@@ -110,17 +110,16 @@ luna_ind <- function(
   if (!is.null(subject_ids)){
     ids <- subject_ids
   }
+  if(length(ids) == 0) {
+    cli::cli_abort("No subjects available to plot.")
+  }
   set_len <- ncol * nrow
 
   start_idx <- set_len * (page-1) + 1
-  end_idx <- set_len * page
-  max_pages <- floor(length(ids) / (ncol * nrow))
+  end_idx <- min(set_len * page, length(ids))
+  max_pages <- ceiling(length(ids) / set_len)
   if(page > max_pages) {
     cli::cli_abort("Sorry, only {max_pages} pages available.")
-  }
-  if(end_idx > length(ids)) {
-    cli::cli_alert_info("Only first {set_len} IDs will be shown.")
-    end_idx <- length(ids)
   }
   if(verbose) {
     cli::cli_alert_info("Showing page {page}/{max_pages}.")
