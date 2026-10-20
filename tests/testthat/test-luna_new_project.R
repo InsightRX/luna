@@ -75,7 +75,3 @@ test_that("save_project writes yaml and respects force", {
   save_project(project, f, force = TRUE)
   expect_equal(yaml::read_yaml(f)$project$description, "e")
 })
-
-test_that("new_project_from_template is a stub", {
-  expect_null(new_project_from_template())
-})

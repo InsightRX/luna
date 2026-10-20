@@ -2,7 +2,7 @@ test_that("ifelse0 returns value or alternative", {
   expect_equal(ifelse0(1, 2), 1)
   expect_equal(ifelse0(NULL, 2), 2)
   expect_null(ifelse0(NULL, NULL, allow_null = TRUE))
-  expect_error(ifelse0(1), "No alternative")
+  expect_error(ifelse0(NULL), "No alternative")
 })
 
 test_that("pluck_entry finds an entry by id", {
