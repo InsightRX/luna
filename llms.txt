@@ -2,9 +2,10 @@
 
 **THIS R PACKAGE IS UNDER DEVELOPMENT, NOT READY FOR PRODUCTION USE!!**
 
-Luna is a tool to organize your NONMEM and nlmixr2 modeling workflows in
-a structured and traceable manner. Luna is an acronym for **Light-weight
-Universal NLME Admininstrator**
+Luna is a tool to organize your pharmacometric modeling workflows in a
+structured and traceable manner. Luna is an acronym for **Light-weight
+Universal NLME Admininstrator**. It currently supports NONMEM, nlmixr2,
+and [FeRx](https://ferx-nlme.org).
 
 The organization of projects is implemented through YAML files, which
 forces the modeler to define each step during the modeling process prior
